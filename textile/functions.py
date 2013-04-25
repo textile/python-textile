@@ -21,9 +21,20 @@ Additions and fixes Copyright (c) 2006 Alex Shiels http://thresholdstate.com/
 import re
 import uuid
 from sys import maxunicode
-import urlparse
-import urllib
-import HTMLParser
+
+
+try:
+    # Python 3
+    from urllib.parse import urlparse, urlsplit, urlunsplit, quote, unquote
+    from html.parser import HTMLParser
+    xrange = range
+    unichr = chr
+    unicode = str
+except (ImportError):
+    # Python 2
+    from urllib import quote, unquote
+    from urlparse import urlparse, urlsplit, urlunsplit
+    from HTMLParser import HTMLParser
 
 from textile.tools import sanitizer, imagesize
 
@@ -43,6 +54,32 @@ def _normalize_newlines(string):
     out = re.sub(r'"$', '" ', out)
     return out
 
+
+_glyph_defaults = {
+    'quote_single_open':  '&#8216;',
+    'quote_single_close': '&#8217;',
+    'quote_double_open':  '&#8220;',
+    'quote_double_close': '&#8221;',
+    'apostrophe':         '&#8217;',
+    'prime':              '&#8242;',
+    'prime_double':       '&#8243;',
+    'ellipsis':           '&#8230;',
+    'ampersand':          '&amp;',
+    'emdash':             '&#8212;',
+    'endash':             '&#8211;',
+    'dimension':          '&#215;',
+    'trademark':          '&#8482;',
+    'registered':         '&#174;',
+    'copyright':          '&#169;',
+    'half':               '&#189;',
+    'quarter':            '&#188;',
+    'threequarters':      '&#190;',
+    'degrees':            '&#176;',
+    'plusminus':          '&#177;',
+    'fn_ref_pattern':     '<sup%(atts)s>%(marker)s</sup>',
+    'fn_foot_pattern':    '<sup%(atts)s>%(marker)s</sup>',
+    'nl_ref_pattern':     '<sup%(atts)s>%(marker)s</sup>',
+}
 
 class Textile(object):
     horizontal_align_re = r'(?:\<(?!>)|(?<!<)\>|\<\>|\=|[()]+(?! ))'
@@ -74,32 +111,6 @@ class Textile(object):
     hAlign = {'<': 'left', '=': 'center', '>': 'right', '<>': 'justify'}
 
     note_index = 1
-
-    glyph_defaults = {
-            'quote_single_open':  '&#8216;',
-            'quote_single_close': '&#8217;',
-            'quote_double_open':  '&#8220;',
-            'quote_double_close': '&#8221;',
-            'apostrophe':         '&#8217;',
-            'prime':              '&#8242;',
-            'prime_double':       '&#8243;',
-            'ellipsis':           '&#8230;',
-            'ampersand':          '&amp;',
-            'emdash':             '&#8212;',
-            'endash':             '&#8211;',
-            'dimension':          '&#215;',
-            'trademark':          '&#8482;',
-            'registered':         '&#174;',
-            'copyright':          '&#169;',
-            'half':               '&#189;',
-            'quarter':            '&#188;',
-            'threequarters':      '&#190;',
-            'degrees':            '&#176;',
-            'plusminus':          '&#177;',
-            'fn_ref_pattern':     '<sup%(atts)s>%(marker)s</sup>',
-            'fn_foot_pattern':    '<sup%(atts)s>%(marker)s</sup>',
-            'nl_ref_pattern':     '<sup%(atts)s>%(marker)s</sup>',
-        }
 
     # We'll be searching for characters that need to be HTML-encoded to produce
     # properly valid html.
@@ -159,7 +170,7 @@ class Textile(object):
 
 
 
-    glyph_replace = [x % glyph_defaults for x in (
+    glyph_replace = [x % _glyph_defaults for x in (
         r'\1%(apostrophe)s\2',                # apostrophe's
         r'\1%(apostrophe)s\2',                # back in '88
         r'\1%(quote_single_close)s',          # single closing
@@ -676,7 +687,7 @@ class Textile(object):
                 if len(nl) <= len(tl):
                     line = line + ("</%s>" % litem if showitem else '')
                 # work backward through the list closing nested lists/items
-                for k, v in reversed(ls.items()):
+                for k, v in reversed(list(ls.items())):
                     if len(k) > len(nl):
                         if v != 2:
                             line = line + "\n\t</%sl>" % self.listType(k)
@@ -907,9 +918,9 @@ class Textile(object):
 
     def formatFootnote(self, marker, atts='', anchor=True):
         if anchor:
-            pattern = self.glyph_defaults['fn_foot_pattern']
+            pattern = _glyph_defaults['fn_foot_pattern']
         else:
-            pattern = self.glyph_defaults['fn_ref_pattern']
+            pattern = _glyph_defaults['fn_ref_pattern']
         return pattern % {'atts': atts, 'marker': marker}
 
     def footnoteRef(self, text):
@@ -1023,7 +1034,7 @@ class Textile(object):
         True
 
         """
-        (scheme, netloc) = urlparse.urlparse(url)[0:2]
+        (scheme, netloc) = urlparse(url)[0:2]
         return not scheme and not netloc
 
     def relURL(self, url):
@@ -1036,7 +1047,7 @@ class Textile(object):
         '#'
 
         """
-        scheme = urlparse.urlparse(url)[0]
+        scheme = urlparse(url)[0]
         if self.restricted and scheme and scheme not in self.url_schemes:
             return '#'
         return url
@@ -1205,7 +1216,7 @@ class Textile(object):
             url = url.decode('utf8')
 
         # parse it
-        parsed = urlparse.urlsplit(url)
+        parsed = urlsplit(url)
 
         # divide the netloc further
         netloc_pattern = re.compile(r"""
@@ -1216,17 +1227,17 @@ class Textile(object):
         netloc_parsed = netloc_pattern.match(parsed.netloc).groupdict()
 
         # encode each component
-        scheme = parsed.scheme.encode('utf8')
-        user = netloc_parsed['user'] and urllib.quote(netloc_parsed['user'].encode('utf8'))
-        password = netloc_parsed['password'] and urllib.quote(netloc_parsed['password'].encode('utf8'))
-        host = netloc_parsed['host'].encode('idna')
-        port = netloc_parsed['port'] and netloc_parsed['port'].encode('utf8')
+        scheme = parsed.scheme
+        user = netloc_parsed['user'] and quote(netloc_parsed['user'])
+        password = netloc_parsed['password'] and quote(netloc_parsed['password'])
+        host = netloc_parsed['host']
+        port = netloc_parsed['port'] and netloc_parsed['port']
         path = '/'.join(  # could be encoded slashes!
-            urllib.quote(urllib.unquote(pce).encode('utf8'),'')
+            quote(unquote(pce),'')
             for pce in parsed.path.split('/')
         )
-        query = urllib.quote(urllib.unquote(parsed.query).encode('utf8'), '=&?/')
-        fragment = urllib.quote(urllib.unquote(parsed.fragment).encode('utf8'))
+        query = quote(unquote(parsed.query), '=&?/')
+        fragment = quote(unquote(parsed.fragment))
 
         # put it back together
         netloc = ''
@@ -1238,7 +1249,7 @@ class Textile(object):
         netloc += host
         if port:
             netloc += ':'+port
-        return urlparse.urlunsplit((scheme, netloc, path, query, fragment))
+        return urlunsplit((scheme, netloc, path, query, fragment))
 
     def span(self, text):
         """
@@ -1615,7 +1626,7 @@ class Textile(object):
 
     def decode_high(self, text):
         """Decode encoded HTML entities."""
-        h = HTMLParser.HTMLParser()
+        h = HTMLParser()
         text = '&#%s;' % text
         return h.unescape(text)
 

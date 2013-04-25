@@ -1,4 +1,4 @@
-from functions import Textile
+from .functions import Textile
 
 
 class TextileFactory(object):
