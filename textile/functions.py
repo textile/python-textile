@@ -197,14 +197,15 @@ class Textile(object):
     doctype_whitelist = ['html', 'xhtml', 'html5']
 
     def __init__(self, restricted=False, lite=False, noimage=False,
-                 auto_link=False, get_sizes=False):
+                 auto_link=False, get_sizes=False, plaintext=False):
         """Textile properties that are common to regular textile and
         textile_restricted"""
         self.restricted = restricted
         self.lite = lite
         self.noimage = noimage
-        self.get_sizes = get_sizes
         self.auto_link = auto_link
+        self.get_sizes = get_sizes
+        self.plaintext = plaintext
         self.fn = {}
         self.urlrefs = {}
         self.shelf = {}
@@ -269,7 +270,7 @@ class Textile(object):
         # text = unicode(text)
         text = _normalize_newlines(text)
 
-        if self.restricted:
+        if self.restricted and not self.plaintext:
             text = self.encode_html(text, quotes=False)
 
         if rel:
@@ -931,6 +932,13 @@ class Textile(object):
             content = self.graf(content)
         else:
             content = ''
+
+        if self.plaintext:
+            o1 = ''
+            o2 = ''
+            c2 = ''
+            c1 = ''
+
         return o1, o2, content, c2, c1, eat
 
     def formatFootnote(self, marker, atts='', anchor=True):
@@ -1096,7 +1104,7 @@ class Textile(object):
     def encode_html(self, text, quotes=True):
         """Return text that's safe for an HTML attribute.
         >>> t = Textile()
-        >>> t.encode_html('this is a "test" of text that\\\'s safe to put in an <html> attribute.')
+        >>> t.encode_html('''this is a "test" of text that's safe to put in an <html> attribute.''')
         'this is a &#34;test&#34; of text that&#39;s safe to put in an &lt;html&gt; attribute.'
         """
         a = (
@@ -1136,7 +1144,9 @@ class Textile(object):
         text = self.span(text)
         text = self.footnoteRef(text)
         text = self.noteRef(text)
-        text = self.glyphs(text)
+
+        if not self.plaintext:
+            text = self.glyphs(text)
 
         return text.rstrip('\n')
 
@@ -1187,6 +1197,9 @@ class Textile(object):
 
         if not slash:
             slash = ''
+
+        if self.plaintext:
+            return '"%s":%s%s' % (text, url, slash)
 
         if text == '$':
             text = re.sub(r'^\w+://(.+)', r'\1', url)
@@ -1321,7 +1334,13 @@ class Textile(object):
 
         content = self.span(content)
 
-        out = "<%s%s>%s%s</%s>" % (tag, atts, content, end, tag)
+        if self.plaintext:
+            # plaintext only outputs the content
+            out = "%s" % (content)
+        else:
+            # normal textile mode includes the tags, attributes and content
+            out = "<%s%s>%s%s</%s>" % (tag, atts, content, end, tag)
+
         return out
 
     def image(self, text):
@@ -1701,3 +1720,10 @@ def textile_restricted(text, lite=True, noimage=True, html_type='xhtml',
     return Textile(restricted=True, lite=lite,
                    noimage=noimage, auto_link=auto_link).textile(
                        text, rel='nofollow', html_type=html_type)
+
+
+def plaintext(text):
+    """Althought Textile's syntax is mostly transparent, there are times where
+    it is handy to output plaintext without any textile markup.
+    """
+    return Textile(plaintext=True, auto_link=False).textile(text)

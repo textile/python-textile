@@ -424,8 +424,8 @@ class Tests():
 
         eq_(result, expect)
 
-        #Note that the HTML is escaped, thus rendering
-        #the <script> tag harmless.
+        # Note that the HTML is escaped, thus rendering the <script> tag
+        # harmless.
         test = "Here is some text.\n<script>alert('hello world')</script>"
         result = textile.textile_restricted(test)
         expect = "\t<p>Here is some text.<br />\n&lt;script&gt;alert(&#8216;hello world&#8217;)&lt;/script&gt;</p>"
@@ -586,3 +586,13 @@ class Tests():
         html = textile.textile("""1[^st^], 2[^nd^], 3[^rd^]. 2 log[~n~]\n\nA close[!http://textpattern.com/favicon.ico!]image.\nA tight["text":http://textpattern.com/]link.\nA ["footnoted link":http://textpattern.com/][182].""")
         searchstring = r'^\t<p>1<sup>st</sup>, 2<sup>nd</sup>, 3<sup>rd</sup>. 2 log<sub>n</sub></p>\n\n\t<p>A close<img alt="" src="http://textpattern.com/favicon.ico" />image.<br />\nA tight<a href="http://textpattern.com/">text</a>link.<br />\nA <a href="http://textpattern.com/">footnoted link</a><sup class="footnote" id="fnrev([a-f0-9]{32})"><a href="#fn\1">182</a></sup>.</p>'
         assert_true(re.compile(searchstring).search(html))
+
+    def testPlaintextOutput(self):
+        t = '''p{padding:0.5em 0;margin-top:0;}. this is a paragraph with some textile formatting
+        newlines, "a link":http://example.com/
+        and a date: April 7[^{line-height:0}th^]'''
+        result = textile.plaintext(t)
+        expect = '''this is a paragraph with some textile formatting
+        newlines, "a link":http://example.com/
+        and a date: April 7th'''
+        eq_(result, expect)
