@@ -99,7 +99,7 @@ class Textile(object):
 
     pnct = r'[-!"#$%&()*+,/:;<=>?@\'\[\\\]\.^_`{|}~]'
     urlch = r'[\w"$\-_.+!*\'(),";\/?:@=&%#{}|\\^~\[\]`]'
-    syms = u'¤§µ¶†‡•∗∴◊♠♣♥♦'
+    syms = '¤§µ¶†‡•∗∴◊♠♣♥♦'
 
     url_schemes = ('http', 'https', 'ftp', 'mailto')
 
@@ -611,7 +611,7 @@ class Textile(object):
         """
 
         #Replace line-initial bullets with asterisks
-        bullet_pattern = re.compile(u'^•', re.U | re.M)
+        bullet_pattern = re.compile('^•', re.U | re.M)
 
         pattern = re.compile(r'^((?:[*;:]+|[*;:#]*#(?:_|\d+)?)%s[ .].*)$(?![^#*;:])'
                              % self.lc, re.U | re.M | re.S)
@@ -1555,7 +1555,7 @@ class Textile(object):
                         content = info['def']['content']
                         li = """\t<li%s>%s</li>""" % (atts, content)
                     o.append(li)
-            self.notelist_cache[index] = u"\n".join(o)
+            self.notelist_cache[index] = "\n".join(o)
             result = self.notelist_cache[index]
         if result:
             list_atts = self.pba(att)

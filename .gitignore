@@ -15,3 +15,5 @@ eggs
 parts
 develop-eggs
 .DS_Store
+.swp
+.tox
