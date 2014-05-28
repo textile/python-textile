@@ -13,24 +13,25 @@ h2. Usage
 >>> import textile
 >>> s = """
 ... _This_ is a *test.*
-... 
+...
 ... * One
 ... * Two
 ... * Three
-... 
+...
 ... Link to "Slashdot":http://slashdot.org/
 ... """
 >>> html = textile.textile(s)
 >>> print html
-<em>This</em> is a <strong>test.</strong>
+	<p><em>This</em> is a <strong>test.</strong></p>
+
 	<ul>
 		<li>One</li>
 		<li>Two</li>
 		<li>Three</li>
 	</ul>
-	<p>Link to <a href="http://slashdot.org/">Slashdot</a>
-</p>
->>> 
+
+	<p>Link to <a href="http://slashdot.org/">Slashdot</a></p>
+>>>
 </code>
 </pre>
 
