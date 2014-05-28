@@ -1,10 +1,18 @@
 from setuptools import setup, find_packages
+import sys
 
-version = __import__('textile').__version__
+from textile import __version__
+
+install_requires = []
+
+if 'develop' in sys.argv:
+    install_requires.extend([
+        'tox',
+    ])
 
 setup(
     name='textile',
-    version=version,
+    version=__version__,
     description='Textile processing for python.',
     author='Chris Drackett',
     author_email='chris@chrisdrackett.com',
@@ -20,6 +28,7 @@ setup(
         'Topic :: Software Development :: Libraries :: Python Modules',
     ],
     keywords='textile,text',
+    install_requires=install_requires,
     test_suite='nose.collector',
     tests_require=['nose'],
     include_package_data=True,
