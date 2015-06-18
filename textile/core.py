@@ -90,7 +90,7 @@ class Textile(object):
 
     restricted_url_schemes = ('http', 'https', 'ftp', 'mailto')
     unrestricted_url_schemes = restricted_url_schemes + ('file', 'tel',
-            'callto', 'sftp')
+            'callto', 'sftp', 'data')
 
     btag = ('bq', 'bc', 'notextile', 'pre', 'h[1-6]', 'fn\d+', 'p', '###')
     btag_lite = ('bq', 'bc', 'p')
