@@ -5,11 +5,17 @@ python:
   - "3.2"
   - "3.3"
   - "3.4"
+  - "3.5"
   - "pypy"
 # command to install dependencies
 install:
   - pip install -r requirements.txt
   - python setup.py -q install
   - if [[ ! $TRAVIS_PYTHON_VERSION == pypy ]] ; then pip install regex; fi
+  - pip install coveralls
+  - pip install codecov --with-coverage --cover-package=textile
 # command to run tests
 script: nosetests
+after_success:
+  - codecov
+  - coveralls

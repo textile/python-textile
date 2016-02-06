@@ -1,4 +1,6 @@
 !https://travis-ci.org/textile/python-textile.svg?branch=develop!:https://travis-ci.org/textile/python-textile
+!https://coveralls.io/repos/github/textile/python-textile/badge.svg?branch=develop!:https://coveralls.io/github/textile/python-textile?branch=master
+!https://codecov.io/github/textile/python-textile/coverage.svg?branch=master!:https://codecov.io/github/textile/python-textile?branch=master
 
 h1. python-textile
 
