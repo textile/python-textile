@@ -93,9 +93,9 @@ def test_github_issue_36():
     assert result == expect
 
 def test_github_issue_37():
-    text = '# xxx\n# yyy\n*blah*'
+    text = '* xxx\n* yyy\n*blah*\n* test'
     result = textile.textile(text)
-    expect = '\t<p>\t<ol>\n\t\t<li>xxx</li>\n\t\t<li>yyy</li>\n\t</ol><br />\n<strong>blah</strong></p>'
+    expect = '\t<ul>\n\t\t<li>xxx</li>\n\t\t<li>yyy<br />\n<strong>blah</strong></li>\n\t\t<li>test</li>\n\t</ul>'
     assert result == expect
 
 def test_github_issue_40():
