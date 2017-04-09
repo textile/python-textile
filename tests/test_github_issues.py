@@ -93,9 +93,9 @@ def test_github_issue_36():
     assert result == expect
 
 def test_github_issue_37():
-    text = '# xxx\n# yyy\n*blah*'
+    text = '* xxx\n* yyy\n*blah*\n* test'
     result = textile.textile(text)
-    expect = '\t<p>\t<ol>\n\t\t<li>xxx</li>\n\t\t<li>yyy</li>\n\t</ol><br />\n<strong>blah</strong></p>'
+    expect = '\t<ul>\n\t\t<li>xxx</li>\n\t\t<li>yyy<br />\n<strong>blah</strong></li>\n\t\t<li>test</li>\n\t</ul>'
     assert result == expect
 
     text = '*Highlights*\n\n* UNITEK Y-3705A Type-C Universal DockingStation Pro\n* USB3.0/RJ45/EARPHONE/MICROPHONE/HDMI 6 PORT HUB 1.2m Data Cable 5V 4A Power Adaptor\n*\n* Dimensions: 25cm x 13cm x 9cm\n* Weight: 0.7kg'
