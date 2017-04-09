@@ -26,7 +26,7 @@ from textile.utils import (decode_high, encode_high, encode_html, generate_tag,
                            getimagesize, has_raw_text, human_readable_url,
                            is_rel_url, is_valid_url, list_type,
                            normalize_newlines, parse_attributes, pba)
-from textile.objects import Block, Table
+from textile.objects import Block, List, Table
 
 try:
     import regex as re
@@ -291,7 +291,7 @@ class Textile(object):
         return pattern.sub(self.fTextileList, text)
 
     def fTextileList(self, match):
-        text = re.split(r'\n(?=[*#;:])', match.group(), flags=re.M)
+        text = re.split(r'\n(?=[*#;:]+\s)', match.group(), flags=re.M)
         pt = ''
         result = []
         ls = OrderedDict()
@@ -302,16 +302,16 @@ class Textile(object):
                 nextline = ''
 
             m = re.search(r"^(?P<tl>[#*;:]+)(?P<st>_|\d+)?(?P<atts>{0})[ .]"
-                          "(?P<content>.*)$".format(cls_re_s), line, re.S)
-            if m:
-                tl, start, atts, content = m.groups()
-                content = content.strip()
-            else:
-                result.append(line)
-                continue
-
+                    "(?P<content>.*)$".format(cls_re_s), line, re.S)
+            tl, start, atts, content = m.groups()
+            attributes = parse_attributes(atts)
+            content = content.strip()
+            if '\n' in content:
+                content = content.replace('\n', '<br />\n')
             nl = ''
             ltype = list_type(tl)
+            if i == 0:
+                _list = List('{0}l'.format(ltype), attributes)
             tl_tags = {';': 'dt', ':': 'dd'}
             litem = tl_tags.get(tl[0], 'li')
 
@@ -336,6 +336,7 @@ class Textile(object):
                 # put together the start attribute if needed
                 if len(tl) > len(pt) and start is not None:
                     start = ' start="{0}"'.format(self.olstarts[tl])
+                    _list.attributes['start'] = str(self.olstarts[tl])
 
                 # This will only increment the count for list items, not
                 # definition items
@@ -369,12 +370,19 @@ class Textile(object):
             # item, else just create the item
             if tl not in ls:
                 ls[tl] = 1
-                itemtag = ("\n{0}\t<{1}>{2}".format(tabs, litem, content) if
-                           showitem else '')
-                line = "<{0}l{1}{2}>{3}".format(ltype, atts, start, itemtag)
+                if i == 0:
+                    _list.add_item(litem, content)
+                else:
+                    itemtag = ("\n{0}\t<{1}>{2}".format(tabs, litem, content) if
+                               showitem else '')
+                    _sublist = List(litem, attributes)
+                    line = "<{0}l{1}{2}>{3}".format(ltype, atts, start, itemtag)
+                    _sublist.add_item(litem, content)
+                    line = _sublist.process()
             else:
                 line = ("\t<{0}{1}>{2}".format(litem, atts, content) if
                         showitem else '')
+                _list.add_item(litem, content, attributes)
             line = '{0}{1}'.format(tabs, line)
             if len(nl) <= len(tl):
                 if showitem:
@@ -391,7 +399,7 @@ class Textile(object):
             # Remember the current Textile tag:
             pt = tl
             result.append(line)
-        return self.doTagBr(litem, "\n".join(result))
+        return self.doTagBr(litem, _list.process())
 
     def doTagBr(self, tag, input):
         return re.compile(r'<({0})([^>]*?)>(.*)(</\1>)'.format(re.escape(tag)),
