@@ -301,17 +301,17 @@ class Textile(object):
             except IndexError:
                 nextline = ''
 
-            m = re.search(r"^(?P<tl>[#*;:]+)(?P<st>_|\d+)?(?P<atts>{0})[ .]?"
-                    "(?P<content>.*)?$".format(cls_re_s), line, re.S)
+            m = re.search(r"^(?P<tl>[#*;:]+)(?P<st>_|\d+)?(?P<atts>{0})[ .]"
+                    "(?P<content>.*)$".format(cls_re_s), line, re.S)
             tl, start, atts, content = m.groups()
             attributes = parse_attributes(atts)
             content = content.strip()
             if '\n' in content:
                 content = content.replace('\n', '<br />\n')
-            # nl = ''
+            nl = ''
             ltype = list_type(tl)
             if i == 0:
-                _list = List('{0}l'.format(ltype), attributes, len(tl))
+                _list = List('{0}l'.format(ltype), attributes)
             tl_tags = {';': 'dt', ':': 'dd'}
             litem = tl_tags.get(tl[0], 'li')
 
