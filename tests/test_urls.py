@@ -46,6 +46,14 @@ def test_urls():
     expect = '\t<p>A link that starts with an h is <a href="/test/">handled</a> incorrectly.</p>'
     assert result == expect
 
+    result = t.parse('A link that starts with a space" raises":/test/ an exception.')
+    expect = '\t<p><a href="/test/">A link that starts with a space&#8221; raises</a> an exception.</p>'
+    assert result == expect
+
+    result = t.parse('A link that "contains a\nnewline":/test/ raises an exception.')
+    expect = '\t<p>A link that <a href="/test/">contains a\nnewline</a> raises an exception.</p>'
+    assert result == expect
+
 def test_rel_attribute():
     t = Textile(rel='nofollow')
     result = t.parse('"$":http://domain.tld')

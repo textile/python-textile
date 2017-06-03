@@ -1,5 +1,18 @@
 h1. Textile Changelog
 
+h2. Version 2.3.12
+* Bugfix: Don't die on pre blocks with unicode characters. ("#43":https://github.com/textile/python-textile/issues/43)
+* Bugfix: Fix regressions introduced into the code between 2.2.2 and 2.3.11. (Special thanks to "@adam-iris":https://github.com/adam-iris for providing pull request "#44":https://github.com/textile/python-textile/pull/44)
+* Bugfix: Don't just die when processing poorly-formatted textile lists. ("#37":https://github.com/textile/python-textile/issues/37)
+* Add Python 3.6 to testing.
+* Add a "print the version string and exit" argument to the cli tool: @pytextile -v@
+
+h2. Version 2.3.11
+* Bugfix: Don't strip leading dot from image URIs ("#42":https://github.com/textile/python-textile/issues/42)
+
+h2. Version 2.3.10
+* Packaging: cleanup in MANIFEST.IN leads to better linux packaging, and smaller wheel size.
+
 h2. Version 2.3.9
 * Packaging: remove extraneous files from the source distribution upload.
 * Remove a lingering file from a feature branch for overhauling list handling.  This brings coverage back up to 100%

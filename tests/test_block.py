@@ -62,3 +62,10 @@ def test_blockcode_in_README():
     with open('tests/fixtures/README.txt') as f:
         expect = ''.join(f.readlines())
     assert result == expect
+
+def test_blockcode_comment():
+    input = '###.. block comment\nanother line\n\np. New line'
+    expect = '\t<p>New line</p>'
+    t = textile.Textile()
+    result = t.parse(input)
+    assert result == expect

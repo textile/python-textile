@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+
 try:
     from collections import OrderedDict
 except ImportError:
@@ -100,8 +103,6 @@ class Block(object):
             if self.tag == 'bc':
                 i_tag = 'code'
             content = encode_html(self.content)
-            if not self.ext:
-                content = '{0}\n'.format(content)
             self.content = self.textile.shelve(content)
             self.outer_tag = 'pre'
             self.outer_atts = self.attributes

@@ -298,7 +298,6 @@ class Textile(object):
 
     def fTextileList(self, match):
         text = re.split(r'\n(?=[*#;:]+\s)', match.group(), flags=re.M)
-        # import pdb; pdb.set_trace()
         pt = ''
         result = []
         ls = OrderedDict()
@@ -473,7 +472,7 @@ class Textile(object):
             else:
                 # if we're inside an extended block, add the text from the
                 # previous extension to the front
-                if ext:
+                if ext and out:
                     line = '{0}\n\n{1}'.format(out.pop(), line)
                 whitespace = ' \t\n\r\f\v'
                 if ext or not line[0] in whitespace:
@@ -502,7 +501,7 @@ class Textile(object):
                 cite = ''
                 graf = ''
 
-        if ext:
+        if ext and out:
             out.append(generate_tag(block.outer_tag, out.pop(),
                 block.outer_atts))
         return '\n\n'.join(out)
@@ -680,7 +679,10 @@ class Textile(object):
                             balanced = balanced - 1
                         if re.search(r'\S$', possibility, flags=re.U): # pragma: no branch
                             balanced = balanced + 1
-                        possibility = possible_start_quotes.pop()
+                        try:
+                            possibility = possible_start_quotes.pop()
+                        except IndexError:
+                            break
                     else:
                         # If quotes occur next to each other, we get zero
                         # length strings.  eg. ...""Open the door,
@@ -764,9 +766,9 @@ class Textile(object):
             $'''.format(cls_re_s, regex_snippets['space']), inner,
                 flags=re.X | re.U)
 
-        atts = m.group('atts') or ''
-        text = m.group('text') or '' or inner
-        title = m.group('title') or ''
+        atts = (m and m.group('atts')) or ''
+        text = (m and m.group('text')) or inner
+        title = (m and m.group('title')) or ''
 
         pop, tight = '', ''
         counts = { '[': None, ']': url.count(']'), '(': None, ')': None }
@@ -1024,7 +1026,7 @@ class Textile(object):
             \!                  # opening !
             (\<|\=|\>)?         # optional alignment atts
             ({0})               # optional style,class atts
-            (?:\. )?            # optional dot-space
+            (?:\.\s)?           # optional dot-space
             ([^\s(!]+)          # presume this is the src
             \s?                 # optional space
             (?:\(([^\)]+)\))?   # optional title

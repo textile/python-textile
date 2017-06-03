@@ -52,6 +52,7 @@ setup(
         'Programming Language :: Python :: 3.3',
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6',
     ],
     keywords='textile,text,html markup',
     install_requires=['six',],
@@ -66,4 +67,3 @@ setup(
     include_package_data=True,
     zip_safe=False,
 )
-

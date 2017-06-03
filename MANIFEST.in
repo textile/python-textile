@@ -1,13 +1,2 @@
-exclude .gitignore
-exclude TODO.textile
-exclude .travis.yml
-exclude tests/.*
-include CHANGELOG.textile
-include CONTRIBUTORS.txt
-include .coveragerc
-include LICENSE.txt
 include MANIFEST.in
-include pytest.ini
-include README.textile
-include requirements.txt
-recursive_include tests
+include tests/fixtures/README.txt
