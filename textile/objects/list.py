@@ -14,7 +14,7 @@ class List(object):
     def process(self):
         content = '\n\t\t{0}\n\t'.format('\n\t\t'.join(self.items))
         tag = generate_tag(self.type, content, self.attributes)
-        return '\t{0}\n'.format(tag)
+        return '\t{0}'.format(tag)
 
 
 class ListItem(object):
