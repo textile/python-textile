@@ -25,5 +25,7 @@ class ListItem(object):
         self.attributes = attributes
 
     def process(self):
+        if isinstance(self.content, List):
+            return self.content.process()
         tag = generate_tag(self.tag, self.content, self.attributes)
         return '{0}'.format(tag)
