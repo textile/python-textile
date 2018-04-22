@@ -32,10 +32,7 @@ from textile.utils import (decode_high, encode_high, encode_html, generate_tag,
 from textile.objects import Block, List, Table
 
 
-try:
-    from collections import OrderedDict
-except ImportError:
-    from ordereddict import OrderedDict
+from collections import OrderedDict
 
 
 try:
@@ -444,6 +441,12 @@ class Textile(object):
         # the case, we'd want to drop the whitespace which comes after it.
         eat_whitespace = False
 
+        # check to see if previous block has already been escaped
+        escaped = False
+
+        # check if multiline paragraph (p..) tags <p>..</p> are added to line
+        multiline_para = False
+
         tag = 'p'
         atts = cite = ext = ''
 
@@ -469,11 +472,17 @@ class Textile(object):
                 if ext and out:
                     # it's out[-2] because the last element in out is the
                     # whitespace that preceded this line
-                    content = encode_html(out[-2], quotes=True)
-                    content = generate_tag(block.inner_tag, content,
-                            block.inner_atts)
-                    content = generate_tag(block.outer_tag, content,
-                        block.outer_atts)
+                    if not escaped:
+                        content = encode_html(out[-2], quotes=True)
+                        escaped = True
+                    else:
+                        content = out[-2]
+
+                    if not multiline_para:
+                        content = generate_tag(block.inner_tag, content,
+                                block.inner_atts)
+                        content = generate_tag(block.outer_tag, content,
+                            block.outer_atts)
                     out[-2] = content
                 tag, atts, ext, cite, content = match.groups()
                 block = Block(self, **match.groupdict())
@@ -490,11 +499,18 @@ class Textile(object):
                     # pre tags and raw text won't be indented.
                     if block.outer_tag != 'pre' and not has_raw_text(line):
                         line = "\t{0}".format(line)
+
+            # set having paragraph tags to false
+                if block.tag == 'p' and ext:
+                    multiline_para = False
             # no tag specified
             else:
                 # if we're inside an extended block, add the text from the
                 # previous line to the front
                 if ext and out:
+                    if block.tag == 'p':
+                        line = generate_tag(block.tag, line, block.outer_atts)
+                        multiline_para = True
                     line = '{0}{1}'.format(out.pop(), line)
                 # the logic in the if statement below is a bit confusing in
                 # php-textile. I'm still not sure I understand what the php
@@ -514,9 +530,23 @@ class Textile(object):
                                 block.outer_atts)
                         line = "\t{0}".format(line)
                 else:
-                    line = self.graf(line)
+                    if block.tag == 'pre' or block.inner_tag == 'code':
+                        line = self.shelve(encode_html(line, quotes=True))
+                    else:
+                        line = self.graf(line)
 
-            line = self.doPBr(line)
+                    if block.tag == 'p':
+                        escaped = True
+
+            if block.tag == 'p' and ext and not multiline_para:
+                line = generate_tag(block.tag, line, block.outer_atts)
+                multiline_para = True
+            else:
+                line = self.doPBr(line)
+
+            if not block.tag == 'p':
+                multiline_para = False
+
             line = line.replace('<br>', '<br />')
 
             # if we're in an extended block, and we haven't specified a new
@@ -541,8 +571,11 @@ class Textile(object):
 
         # at this point, we've gone through all the lines, and if there's still
         # an extension in effect, we close it here.
-        if ext and out:
-            final = generate_tag(block.outer_tag, out.pop(), block.outer_atts)
+        if ext and out and not block.tag == 'p':
+            block.content = out.pop()
+            block.process()
+            final = generate_tag(block.outer_tag, block.content,
+                                 block.outer_atts)
             out.append(final)
         return ''.join(out)
 
@@ -925,7 +958,7 @@ class Textile(object):
             text = url
             if "://" in text:
                 text = text.split("://")[1]
-            else:
+            elif ":" in text:
                 text = text.split(":")[1]
 
         text = text.strip()
@@ -999,7 +1032,6 @@ class Textile(object):
             path_parts = (quote(unquote(pce), b'') for pce in
                     parsed.path.split('/'))
         path = '/'.join(path_parts)
-        fragment = quote(unquote(parsed.fragment))
 
         # put it back together
         netloc = ''
@@ -1011,7 +1043,7 @@ class Textile(object):
         netloc = '{0}{1}'.format(netloc, host)
         if port:
             netloc = '{0}:{1}'.format(netloc, port)
-        return urlunsplit((scheme, netloc, path, parsed.query, fragment))
+        return urlunsplit((scheme, netloc, path, parsed.query, parsed.fragment))
 
     def span(self, text):
         qtags = (r'\*\*', r'\*', r'\?\?', r'\-', r'__',
@@ -1190,6 +1222,8 @@ class Textile(object):
             # parse the attributes and content
             m = re.match(r'^[-]+({0})[ .](.*)$'.format(cls_re_s), line,
                     flags=re.M | re.S)
+            if not m:
+                continue
 
             atts, content = m.groups()
             # cleanup

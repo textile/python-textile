@@ -3,9 +3,7 @@ env:
   - REQUIREMENTS=true
   - REQUIREMENTS=false
 python:
-  - "2.6"
   - "2.7"
-  - "3.2"
   - "3.3"
   - "3.4"
   - "3.5"
@@ -14,7 +12,6 @@ python:
 # command to install dependencies
 install:
   - if [[ $REQUIREMENTS == true ]] ; then pip install -r requirements.txt ; fi
-  - if [[ $TRAVIS_PYTHON_VERSION == '3.2' ]] ; then pip install coverage==3.7.1; fi
   - pip install coveralls pytest pytest-cov coverage codecov
   - pip install -e .
   - if [[ ! $TRAVIS_PYTHON_VERSION == 'pypy-5.4' ]] ; then pip install regex; fi

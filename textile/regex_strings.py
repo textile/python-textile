@@ -19,7 +19,6 @@ try:
         'char': r'(?:[^\p{Zs}\v])',
         }
 except ImportError:
-    import re
     from sys import maxunicode
     upper_re_s = "".join(
             [six.unichr(c) for c in six.moves.range(maxunicode) if six.unichr(

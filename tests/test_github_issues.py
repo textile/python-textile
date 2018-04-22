@@ -86,6 +86,11 @@ def test_github_issue_30():
     expect = '\t<p><a href="http://lala.com" title="Tëxtíle">Tëxtíle</a></p>'
     assert result == expect
 
+    text ='!http://lala.com/lol.gif(♡ imáges)!'
+    result = textile.textile(text)
+    expect = '\t<p><img alt="♡ imáges" src="http://lala.com/lol.gif" title="♡ imáges" /></p>'
+    assert result == expect
+
 def test_github_issue_36():
     text = '"Chögyam Trungpa":https://www.google.com/search?q=Chögyam+Trungpa'
     result = textile.textile(text)
@@ -162,4 +167,238 @@ another
 word
 
 yet anothe word</pre>'''
+    assert result == expect
+
+def test_github_issue_49():
+    """Key error on russian hash-route link"""
+    s = '"link":https://ru.vuejs.org/v2/guide/components.html#Входные-параметры'
+    result = textile.textile(s)
+    expect = '\t<p><a href="https://ru.vuejs.org/v2/guide/components.html#Входные-параметры">link</a></p>'
+    assert result == expect
+
+def test_github_issue_50():
+    """Incorrect wrap code with Java generics in pre"""
+    test = ('pre.. public class Tynopet<T extends Framework> {}\n\nfinal '
+            'List<List<String>> multipleList = new ArrayList<>();')
+    result = textile.textile(test)
+    expect = ('<pre>public class Tynopet&lt;T extends Framework&gt; {}\n\n'
+              'final List&lt;List&lt;String&gt;&gt; multipleList = new '
+              'ArrayList&lt;&gt;();</pre>')
+    assert result == expect
+
+def test_github_issue_51():
+    """Link build with $ sign without "http" prefix broken."""
+    test = '"$":www.google.com.br'
+    result = textile.textile(test)
+    expect = '\t<p><a href="www.google.com.br">www.google.com.br</a></p>'
+    assert result == expect
+
+def test_github_issue_52():
+    """Table build without space after aligment raise a AttributeError."""
+    test = '|=.First Header |=. Second Header |'
+    result = textile.textile(test)
+    expect = ('\t<table>\n\t\t<tr>\n\t\t\t<td>=.First Header '
+              '</td>\n\t\t\t<td style="text-align:center;">Second Header </td>'
+              '\n\t\t</tr>\n\t</table>')
+    assert result == expect
+
+def test_github_issue_55():
+    """Incorrect handling of quote entities in extended pre block"""
+    test = ('pre.. this is the first line\n\nbut "quotes" in an extended pre '
+            'block need to be handled properly.')
+    result = textile.textile(test)
+    expect = ('<pre>this is the first line\n\nbut &quot;quotes&quot; in an '
+              'extended pre block need to be handled properly.</pre>')
+    assert result == expect
+
+    # supplied input
+    test = ('pre.. import org.slf4j.Logger;\nimport org.slf4j.LoggerFactory;'
+            '\nimport ru.onyma.job.Context;\nimport ru.onyma.job.'
+            'RescheduleTask;\n\nimport java.util.concurrent.'
+            'ScheduledExecutorService;\nimport java.util.concurrent.TimeUnit;'
+            '\n\n/**\n* @author ustits\n*/\npublic abstract class '
+            'MainService<T> extends RescheduleTask implements Context<T> {\n\n'
+            'private static final Logger log = LoggerFactory.getLogger('
+            'MainService.class);\nprivate final ScheduledExecutorService '
+            'scheduler;\n\nprivate boolean isFirstRun = true;\nprivate T '
+            'configs;\n\npublic MainService(final ScheduledExecutorService '
+            'scheduler) {\nsuper(scheduler);\nthis.scheduler = scheduler;\n}\n'
+            '\n@Override\npublic void setConfig(final T configs) {\nthis.'
+            'configs = configs;\nif (isFirstRun) {\nscheduler.schedule(this, '
+            '0, TimeUnit.SECONDS);\nisFirstRun = false;\n}\n}\n\n@Override\n'
+            'public void stop() {\nsuper.stop();\nscheduler.shutdown();\ntry {'
+            '\nscheduler.awaitTermination(Long.MAX_VALUE, TimeUnit.DAYS);\n} '
+            'catch (InterruptedException ie) {\nlog.warn("Unable to wait for '
+            'syncs termination", ie);\nThread.currentThread().interrupt();\n}'
+            '\n}\n\nprotected final T getConfigs() {\nreturn configs;\n}\n}')
+    result = textile.textile(test)
+    expect = ('<pre>import org.slf4j.Logger;\nimport org.slf4j.LoggerFactory;'
+              '\nimport ru.onyma.job.Context;\nimport ru.onyma.job.'
+              'RescheduleTask;\n\nimport java.util.concurrent.'
+              'ScheduledExecutorService;\nimport java.util.concurrent.'
+              'TimeUnit;\n\n/**\n* @author ustits\n*/\npublic abstract class '
+              'MainService&lt;T&gt; extends RescheduleTask implements '
+              'Context&lt;T&gt; {\n\nprivate static final Logger log = '
+              'LoggerFactory.getLogger(MainService.class);\nprivate final '
+              'ScheduledExecutorService scheduler;\n\nprivate boolean '
+              'isFirstRun = true;\nprivate T configs;\n\npublic MainService('
+              'final ScheduledExecutorService scheduler) {\nsuper(scheduler);'
+              '\nthis.scheduler = scheduler;\n}\n\n@Override\npublic void '
+              'setConfig(final T configs) {\nthis.configs = configs;\nif ('
+              'isFirstRun) {\nscheduler.schedule(this, 0, TimeUnit.SECONDS);'
+              '\nisFirstRun = false;\n}\n}\n\n@Override\npublic void stop() {'
+              '\nsuper.stop();\nscheduler.shutdown();\ntry {\nscheduler.'
+              'awaitTermination(Long.MAX_VALUE, TimeUnit.DAYS);\n} catch '
+              '(InterruptedException ie) {\nlog.warn(&quot;Unable to wait '
+              'for syncs termination&quot;, ie);\nThread.currentThread().'
+              'interrupt();\n}\n}\n\nprotected final T getConfigs() {\n'
+              'return configs;\n}\n}</pre>')
+    assert result == expect
+
+def test_github_issue_56():
+    """Empty description lists throw error"""
+    result = textile.textile("- :=\n-")
+    expect = '<dl>\n</dl>'
+    assert result == expect
+
+def test_github_pull_61():
+    """Fixed code block multiline encoding on quotes/span"""
+    test = '''bc.. This is some TEXT inside a "Code BLOCK"
+
+{
+  if (JSON) {
+
+    return {"JSON":"value"}
+  }
+}
+
+Back to 10-4 CAPS 
+
+p.. Some multiline Paragragh
+
+Here is some output!!! "Some" CAPS'''
+
+    expect = '''<pre><code>This is some TEXT inside a &quot;Code BLOCK&quot;
+
+{
+  if (JSON) {
+
+    return {&quot;JSON&quot;:&quot;value&quot;}
+  }
+}
+
+Back to 10-4 CAPS </code></pre>
+
+<p>Some multiline Paragragh</p>
+
+<p>Here is some output!!! &#8220;Some&#8221; <span class="caps">CAPS</span></p>'''
+    t = textile.Textile()
+    result = t.parse(test)
+    assert result == expect
+
+def test_github_pull_62():
+    """Fix for paragraph multiline, only last paragraph is rendered
+    correctly"""
+    test = '''p.. First one 'is'
+
+ESCAPED "bad"
+
+p.. Second one 'is'
+
+
+
+ESCAPED "bad"
+
+p.. Third one 'is'
+
+ESCAPED "bad"
+
+p.. Last one 'is'
+
+ESCAPED "good" test'''
+
+    expect = '''<p>First one &#8216;is&#8217;</p>
+
+<p><span class="caps">ESCAPED</span> &#8220;bad&#8221;</p>
+
+<p>Second one &#8216;is&#8217;</p>
+
+
+
+<p><span class="caps">ESCAPED</span> &#8220;bad&#8221;</p>
+
+<p>Third one &#8216;is&#8217;</p>
+
+<p><span class="caps">ESCAPED</span> &#8220;bad&#8221;</p>
+
+<p>Last one &#8216;is&#8217;</p>
+
+<p><span class="caps">ESCAPED</span> &#8220;good&#8221; test</p>'''
+    t = textile.Textile()
+    result = t.parse(test)
+    assert result == expect
+
+def test_github_pull_63():
+    """Forgot to set multiline_para to False"""
+    test = '''p.. First one 'is'
+
+ESCAPED "bad"
+
+bc.. {
+ First code BLOCK
+
+ {"JSON":'value'}
+}
+
+p.. Second one 'is'
+
+
+
+ESCAPED "bad"
+
+p.. Third one 'is'
+
+ESCAPED "bad"
+
+bc.. {
+ Last code BLOCK
+
+ {"JSON":'value'}
+}
+
+p.. Last one 'is'
+
+ESCAPED "good" test'''
+
+    expect = '''<p>First one &#8216;is&#8217;</p>
+
+<p><span class="caps">ESCAPED</span> &#8220;bad&#8221;</p>
+
+<pre><code>{
+ First code BLOCK
+
+ {&quot;JSON&quot;:&#39;value&#39;}
+}</code></pre>
+
+<p>Second one &#8216;is&#8217;</p>
+
+
+
+<p><span class="caps">ESCAPED</span> &#8220;bad&#8221;</p>
+
+<p>Third one &#8216;is&#8217;</p>
+
+<p><span class="caps">ESCAPED</span> &#8220;bad&#8221;</p>
+
+<pre><code>{
+ Last code BLOCK
+
+ {&quot;JSON&quot;:&#39;value&#39;}
+}</code></pre>
+
+<p>Last one &#8216;is&#8217;</p>
+
+<p><span class="caps">ESCAPED</span> &#8220;good&#8221; test</p>'''
+    t = textile.Textile()
+    result = t.parse(test)
     assert result == expect

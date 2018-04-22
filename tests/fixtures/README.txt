@@ -42,5 +42,5 @@
 	<h3>Notes:</h3>
 
 	<ul>
-		<li>Active development supports Python 2.6 or later (including Python 3.2+).</li>
+		<li>Active development supports Python 2.7 or later (including Python 3.3+).</li>
 	</ul>

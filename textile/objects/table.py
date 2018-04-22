@@ -38,15 +38,17 @@ class Table(object):
             # as a normal center-aligned cell.
             if i == 0 and row[:2] == '|=':
                 captionpattern = (r"^\|\=(?P<capts>{s}{a}{c})\. "
-                        r"(?P<cap>[^\n]*)(?P<row>.*)".format(**{'s':
-                            table_span_re_s, 'a': align_re_s, 'c': cls_re_s}))
+                                  r"(?P<cap>[^\n]*)(?P<row>.*)".format(**{
+                                      's': table_span_re_s, 'a': align_re_s,
+                                      'c': cls_re_s}))
                 caption_re = re.compile(captionpattern, re.S)
                 cmtch = caption_re.match(row)
-                caption = Caption(**cmtch.groupdict())
-                self.caption = '\n{0}'.format(caption.caption)
-                row = cmtch.group('row').lstrip()
-                if row == '':
-                    continue
+                if cmtch:
+                    caption = Caption(**cmtch.groupdict())
+                    self.caption = '\n{0}'.format(caption.caption)
+                    row = cmtch.group('row').lstrip()
+                    if row == '':
+                        continue
 
             # Colgroup -- A colgroup row will not necessarily end with a |.
             # Hence it may include the next row of actual table data.

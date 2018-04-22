@@ -39,4 +39,4 @@ bc.. import textile
 
 h3. Notes:
 
-* Active development supports Python 2.6 or later (including Python 3.2+).
+* Active development supports Python 2.7 or later (including Python 3.3+).

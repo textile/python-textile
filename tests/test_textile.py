@@ -67,22 +67,18 @@ def test_autolinking():
 def test_sanitize():
     test = "a paragraph of benign text"
     result = "\t<p>a paragraph of benign text</p>"
-    try:
-        expect = textile.Textile().parse(test, sanitize=True)
-        assert result == expect
+    expect = textile.Textile().parse(test, sanitize=True)
+    assert result == expect
 
-        test = """<p style="width: expression(alert('evil'));">a paragraph of evil text</p>"""
-        result = '<p style="">a paragraph of evil text</p>'
-        expect = textile.Textile().parse(test, sanitize=True)
-        assert result == expect
+    test = """<p style="width: expression(alert('evil'));">a paragraph of evil text</p>"""
+    result = '<p style="">a paragraph of evil text</p>'
+    expect = textile.Textile().parse(test, sanitize=True)
+    assert result == expect
 
-        test = """<p>a paragraph of benign text<br />and more text</p>"""
-        result = '<p>a paragraph of benign text<br />\nand more text</p>'
-        expect = textile.Textile(html_type='html5').parse(test, sanitize=True)
-        assert result == expect
-    except Exception as e:
-        message = '{0}'.format(e)
-        assert "html5lib not available" in message
+    test = """<p>a paragraph of benign text<br />and more text</p>"""
+    result = '<p>a paragraph of benign text<br />\nand more text</p>'
+    expect = textile.Textile(html_type='html5').parse(test, sanitize=True)
+    assert result == expect
 
 def test_imagesize():
     PIL = pytest.importorskip('PIL')

@@ -1,5 +1,31 @@
 h1. Textile Changelog
 
+h2. Version 3.0.3
+* BUGFIX: Improve handling code block following extended p block ("#63":https://github.com/textile/python-textile/pull/63)
+
+h2. Version 3.0.2
+* BUGFIX: Fix for multiple multi-line paragraphs. ("#62":https://github.com/textile/python-textile/pull/62)
+
+h2. Version 3.0.1
+* BUGFIX: Fix improper handling of extended code blocks. ("#61":https://github.com/textile/python-textile/pull/61)
+
+h2. Version 3.0.0
+* Drop support for Python 2.6 and 3.2.
+* Update to the current version of html5lib
+* Bugfixes:
+** Fix handling of HTML entities in extended pre blocks. ("#55":https://github.com/textile/python-textile/issues/55)
+** Empty definitions in definition lists raised an exception ("#56":https://github.com/textile/python-textile/issues/56)
+** Fix handling of unicode in img attributes ("#58":https://github.com/textile/python-textile/issues/58)
+
+h2. Version 2.3.16
+* Bugfixes:
+** Fix processing of extended code blocks ("#50":https://github.com/textile/python-textile/issues/50)
+** Don't break when links fail to include "http:" ("#51":https://github.com/textile/python-textile/issues/51)
+** Better handling of poorly-formatted tables ("#52":https://github.com/textile/python-textile/issues/52)
+
+h2. Version 2.3.15
+* Bugfix: Don't break on unicode characters in the fragment of a url.
+
 h2. Version 2.3.14
 * Bugfix: Fix textile on Python 2.6 ("#48":https://github.com/textile/python-textile/issues/48)
 
