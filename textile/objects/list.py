@@ -7,8 +7,15 @@ class List(object):
         self.attributes = attributes
         self.items = []
 
-    def add_item(self, tag, content, attributes={}):
+    def add_item(self, tag, content, attributes={}, sublist=False):
         item = ListItem(tag, content, attributes)
+        if sublist:
+            # if we are nesting lists, pop off the content of the most-recently
+            # processed list, strip off the html tags for it, and tack the
+            # current item content onto the end of that.
+            prev = self.items.pop()
+            prev_content = prev.split('>')[1].rsplit('<')[0]
+            item.content = '{0}\n\t{1}'.format(prev_content, item.content.process())
         self.items.append(item.process())
 
     def process(self):
