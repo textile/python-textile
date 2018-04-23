@@ -375,10 +375,11 @@ class Textile(object):
                 else:
                     itemtag = ("\n{0}\t<{1}>{2}".format(tabs, litem, content) if
                                showitem else '')
-                    _sublist = List(litem, attributes)
+                    _sublist = List('{0}l'.format(ltype), attributes)
                     line = "<{0}l{1}{2}>{3}".format(ltype, atts, start, itemtag)
                     _sublist.add_item(litem, content)
-                    line = _sublist.process()
+                    _list.add_item(litem, _sublist, sublist=True)
+                    # line = _sublist.process()
             else:
                 line = ("\t<{0}{1}>{2}".format(litem, atts, content) if
                         showitem else '')
