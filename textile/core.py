@@ -382,7 +382,7 @@ class Textile(object):
                     _sublist = List('{0}l'.format(ltype), attributes)
                     line = "<{0}l{1}{2}>{3}".format(ltype, atts, start, itemtag)
                     _sublist.add_item(litem, content)
-                    _list.add_item(litem, _sublist, sublist=True)
+                    _list.add_item(litem, _sublist)
                     # line = _sublist.process()
             else:
                 line = ("\t<{0}{1}>{2}".format(litem, atts, content) if
