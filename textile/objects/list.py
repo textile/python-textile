@@ -8,7 +8,7 @@ class List(object):
         self.indent_level = indent_level
         self.items = []
 
-    def add_item(self, tag, content, attributes={}, sublist=False):
+    def add_item(self, tag, content, attributes={}):
         item = ListItem(tag, content, attributes)
         if type(content) is List:
             # if we are nesting lists, pop off the content of the most-recently
