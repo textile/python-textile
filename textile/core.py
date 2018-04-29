@@ -308,10 +308,10 @@ class Textile(object):
             content = content.strip()
             if '\n' in content:
                 content = content.replace('\n', '<br />\n')
-            nl = ''
+            # nl = ''
             ltype = list_type(tl)
             if i == 0:
-                _list = List('{0}l'.format(ltype), attributes)
+                _list = List('{0}l'.format(ltype), attributes, len(tl))
             tl_tags = {';': 'dt', ':': 'dd'}
             litem = tl_tags.get(tl[0], 'li')
 
