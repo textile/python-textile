@@ -374,9 +374,9 @@ class Textile(object):
             # item, else just create the item
             if tl not in ls:
                 ls[tl] = 1
-                if i == 0:
+                if i == 0 and showitem:
                     _list.add_item(litem, content)
-                else:
+                elif showitem:
                     # itemtag = ("\n{0}\t<{1}>{2}".format(tabs, litem, content) if
                                # showitem else '')
                     _sublist = List('{0}l'.format(ltype), attributes)
