@@ -308,10 +308,10 @@ class Textile(object):
             content = content.strip()
             if '\n' in content:
                 content = content.replace('\n', '<br />\n')
-            nl = ''
+            # nl = ''
             ltype = list_type(tl)
             if i == 0:
-                _list = List('{0}l'.format(ltype), attributes)
+                _list = List('{0}l'.format(ltype), attributes, len(tl))
             tl_tags = {';': 'dt', ':': 'dd'}
             litem = tl_tags.get(tl[0], 'li')
 
@@ -350,10 +350,9 @@ class Textile(object):
                     except KeyError:
                         self.olstarts[tl] = 1
 
-            nm = re.match(r"^(?P<nextlistitem>[#\*;:]+)(_|[\d]+)?{0}"
-                          r"[ .].*".format(cls_re_s), nextline)
-            if nm:
-                nl = nm.group('nextlistitem')
+            # nm = re.match("^(?P<nextlistitem>[#\*;:]+)(_|[\d]+)?{0}" "[
+            # .].*".format(cls_re_s), nextline) if nm: nl
+            # = nm.group('nextlistitem')
 
             # We need to handle nested definition lists differently.  If
             # the next tag is a dt (';') of a lower nested level than the
@@ -361,10 +360,8 @@ class Textile(object):
             if ';' in pt and ':' in tl:
                 ls[tl] = 2
 
-            atts = pba(atts, restricted=self.restricted)
-            tabs = '\t' * len(tl)
-            # If start is still None, set it to '', else leave the value that
-            # we've already formatted.
+            # atts = pba(atts) tabs = '\t' * len(tl) If start is still None,
+            # set it to '', else leave the value that we've already formatted.
             start = start or ''
             # if this item tag isn't in the list, create a new list and
             # item, else just create the item
@@ -373,33 +370,41 @@ class Textile(object):
                 if i == 0:
                     _list.add_item(litem, content)
                 else:
-                    itemtag = ("\n{0}\t<{1}>{2}".format(tabs, litem, content) if
-                               showitem else '')
+                    # itemtag = ("\n{0}\t<{1}>{2}".format(tabs, litem, content) if
+                               # showitem else '')
                     _sublist = List('{0}l'.format(ltype), attributes)
-                    line = "<{0}l{1}{2}>{3}".format(ltype, atts, start, itemtag)
-                    _sublist.add_item(litem, content)
+                    # line = "<{0}l{1}{2}>{3}".format(ltype, atts, start, itemtag)
+                    _sublist.add_item(litem, content, attributes)
                     _list.add_item(litem, _sublist)
                     # line = _sublist.process()
             else:
-                line = ("\t<{0}{1}>{2}".format(litem, atts, content) if
-                        showitem else '')
+                # line = ("\t<{0}{1}>{2}".format(litem, atts, content) if
+                        # showitem else '')
                 _list.add_item(litem, content, attributes)
-            line = '{0}{1}'.format(tabs, line)
-            if len(nl) <= len(tl):
-                if showitem:
-                    line = "{0}</{1}>".format(line, litem)
+            # line = '{0}{1}'.format(tabs, line)
+
+            # if len(nl) <= len(tl):
+            #     if showitem:
+            #         line = "{0}</{1}>".format(line, litem)
             # work backward through the list closing nested lists/items
-            for k, v in reversed(list(ls.items())):
-                if len(k) > len(nl):
-                    if v != 2:
-                        line = "{0}\n{1}</{2}l>".format(
-                            line, tabs, list_type(k))
-                    if len(k) > 1 and v != 2:
-                        line = "{0}</{1}>".format(line, litem)
-                    del ls[k]
-            # Remember the current Textile tag:
+            # for k, v in reversed(list(ls.items())):
+            #     if len(k) > len(nl):
+            #         if v != 2:
+            #             line = "{0}\n{1}</{2}l>".format(line, tabs,
+            #                     list_type(k))
+            #         if len(k) > 1 and v != 2:
+            #             line = "{0}</{1}>".format(line, litem)
+            #         del ls[k]
+
+            # Remember the current Textile tag
             pt = tl
-            result.append(line)
+
+            # This else exists in the original php version.  I'm not sure how
+            # to come up with a case where the line would not match.  I think
+            # it may have been necessary due to the way php returns matches.
+            #else:
+                #line = "{0}\n".format(line)
+            # result.append(line)
         return self.doTagBr(litem, _list.process())
 
     def doTagBr(self, tag, input):
