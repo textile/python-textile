@@ -16,7 +16,7 @@ install:
   - if [[ $REQUIREMENTS == true ]] ; then pip install -r requirements.txt ; fi
   - pip install -U coveralls pytest pytest-cov coverage codecov
   - pip install -e .
-  - if [[ ! $TRAVIS_PYTHON_VERSION == 'pypy-5.4' ]] ; then pip install regex; fi
+  - if [[ ! $TRAVIS_PYTHON_VERSION == 'pypy3.5' ]] ; then pip install regex; fi
 # command to run tests
 script: py.test
 after_success:
