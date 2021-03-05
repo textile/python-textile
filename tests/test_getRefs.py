@@ -9,3 +9,13 @@ def test_getRefs():
     result = t.urlrefs
     expect = {'Google': 'http://www.google.com'}
     assert result == expect
+
+    t2 = Textile()
+
+    result = t2.getRefs("my ftp [ftp]ftp://example.com")
+    expect = 'my ftp '
+    assert result == expect
+
+    result = t2.urlrefs
+    expect = {'ftp': 'ftp://example.com'}
+    assert result == expect

@@ -612,8 +612,14 @@ class Textile(object):
 
     def getRefs(self, text):
         """Capture and store URL references in self.urlrefs."""
-        pattern = re.compile(r'(?:(?<=^)|(?<=\s))\[(.+)\]((?:http(?:s?):\/\/|\/)\S+)(?=\s|$)',
-                             re.U)
+        all_schemes = '|'.join([
+            '(?:{0})'.format(scheme)
+            for scheme in self.url_schemes
+        ])
+        pattern = re.compile(
+            r'(?:(?<=^)|(?<=\s))\[(.+)\]((?:{0}:\/\/|\/)\S+)(?=\s|$)'.format(all_schemes),
+            re.U
+        )
         text = pattern.sub(self.refs, text)
         return text
 
