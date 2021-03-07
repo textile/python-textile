@@ -212,6 +212,15 @@ class Textile(object):
         else:
             self.url_schemes = self.unrestricted_url_schemes
 
+        all_schemes_re_s = '|'.join([
+            '(?:{0})'.format(scheme)
+            for scheme in self.url_schemes
+        ])
+        self.url_ref_regex = re.compile(
+            r'(?:(?<=^)|(?<=\s))\[(.+)\]\s?((?:{0}:\/\/|\/)\S+)(?=\s|$)'.format(all_schemes_re_s),
+            re.U
+        )
+
     def parse(self, text, rel=None, sanitize=False):
         """Parse the input text as textile and return html output."""
         self.notes = OrderedDict()
@@ -612,16 +621,7 @@ class Textile(object):
 
     def getRefs(self, text):
         """Capture and store URL references in self.urlrefs."""
-        all_schemes = '|'.join([
-            '(?:{0})'.format(scheme)
-            for scheme in self.url_schemes
-        ])
-        pattern = re.compile(
-            r'(?:(?<=^)|(?<=\s))\[(.+)\]((?:{0}:\/\/|\/)\S+)(?=\s|$)'.format(all_schemes),
-            re.U
-        )
-        text = pattern.sub(self.refs, text)
-        return text
+        return self.url_ref_regex.sub(self.refs, text)
 
     def refs(self, match):
         flag, url = match.groups()
