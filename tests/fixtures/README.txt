@@ -1,4 +1,4 @@
-	<p><a href="https://travis-ci.org/textile/python-textile"><img alt="" src="https://travis-ci.org/textile/python-textile.svg" /></a> <a href="https://coveralls.io/github/textile/python-textile?branch=master"><img alt="" src="https://coveralls.io/repos/github/textile/python-textile/badge.svg" /></a> <a href="https://codecov.io/github/textile/python-textile"><img alt="" src="https://codecov.io/github/textile/python-textile/coverage.svg" /></a> <img alt="" src="https://img.shields.io/pypi/pyversions/textile" /> <img alt="" src="https://img.shields.io/pypi/wheel/textile" /></p>
+	<p><a href="https://travis-ci.org/textile/python-textile"><img alt="" src="https://travis-ci.org/textile/python-textile.svg" /></a> <a href="https://codecov.io/github/textile/python-textile"><img alt="" src="https://codecov.io/github/textile/python-textile/coverage.svg" /></a> <img alt="" src="https://img.shields.io/pypi/pyversions/textile" /> <img alt="" src="https://img.shields.io/pypi/wheel/textile" /></p>
 
 	<h1>python-textile</h1>
 
