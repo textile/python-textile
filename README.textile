@@ -43,3 +43,15 @@ bc.. import textile
 h3. Notes:
 
 * Active development supports Python 3.5 or later.
+
+h3. Running Tests
+
+To run the test suite, use pytest. `pytest-cov` is required as well.
+
+When textile is installed locally:
+
+bc.. pytest
+
+When textile is not installed locally:
+
+bc.. PYTHONPATH=. pytest
