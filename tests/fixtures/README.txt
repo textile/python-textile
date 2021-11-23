@@ -49,3 +49,15 @@
 	<ul>
 		<li>Active development supports Python 3.5 or later.</li>
 	</ul>
+
+	<h3>Running Tests</h3>
+
+	<p>To run the test suite, use pytest. `pytest-cov` is required as well.</p>
+
+	<p>When textile is installed locally:</p>
+
+<pre><code>pytest
+
+When textile is not installed locally:</code></pre>
+
+<pre>PYTHONPATH=. pytest</pre>
