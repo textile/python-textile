@@ -1,5 +1,11 @@
 h1. Textile Changelog
 
+h2. Version 4.0.2
+* Bugfixes:
+** Support non-http schemas in url refs ("#75":https://github.com/textile/python-textile/pull/75)
+** pytest-runner is deprecated ("#77":https://github.com/textile/python-textile/issues/77)
+*** other changes related to CI infrastructure
+
 h2. Version 4.0.1
 * Bugfixes:
 ** SyntaxWarnings with Python 3.8 i("#71":https://github.com/textile/python-textile/issues/71)
