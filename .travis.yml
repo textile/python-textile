@@ -8,16 +8,16 @@ python:
   - "3.6"
   - "3.7"
   - "3.8"
+  - "3.9"
   # PyPy versions
   - "pypy3"
 # command to install dependencies
 install:
   - imagesize=''
-  - pip install -U coveralls pytest pytest-cov coverage codecov
+  - pip install -U pytest pytest-cov coverage codecov
   - if [[ $IMAGESIZE == true ]] ; then imagesize='[imagesize]' ; fi
   - pip install -e ".${imagesize}"
 # command to run tests
 script: py.test
 after_success:
-  - coveralls
   - codecov
