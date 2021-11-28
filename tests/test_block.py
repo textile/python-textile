@@ -21,7 +21,6 @@ def test_block():
     assert result == expect
 
     b = Block(t, "bq", "", None, "http://google.com", "Hello BlockQuote")
-    citation = '{0}1:url'.format(t.uid)
     expect = ('blockquote', OrderedDict([('cite',
         '{0.uid}{0.refIndex}:url'.format(t))]), 'p', OrderedDict(),
         'Hello BlockQuote')
