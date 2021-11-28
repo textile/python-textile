@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 from textile import Textile
-import re
 
 def test_urls():
     t = Textile()
