@@ -1384,7 +1384,7 @@ class Textile(object):
 
     def makeBackrefLink(self, info, g_links, i):
         """Given the pieces of a back reference link, create an <a> tag."""
-        atts, content, infoid, link = '', '', '', ''
+        link = ''
         if 'def' in info:
             link = info['def']['link']
         backlink_type = link or g_links
