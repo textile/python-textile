@@ -1,6 +1,6 @@
 from __future__ import unicode_literals
 
-from .core import textile, textile_restricted, Textile # noqa: F401
+from .core import textile, textile_restricted, Textile  # noqa: F401
 from .version import VERSION
 
 __all__ = ['textile', 'textile_restricted']
