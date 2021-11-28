@@ -21,7 +21,7 @@ jobs:
         run: |
           imagesize='' 
           pip install -U pytest pytest-cov coverage codecov
-          if [[ ${{ image-size }} == true ]] ; then imagesize='[imagesize]' ; fi
+          if [[ ${{ matrix.image-size }} == true ]] ; then imagesize='[imagesize]' ; fi
           pip install -e ".${imagesize}"
       - name: run tests
         run: |
