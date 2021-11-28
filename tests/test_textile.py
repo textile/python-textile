@@ -121,7 +121,7 @@ def test_sanitize():
     assert result == expect
 
 def test_imagesize():
-    PIL = pytest.importorskip('PIL')
+    PIL = pytest.importorskip('PIL') # noqa: F841
 
     test = "!http://www.google.com/intl/en_ALL/images/srpr/logo1w.png!"
     result = '\t<p><img alt="" height="95" src="http://www.google.com/intl/en_ALL/images/srpr/logo1w.png" width="275" /></p>'
