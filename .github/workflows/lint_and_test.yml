@@ -21,9 +21,10 @@ jobs:
       #  uses: py-actions/flake8@v1.2.0
       - name: Install dependencies
         run: |
-          imagesize='' 
+          imagesize=''
+          IMAGESIZE=${{ matrix.image-size }}
           pip install -U pytest pytest-cov coverage codecov
-          if [[ ${{ matrix.image-size }} == true ]] ; then imagesize='[imagesize]' ; fi
+          if [[ $IMAGESIZE == true ]] ; then imagesize='[imagesize]' ; fi
           pip install -e ".${imagesize}"
       - name: run tests
         run: |
