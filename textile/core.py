@@ -160,26 +160,26 @@ class Textile(object):
     doctype_whitelist = ['xhtml', 'html5']
 
     glyph_definitions = {
-        'quote_single_open':  '&#8216;',
-        'quote_single_close': '&#8217;',
-        'quote_double_open':  '&#8220;',
-        'quote_double_close': '&#8221;',
-        'apostrophe':         '&#8217;',
-        'prime':              '&#8242;',
-        'prime_double':       '&#8243;',
-        'ellipsis':           '&#8230;',
-        'ampersand':          '&amp;',
-        'emdash':             '&#8212;',
-        'endash':             '&#8211;',
-        'dimension':          '&#215;',
-        'trademark':          '&#8482;',
-        'registered':         '&#174;',
-        'copyright':          '&#169;',
-        'half':               '&#189;',
-        'quarter':            '&#188;',
-        'threequarters':      '&#190;',
-        'degrees':            '&#176;',
-        'plusminus':          '&#177;',
+        'quote_single_open':  '&#8216;',  # noqa: E241
+        'quote_single_close': '&#8217;',  # noqa: E241
+        'quote_double_open':  '&#8220;',  # noqa: E241
+        'quote_double_close': '&#8221;',  # noqa: E241
+        'apostrophe':         '&#8217;',  # noqa: E241
+        'prime':              '&#8242;',  # noqa: E241
+        'prime_double':       '&#8243;',  # noqa: E241
+        'ellipsis':           '&#8230;',  # noqa: E241
+        'ampersand':          '&amp;',    # noqa: E241
+        'emdash':             '&#8212;',  # noqa: E241
+        'endash':             '&#8211;',  # noqa: E241
+        'dimension':          '&#215;',   # noqa: E241
+        'trademark':          '&#8482;',  # noqa: E241
+        'registered':         '&#174;',   # noqa: E241
+        'copyright':          '&#169;',   # noqa: E241
+        'half':               '&#189;',   # noqa: E241
+        'quarter':            '&#188;',   # noqa: E241
+        'threequarters':      '&#190;',   # noqa: E241
+        'degrees':            '&#176;',   # noqa: E241
+        'plusminus':          '&#177;',   # noqa: E241
     }
 
     spanWrappers = (
@@ -210,7 +210,7 @@ class Textile(object):
         self.block_tags = block_tags
 
         cur = r''
-        if regex_snippets['cur']: # pragma: no branch
+        if regex_snippets['cur']:  # pragma: no branch
             cur = r'(?:[{0}]{1}*)?'.format(regex_snippets['cur'],
                                            regex_snippets['space'])
 
@@ -752,7 +752,7 @@ class Textile(object):
                 linkparts = []
                 i = 0
 
-                while balanced != 0 or i == 0: # pragma: no branch
+                while balanced != 0 or i == 0:  # pragma: no branch
                     # Starting at the end, pop off the previous part of the
                     # slice's fragments.
 
@@ -761,9 +761,9 @@ class Textile(object):
 
                     if len(possibility) > 0:
                         # did this part inc or dec the balanced count?
-                        if re.search(r'^\S|=$', possibility, flags=re.U): # pragma: no branch
+                        if re.search(r'^\S|=$', possibility, flags=re.U):  # pragma: no branch
                             balanced = balanced - 1
-                        if re.search(r'\S$', possibility, flags=re.U): # pragma: no branch
+                        if re.search(r'\S$', possibility, flags=re.U):  # pragma: no branch
                             balanced = balanced + 1
                         try:
                             possibility = possible_start_quotes.pop()
@@ -783,7 +783,7 @@ class Textile(object):
 
                         try:
                             possibility = possible_start_quotes.pop()
-                        except IndexError: # pragma: no cover
+                        except IndexError:  # pragma: no cover
                             # If out of possible starting segments we back the
                             # last one from the linkparts array
                             linkparts.pop()
@@ -792,7 +792,7 @@ class Textile(object):
                         # we have a closing ".
                         if (possibility == '' or possibility.endswith(' ')):
                             # force search exit
-                            balanced = 0;
+                            balanced = 0
 
                     if balanced <= 0:
                         possible_start_quotes.append(possibility)
@@ -857,7 +857,7 @@ class Textile(object):
         title = (m and m.group('title')) or ''
 
         pop, tight = '', ''
-        counts = { '[': None, ']': url.count(']'), '(': None, ')': None }
+        counts = {'[': None, ']': url.count(']'), '(': None, ')': None}
 
         # Look for footnotes or other square-bracket delimited stuff at the end
         # of the url...
@@ -924,13 +924,13 @@ class Textile(object):
                 # it
                 popped = True
                 url_chars.pop()
-                counts[']'] = counts[']'] - 1;
-                if first: # pragma: no branch
+                counts[']'] = counts[']'] - 1
+                if first:  # pragma: no branch
                     pre = ''
             return pop, popped, url_chars, counts, pre
 
         def _closingparenthesis(c, pop, popped, url_chars, counts, pre):
-            if counts[')'] is None: # pragma: no branch
+            if counts[')'] is None:  # pragma: no branch
                 counts['('] = url.count('(')
                 counts[')'] = url.count(')')
 
@@ -955,7 +955,7 @@ class Textile(object):
             ']': _closingsquarebracket,
             ')': _closingparenthesis,
         }
-        for c in url_chars[-1::-1]: # pragma: no branch
+        for c in url_chars[-1::-1]:  # pragma: no branch
             popped = False
             pop, popped, url_chars, counts, pre = cases.get(
                 c, _casesdefault)(c, pop, popped, url_chars, counts, pre)
@@ -984,7 +984,7 @@ class Textile(object):
         text = text.strip()
         title = encode_html(title)
 
-        if not self.noimage: # pragma: no branch
+        if not self.noimage:  # pragma: no branch
             text = self.image(text)
         text = self.span(text)
         text = self.glyphs(text)
@@ -1094,16 +1094,16 @@ class Textile(object):
         pre, tail = self.getSpecialOptions(pre, tail)
 
         qtags = {
-            '*':  'strong',
-            '**': 'b',
-            '??': 'cite',
-            '_':  'em',
-            '__': 'i',
-            '-':  'del',
-            '%':  'span',
-            '+':  'ins',
-            '~':  'sub',
-            '^':  'sup'
+            '*':  'strong',  # noqa: E241
+            '**': 'b',       # noqa: E241
+            '??': 'cite',    # noqa: E241
+            '_':  'em',      # noqa: E241
+            '__': 'i',       # noqa: E241
+            '-':  'del',     # noqa: E241
+            '%':  'span',    # noqa: E241
+            '+':  'ins',     # noqa: E241
+            '~':  'sub',     # noqa: E241
+            '^':  'sup'      # noqa: E241
         }
 
         tag = qtags[tag]
@@ -1229,7 +1229,7 @@ class Textile(object):
 
     def fTextile(self, match):
         before, notextile, after = match.groups()
-        if after is None: # pragma: no branch
+        if after is None:  # pragma: no branch
             after = ''
         before, after = self.getSpecialOptions(before, after)
         return ''.join([before, self.shelve(notextile), after])
@@ -1331,7 +1331,7 @@ class Textile(object):
                 else:
                     self.unreferencedNotes[label] = info
 
-            if o: # pragma: no branch
+            if o:  # pragma: no branch
                 # sort o by key
                 o = OrderedDict(sorted(o.items(), key=lambda t: t[0]))
             self.notes = o
@@ -1347,9 +1347,9 @@ class Textile(object):
         index = '{0}{1}{2}'.format(g_links, extras, start_char)
         result = ''
 
-        if index not in self.notelist_cache: # pragma: no branch
+        if index not in self.notelist_cache:  # pragma: no branch
             o = []
-            if self.notes: # pragma: no branch
+            if self.notes:  # pragma: no branch
                 for seq, info in self.notes.items():
                     links = self.makeBackrefLink(info, g_links, start_char)
                     atts = ''
@@ -1417,7 +1417,7 @@ class Textile(object):
                 self.linkPrefix, self._increment_link_index())}
 
         # Ignores subsequent defs using the same label
-        if 'def' not in self.notes[label]: # pragma: no branch
+        if 'def' not in self.notes[label]:  # pragma: no branch
             self.notes[label]['def'] = {
                 'atts': pba(att, restricted=self.restricted), 'content':
                 self.graf(content), 'link': link}
