@@ -467,10 +467,12 @@ class Textile(object):
                         content = out[-2]
 
                     if not multiline_para:
-                        content = generate_tag(block.inner_tag, content,
-                                block.inner_atts)
-                        content = generate_tag(block.outer_tag, content,
-                            block.outer_atts)
+                        # block will have been defined in a previous run of the
+                        # loop
+                        content = generate_tag(block.inner_tag, content, # noqa: F821
+                                block.inner_atts) # noqa: F821
+                        content = generate_tag(block.outer_tag, content, # noqa: F821
+                            block.outer_atts) # noqa: F821
                     out[-2] = content
                 tag, atts, ext, cite, content = match.groups()
                 block = Block(self, **match.groupdict())
