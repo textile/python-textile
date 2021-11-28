@@ -1,5 +1,4 @@
 from textile import Textile
-import re
 
 def test_footnoteRef():
     t = Textile()
