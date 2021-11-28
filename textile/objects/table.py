@@ -161,7 +161,6 @@ class Colgroup(object):
         colgroup = ElementTree.Element('colgroup', attrib=group_atts)
         colgroup.text = '\n\t'
         if self.cols is not None:
-            has_newline = "\n" in self.cols
             match_cols = self.cols.replace('.', '').split('|')
             # colgroup is the first item in match_cols, the remaining items are
             # cols.
