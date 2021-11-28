@@ -1030,8 +1030,9 @@ class Textile(object):
         # encode each component
         scheme = parsed.scheme
         user = netloc_parsed['user'] and quote(netloc_parsed['user'])
-        password = (netloc_parsed['password'] and
-                    quote(netloc_parsed['password']))
+        password = (
+            netloc_parsed['password'] and quote(netloc_parsed['password'])
+        )
         host = netloc_parsed['host']
         port = netloc_parsed['port'] and netloc_parsed['port']
         # the below splits the path portion of the url by slashes, translates
