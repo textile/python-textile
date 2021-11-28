@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 try:
     # Use regex module for matching uppercase characters if installed,
     # otherwise fall back to finding all the uppercase chars in a loop.
-    import regex as re
+    import regex as re # noqa: F401
     upper_re_s = r'\p{Lu}'
     regex_snippets = {
         'acr': r'\p{Lu}\p{Nd}',
