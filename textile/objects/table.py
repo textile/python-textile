@@ -153,7 +153,36 @@ class Caption(object):
 
     def process(self, cap):
         tag = generate_tag('caption', cap.strip(), self.attributes)
-        return '\t{0}\n'.format(tag)
+        return '\t{0}\n\t'.format(tag)
+
+
+class Colgroup(object):
+    def __init__(self, cols, atts, restricted):
+        self.row = ''
+        self.attributes = atts
+        self.cols = cols
+        self.restricted = restricted
+
+    def process(self):
+        enc = 'unicode'
+
+        group_atts = parse_attributes(self.attributes, 'col', restricted=self.restricted)
+        colgroup = ElementTree.Element('colgroup', attrib=group_atts)
+        colgroup.text = '\n\t'
+        if self.cols is not None:
+            match_cols = self.cols.replace('.', '').split('|')
+            # colgroup is the first item in match_cols, the remaining items are
+            # cols.
+            for idx, col in enumerate(match_cols):
+                col_atts = parse_attributes(col.strip(), 'col', restricted=self.restricted)
+                ElementTree.SubElement(colgroup, 'col', col_atts)
+        colgrp = ElementTree.tostring(colgroup, encoding=enc)
+        # cleanup the extra xml declaration if it exists, (python versions
+        # differ) and then format the resulting string accordingly: newline and
+        # tab between cols and a newline at the end
+        xml_declaration = "<?xml version='1.0' encoding='UTF-8'?>\n"
+        colgrp = colgrp.replace(xml_declaration, '')
+        return colgrp.replace('><', '>\n\t<')
 
 
 class Row(object):
