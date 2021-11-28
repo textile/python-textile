@@ -17,8 +17,8 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
           image-size: ${{ matrix.image-size }}
-      - name: Python flake8 Lint
-        uses: py-actions/flake8@v1.2.0
+      #- name: Python flake8 Lint
+      #  uses: py-actions/flake8@v1.2.0
       - name: Install dependencies
         run: |
           imagesize='' 
