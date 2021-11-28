@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 try:
     # Use regex module for matching uppercase characters if installed,
     # otherwise fall back to finding all the uppercase chars in a loop.
-    import regex as re # noqa: F401
+    import regex as re  # noqa: F401
     upper_re_s = r'\p{Lu}'
     regex_snippets = {
         'acr': r'\p{Lu}\p{Nd}',
@@ -15,12 +15,12 @@ try:
         'digit': r'\p{N}',
         'space': r'(?:\p{Zs}|\v)',
         'char': r'(?:[^\p{Zs}\v])',
-        }
+    }
 except ImportError:
     from sys import maxunicode
     upper_re_s = "".join(
-                [chr(c) for c in range(maxunicode) if chr(c).isupper()]
-            )
+        [chr(c) for c in range(maxunicode) if chr(c).isupper()]
+    )
     regex_snippets = {
         'acr': r'{0}0-9'.format(upper_re_s),
         'abr': r'{0}'.format(upper_re_s),
@@ -30,7 +30,7 @@ except ImportError:
         'digit': r'\d',
         'space': r'(?:\s|\v)',
         'char': r'\S',
-        }
+    }
 
 halign_re_s = r'(?:\<(?!>)|(?<!<)\>|\<\>|\=|[()]+(?! ))'
 valign_re_s = r'[\-^~]'
@@ -43,10 +43,10 @@ align_re_s = r'(?:{0}|{1})*'.format(halign_re_s, valign_re_s)
 table_span_re_s = r'(?:{0}|{1})*'.format(colspan_re_s, rowspan_re_s)
 # regex string to match class, style and language attributes
 cls_re_s = (r'(?:'
-               r'{c}(?:{l}(?:{s})?|{s}(?:{l})?)?|'
-               r'{l}(?:{c}(?:{s})?|{s}(?:{c})?)?|'
-               r'{s}(?:{c}(?:{l})?|{l}(?:{c})?)?'
+            r'{c}(?:{l}(?:{s})?|{s}(?:{l})?)?|'
+            r'{l}(?:{c}(?:{s})?|{s}(?:{c})?)?|'
+            r'{s}(?:{c}(?:{l})?|{l}(?:{c})?)?'
             r')?'
-           ).format(c=class_re_s, s=style_re_s, l=language_re_s)
+            ).format(c=class_re_s, s=style_re_s, l=language_re_s)
 pnct_re_s = r'[-!"#$%&()*+,/:;<=>?@\'\[\\\]\.^_`{|}~]'
 syms_re_s = '¤§µ¶†‡•∗∴◊♠♣♥♦'
