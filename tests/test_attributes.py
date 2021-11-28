@@ -1,5 +1,4 @@
 from textile.utils import parse_attributes
-import re
 
 def test_parse_attributes():
     assert parse_attributes('\\1', element='td') == {'colspan': '1'}
