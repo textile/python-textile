@@ -1,0 +1,28 @@
+---
+name: python-textile
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.5, 3.6, 3.7, 3.8, 3.9]
+        image-size: ['true', 'false']
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+          image-size: ${{ matrix.image-size }}
+      - name: Install dependencies
+        run: |
+          imagesize='' 
+          pip install -U pytest pytest-cov coverage codecov
+          if [[ ${{ image-size }} == true ]] ; then imagesize='[imagesize]' ; fi
+          pip install -e ".${imagesize}"
+      - name: run tests
+        run: |
+          pytest
