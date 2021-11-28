@@ -20,9 +20,11 @@ def decode_high(text):
     text = '&#{0};'.format(text)
     return html.unescape(text)
 
+
 def encode_high(text):
     """Encode the text so that it is an appropriate HTML entity."""
     return ord(text)
+
 
 def encode_html(text, quotes=True):
     """Return text that's safe for an HTML attribute."""
@@ -38,6 +40,7 @@ def encode_html(text, quotes=True):
     for k, v in a:
         text = text.replace(k, v)
     return text
+
 
 def generate_tag(tag, content, attributes=None):
     """Generate a complete html tag using the ElementTree module.  tag and
@@ -59,10 +62,11 @@ def generate_tag(tag, content, attributes=None):
     # non-ascii text being html-entity encoded.  Not bad, but not entirely
     # matching php-textile either.
     element_tag = ElementTree.tostringlist(element, encoding=enc,
-            method='html')
+                                           method='html')
     element_tag.insert(len(element_tag) - 1, content)
     element_text = ''.join(element_tag)
     return element_text
+
 
 def has_raw_text(text):
     """checks whether the text has text not already enclosed by a block tag"""
@@ -75,16 +79,19 @@ def has_raw_text(text):
     r = re.compile(r'<(hr|br)[^>]*?/>').sub('', r)
     return '' != r
 
+
 def is_rel_url(url):
     """Identify relative urls."""
     (scheme, netloc) = urlparse(url)[0:2]
     return not scheme and not netloc
+
 
 def is_valid_url(url):
     parsed = urlparse(url)
     if parsed.scheme == '':
         return True
     return False
+
 
 def list_type(list_string):
     listtypes = {
@@ -95,12 +102,14 @@ def list_type(list_string):
     }
     return listtypes.get(True, False)
 
+
 def normalize_newlines(string):
     out = string.strip()
     out = re.sub(r'\r\n?', '\n', out)
     out = re.compile(r'^[ \t]*\n', flags=re.M).sub('\n', out)
     out = re.sub(r'"$', '" ', out)
     return out
+
 
 def parse_attributes(block_attributes, element=None, include_id=True, restricted=False):
     vAlign = {'^': 'top', '-': 'middle', '~': 'bottom'}
@@ -194,6 +203,7 @@ def parse_attributes(block_attributes, element=None, include_id=True, restricted
     if width:
         result['width'] = width
     return result
+
 
 def pba(block_attributes, element=None, include_id=True, restricted=False):
     """Parse block attributes."""
