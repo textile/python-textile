@@ -1,0 +1,9 @@
+[flake8]
+ignore =
+    # line too long
+    E501
+    # temporarily ignore warnings and errors
+    W
+    E
+exclude =
+    build/
