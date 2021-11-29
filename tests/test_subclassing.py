@@ -1,10 +1,10 @@
 import textile
 
+
 def test_change_glyphs():
     class TextilePL(textile.Textile):
         glyph_definitions = dict(textile.Textile.glyph_definitions,
-            quote_double_open = '&#8222;'
-        )
+                                 quote_double_open='&#8222;')
 
     test = 'Test "quotes".'
     expect = '\t<p>Test &#8222;quotes&#8221;.</p>'
