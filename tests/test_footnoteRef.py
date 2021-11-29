@@ -1,5 +1,6 @@
 from textile import Textile
 
+
 def test_footnoteRef():
     t = Textile()
     result = t.footnoteRef('foo[1]')
