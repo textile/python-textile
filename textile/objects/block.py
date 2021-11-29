@@ -71,12 +71,11 @@ class Block(object):
             else:
                 supp_id = parse_attributes('(#fn{0})'.format(fnid), restricted=self.textile.restricted)
 
-
             if '^' not in self.atts:
                 sup = generate_tag('sup', fns.group('fnid'), supp_id)
             else:
                 fnrev = generate_tag('a', fns.group('fnid'), {'href':
-                    '#fnrev{0}'.format(fnid)})
+                                     '#fnrev{0}'.format(fnid)})
                 sup = generate_tag('sup', fnrev, supp_id)
 
             self.content = '{0} {1}'.format(sup, self.content)
