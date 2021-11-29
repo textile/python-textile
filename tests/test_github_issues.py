@@ -3,15 +3,18 @@ from __future__ import unicode_literals
 
 import textile
 
+
 def test_github_issue_16():
     result = textile.textile('"$":http://google.com "$":https://google.com "$":mailto:blackhole@sun.comet')
     expect = '\t<p><a href="http://google.com">google.com</a> <a href="https://google.com">google.com</a> <a href="mailto:blackhole%40sun.comet">blackhole@sun.comet</a></p>'
     assert result == expect
 
+
 def test_github_issue_17():
     result = textile.textile('!http://www.ox.ac.uk/favicon.ico!')
     expect = '\t<p><img alt="" src="http://www.ox.ac.uk/favicon.ico" /></p>'
     assert result == expect
+
 
 def test_github_issue_20():
     text = 'This is a link to a ["Wikipedia article about Textile":http://en.wikipedia.org/wiki/Textile_(markup_language)].'
@@ -19,16 +22,19 @@ def test_github_issue_20():
     expect = '\t<p>This is a link to a <a href="http://en.wikipedia.org/wiki/Textile_%28markup_language%29">Wikipedia article about Textile</a>.</p>'
     assert result == expect
 
-def test_github_issue_21():
-    text = '''h1. xml example
 
-bc. 
+def test_github_issue_21():
+    text = ('''h1. xml example
+
+bc. '''
+            '''
 <foo>
   bar
-</foo>'''
+</foo>''')
     result = textile.textile(text)
     expect = '\t<h1>xml example</h1>\n\n<pre><code>\n&lt;foo&gt;\n  bar\n&lt;/foo&gt;</code></pre>'
     assert result == expect
+
 
 def test_github_issue_22():
     text = '''_(artist-name)Ty Segall_’s'''
@@ -36,17 +42,20 @@ def test_github_issue_22():
     expect = '\t<p><em class="artist-name">Ty Segall</em>’s</p>'
     assert result == expect
 
+
 def test_github_issue_26():
     text = ''
     result = textile.textile(text)
     expect = ''
     assert result == expect
 
+
 def test_github_issue_27():
     test = """* Folders with ":" in their names are displayed with a forward slash "/" instead. (Filed as "#4581709":/test/link, which was considered "normal behaviour" - quote: "Please note that Finder presents the 'Carbon filesystem' view, regardless of the underlying filesystem.")"""
     result = textile.textile(test)
     expect = """\t<ul>\n\t\t<li>Folders with &#8220;:&#8221; in their names are displayed with a forward slash &#8220;/&#8221; instead. (Filed as <a href="/test/link">#4581709</a>, which was considered &#8220;normal behaviour&#8221; &#8211; quote: &#8220;Please note that Finder presents the &#8216;Carbon filesystem&#8217; view, regardless of the underlying filesystem.&#8221;)</li>\n\t</ul>"""
     assert result == expect
+
 
 def test_github_issue_28():
     test = """So here I am porting my ancient "newspipe":newspipe "front-end":blog/2006/09/30/0950 to "Snakelets":Snakelets and "Python":Python, and I've just trimmed down over 20 lines of "PHP":PHP down to essentially one line of "BeautifulSoup":BeautifulSoup retrieval:
@@ -80,22 +89,25 @@ def parseWapProfile(self, url):
 \t<p>Of course there&#8217;s a lot more error handling to do (and useful data to glean off the <a href="XML"><span class="caps">XML</span></a>), but being able to cut through all the usual parsing crap is immensely gratifying.</p>""")
     assert result == expect
 
+
 def test_github_issue_30():
-    text ='"Tëxtíle (Tëxtíle)":http://lala.com'
+    text = '"Tëxtíle (Tëxtíle)":http://lala.com'
     result = textile.textile(text)
     expect = '\t<p><a href="http://lala.com" title="Tëxtíle">Tëxtíle</a></p>'
     assert result == expect
 
-    text ='!http://lala.com/lol.gif(♡ imáges)!'
+    text = '!http://lala.com/lol.gif(♡ imáges)!'
     result = textile.textile(text)
     expect = '\t<p><img alt="♡ imáges" src="http://lala.com/lol.gif" title="♡ imáges" /></p>'
     assert result == expect
+
 
 def test_github_issue_36():
     text = '"Chögyam Trungpa":https://www.google.com/search?q=Chögyam+Trungpa'
     result = textile.textile(text)
     expect = '\t<p><a href="https://www.google.com/search?q=Chögyam+Trungpa">Chögyam Trungpa</a></p>'
     assert result == expect
+
 
 def test_github_issue_37():
     text = '# xxx\n# yyy\n*blah*'
@@ -118,11 +130,13 @@ def test_github_issue_37():
 \t</ul>'''
     assert result == expect
 
+
 def test_github_issue_40():
     text = '\r\n'
     result = textile.textile(text)
     expect = '\r\n'
     assert result == expect
+
 
 def test_github_issue_42():
     text = '!./image.png!'
@@ -130,11 +144,13 @@ def test_github_issue_42():
     expect = '\t<p><img alt="" src="./image.png" /></p>'
     assert result == expect
 
+
 def test_github_issue_43():
     text = 'pre. smart ‘quotes’ are not smart!'
     result = textile.textile(text)
     expect = '<pre>smart ‘quotes’ are not smart!</pre>'
     assert result == expect
+
 
 def test_github_issue_45():
     """Incorrect transform unicode url"""
@@ -142,6 +158,7 @@ def test_github_issue_45():
     result = textile.textile(text)
     expect = '\t<p><a href="https://myabstractwiki.ru/index.php/%D0%97%D0%B0%D0%B3%D0%BB%D0%B0%D0%B2%D0%BD%D0%B0%D1%8F_%D1%81%D1%82%D1%80%D0%B0%D0%BD%D0%B8%D1%86%D0%B0">test</a></p>'
     assert result == expect
+
 
 def test_github_issue_46():
     """Key error on mal-formed numbered lists. CAUTION: both the input and the
@@ -152,6 +169,7 @@ def test_github_issue_46():
               '\n\t\t</ol></li>\n\t\t</ol>')
     result = textile.textile(text)
     assert result == expect
+
 
 def test_github_issue_47():
     """Incorrect wrap pre-formatted value"""
@@ -172,12 +190,14 @@ word
 yet anothe word</pre>'''
     assert result == expect
 
+
 def test_github_issue_49():
     """Key error on russian hash-route link"""
     s = '"link":https://ru.vuejs.org/v2/guide/components.html#Входные-параметры'
     result = textile.textile(s)
     expect = '\t<p><a href="https://ru.vuejs.org/v2/guide/components.html#Входные-параметры">link</a></p>'
     assert result == expect
+
 
 def test_github_issue_50():
     """Incorrect wrap code with Java generics in pre"""
@@ -189,12 +209,14 @@ def test_github_issue_50():
               'ArrayList&lt;&gt;();</pre>')
     assert result == expect
 
+
 def test_github_issue_51():
     """Link build with $ sign without "http" prefix broken."""
     test = '"$":www.google.com.br'
     result = textile.textile(test)
     expect = '\t<p><a href="www.google.com.br">www.google.com.br</a></p>'
     assert result == expect
+
 
 def test_github_issue_52():
     """Table build without space after aligment raise a AttributeError."""
@@ -204,6 +226,7 @@ def test_github_issue_52():
               '</td>\n\t\t\t<td style="text-align:center;">Second Header </td>'
               '\n\t\t</tr>\n\t</table>')
     assert result == expect
+
 
 def test_github_issue_55():
     """Incorrect handling of quote entities in extended pre block"""
@@ -258,15 +281,17 @@ def test_github_issue_55():
               'return configs;\n}\n}</pre>')
     assert result == expect
 
+
 def test_github_issue_56():
     """Empty description lists throw error"""
     result = textile.textile("- :=\n-")
     expect = '<dl>\n</dl>'
     assert result == expect
 
+
 def test_github_pull_61():
     """Fixed code block multiline encoding on quotes/span"""
-    test = '''bc.. This is some TEXT inside a "Code BLOCK"
+    test = ('''bc.. This is some TEXT inside a "Code BLOCK"
 
 {
   if (JSON) {
@@ -275,11 +300,12 @@ def test_github_pull_61():
   }
 }
 
-Back to 10-4 CAPS 
+Back to 10-4 CAPS '''
+            '''
 
 p.. Some multiline Paragragh
 
-Here is some output!!! "Some" CAPS'''
+Here is some output!!! "Some" CAPS''')
 
     expect = '''<pre><code>This is some TEXT inside a &quot;Code BLOCK&quot;
 
@@ -298,6 +324,7 @@ Back to 10-4 CAPS </code></pre>
     t = textile.Textile()
     result = t.parse(test)
     assert result == expect
+
 
 def test_github_pull_62():
     """Fix for paragraph multiline, only last paragraph is rendered
@@ -340,6 +367,7 @@ ESCAPED "good" test'''
     t = textile.Textile()
     result = t.parse(test)
     assert result == expect
+
 
 def test_github_pull_63():
     """Forgot to set multiline_para to False"""
