@@ -8,6 +8,7 @@ try:
 except ImportError:
     from ordereddict import OrderedDict
 
+
 def test_block():
     t = textile.Textile()
     result = t.block('h1. foobar baby')
@@ -16,14 +17,14 @@ def test_block():
 
     b = Block(t, "bq", "", None, "", "Hello BlockQuote")
     expect = ('blockquote', OrderedDict(), 'p', OrderedDict(),
-            'Hello BlockQuote')
+              'Hello BlockQuote')
     result = (b.outer_tag, b.outer_atts, b.inner_tag, b.inner_atts, b.content)
     assert result == expect
 
     b = Block(t, "bq", "", None, "http://google.com", "Hello BlockQuote")
     expect = ('blockquote', OrderedDict([('cite',
-        '{0.uid}{0.refIndex}:url'.format(t))]), 'p', OrderedDict(),
-        'Hello BlockQuote')
+              '{0.uid}{0.refIndex}:url'.format(t))]), 'p', OrderedDict(),
+              'Hello BlockQuote')
     result = (b.outer_tag, b.outer_atts, b.inner_tag, b.inner_atts, b.content)
     assert result == expect
 
@@ -39,6 +40,7 @@ def test_block():
     result = (b.outer_tag, b.outer_atts, b.inner_tag, b.inner_atts, b.content)
     assert result == expect
 
+
 def test_block_tags_false():
     t = textile.Textile(block_tags=False)
     assert t.block_tags is False
@@ -47,12 +49,14 @@ def test_block_tags_false():
     expect = 'test'
     assert result == expect
 
+
 def test_blockcode_extended():
     input = 'bc.. text\nmoretext\n\nevenmoretext\n\nmoremoretext\n\np. test'
     expect = '<pre><code>text\nmoretext\n\nevenmoretext\n\nmoremoretext</code></pre>\n\n\t<p>test</p>'
     t = textile.Textile()
     result = t.parse(input)
     assert result == expect
+
 
 def test_blockcode_in_README():
     with open('README.textile') as f:
@@ -61,6 +65,7 @@ def test_blockcode_in_README():
     with open('tests/fixtures/README.txt') as f:
         expect = ''.join(f.readlines())
     assert result == expect
+
 
 def test_blockcode_comment():
     input = '###.. block comment\nanother line\n\np. New line'
