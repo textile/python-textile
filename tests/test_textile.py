@@ -4,9 +4,11 @@ import pytest
 import re
 import textile
 
+
 def test_FootnoteReference():
     html = textile.textile('YACC[1]')
     assert re.search(r'^\t<p><span class="caps">YACC</span><sup class="footnote" id="fnrev([a-f0-9]{32})-1"><a href="#fn\1-1">1</a></sup></p>', html) is not None
+
 
 def test_Footnote():
     html = textile.textile('This is covered elsewhere[1].\n\nfn1. Down here, in fact.\n\nfn2. Here is another footnote.')
@@ -24,6 +26,7 @@ def test_Footnote():
     html = textile.textile('''See[4!] for details.\n\nfn4^. Here are the details.''')
     assert re.search(r'^\t<p>See<sup class="footnote" id="fnrev([a-f0-9]{32})-1">4</sup> for details.</p>\n\n\t<p class="footnote" id="fn\1-1"><sup><a href="#fnrev\1-1">4</a></sup> Here are the details.</p>$', html) is not None
 
+
 def test_issue_35():
     result = textile.textile('"z"')
     expect = '\t<p>&#8220;z&#8221; </p>'
@@ -33,8 +36,9 @@ def test_issue_35():
     expect = '\t<p>&#8220; z&#8221; </p>'
     assert result == expect
 
+
 def test_restricted():
-    #Note that the HTML is escaped, thus rendering the <script> tag harmless.
+    # Note that the HTML is escaped, thus rendering the <script> tag harmless.
     test = "Here is some text.\n<script>alert('hello world')</script>"
     result = textile.textile_restricted(test)
     expect = "\t<p>Here is some text.<br />\n&lt;script&gt;alert(&#8216;hello world&#8217;)&lt;/script&gt;</p>"
@@ -93,9 +97,11 @@ table{border:1px solid black}.
 
     assert result == expect
 
+
 def test_unicode_footnote():
     html = textile.textile('текст[1]')
     assert re.compile(r'^\t<p>текст<sup class="footnote" id="fnrev([a-f0-9]{32})-1"><a href="#fn\1-1">1</a></sup></p>$', re.U).search(html) is not None
+
 
 def test_autolinking():
     test = """some text "test":http://www.google.com http://www.google.com "$":http://www.google.com"""
@@ -103,6 +109,7 @@ def test_autolinking():
     expect = textile.textile(test)
 
     assert result == expect
+
 
 def test_sanitize():
     test = "a paragraph of benign text"
@@ -120,13 +127,15 @@ def test_sanitize():
     expect = textile.Textile(html_type='html5').parse(test, sanitize=True)
     assert result == expect
 
+
 def test_imagesize():
-    PIL = pytest.importorskip('PIL') # noqa: F841
+    PIL = pytest.importorskip('PIL')  # noqa: F841
 
     test = "!http://www.google.com/intl/en_ALL/images/srpr/logo1w.png!"
     result = '\t<p><img alt="" height="95" src="http://www.google.com/intl/en_ALL/images/srpr/logo1w.png" width="275" /></p>'
     expect = textile.Textile(get_sizes=True).parse(test)
     assert result == expect
+
 
 def test_endnotes_simple():
     test = """Scientists say the moon is slowly shrinking[#my_first_label].\n\nnotelist!.\n\nnote#my_first_label Over the past billion years, about a quarter of the moon's 4.5 billion-year lifespan, it has shrunk about 200 meters (700 feet) in diameter."""
@@ -135,12 +144,14 @@ def test_endnotes_simple():
     result_re = re.compile(result_pattern)
     assert result_re.search(html) is not None
 
+
 def test_endnotes_complex():
     test = """Tim Berners-Lee is one of the pioneer voices in favour of Net Neutrality[#netneutral] and has expressed the view that ISPs should supply "connectivity with no strings attached"[#netneutral!] [#tbl_quote]\n\nBerners-Lee admitted that the forward slashes ("//") in a web address were actually unnecessary.  He told the newspaper that he could easily have designed URLs not to have the forward slashes.  "... it seemed like a good idea at the time,"[#slashes]\n\nnote#netneutral. "Web creator rejects net tracking":http://news.bbc.co.uk/2/hi/technology/7613201.stm. BBC. 15 September 2008\n\nnote#tbl_quote. "Web inventor's warning on spy software":http://www.telegraph.co.uk/news/uknews/1581938/Web-inventor%27s-warning-on-spy-software.html. The Daily Telegraph (London). 25 May 2008\n\nnote#slashes. "Berners-Lee 'sorry' for slashes":http://news.bbc.co.uk/1/hi/technology/8306631.stm. BBC. 14 October 2009\n\nnotelist."""
     html = textile.textile(test)
     result_pattern = r"""\t<p>Tim Berners-Lee is one of the pioneer voices in favour of Net Neutrality<sup><a href="#note([a-f0-9]{32})-2"><span id="noteref\1-1">1</span></a></sup> and has expressed the view that <span class="caps">ISP</span>s should supply &#8220;connectivity with no strings attached&#8221;<sup><span id="noteref\1-3">1</span></sup> <sup><a href="#note\1-5"><span id="noteref\1-4">2</span></a></sup></p>\n\n\t<p>Berners-Lee admitted that the forward slashes \(&#8220;//&#8221;\) in a web address were actually unnecessary.  He told the newspaper that he could easily have designed <span class="caps">URL</span>s not to have the forward slashes.  &#8220;&#8230; it seemed like a good idea at the time,&#8221;<sup><a href="#note\1-7"><span id="noteref\1-6">3</span></a></sup></p>\n\n\t<ol>\n\t\t<li><sup><a href="#noteref\1-1">a</a></sup> <sup><a href="#noteref\1-3">b</a></sup><span id="note\1-2"> </span><a href="http://news.bbc.co.uk/2/hi/technology/7613201.stm">Web creator rejects net tracking</a>. <span class="caps">BBC</span>. 15 September 2008</li>\n\t\t<li><sup><a href="#noteref\1-4">a</a></sup><span id="note\1-5"> </span><a href="http://www.telegraph.co.uk/news/uknews/1581938/Web-inventor%27s-warning-on-spy-software.html">Web inventor&#8217;s warning on spy software</a>. The Daily Telegraph \(London\). 25 May 2008</li>\n\t\t<li><sup><a href="#noteref\1-6">a</a></sup><span id="note\1-7"> </span><a href="http://news.bbc.co.uk/1/hi/technology/8306631.stm">Berners-Lee &#8216;sorry&#8217; for slashes</a>. <span class="caps">BBC</span>. 14 October 2009</li>\n\t</ol>$"""
     result_re = re.compile(result_pattern)
     assert result_re.search(html) is not None
+
 
 def test_endnotes_unreferenced_note():
     test = """Scientists say[#lavader] the moon is quite small. But I, for one, don't believe them. Others claim it to be made of cheese[#aardman]. If this proves true I suspect we are in for troubled times[#apollo13] as people argue over their "share" of the moon's cheese. In the end, its limited size[#lavader] may prove problematic.\n\nnote#lavader(noteclass). "Proof of the small moon hypothesis":http://antwrp.gsfc.nasa.gov/apod/ap080801.html. Copyright(c) Laurent Laveder\n\nnote#aardman(#noteid). "Proof of a cheese moon":http://www.imdb.com/title/tt0104361\n\nnote#apollo13. After all, things do go "wrong":http://en.wikipedia.org/wiki/Apollo_13#The_oxygen_tank_incident.\n\nnotelist{padding:1em; margin:1em; border-bottom:1px solid gray}.\n\nnotelist{padding:1em; margin:1em; border-bottom:1px solid gray}:§^.\n\nnotelist{padding:1em; margin:1em; border-bottom:1px solid gray}:‡"""
@@ -149,6 +160,7 @@ def test_endnotes_unreferenced_note():
     result_re = re.compile(result_pattern, re.U)
     assert result_re.search(html) is not None
 
+
 def test_endnotes_malformed():
     test = """Scientists say[#lavader] the moon is quite small. But I, for one, don't believe them. Others claim it to be made of cheese[#aardman]. If this proves true I suspect we are in for troubled times[#apollo13!] as people argue over their "share" of the moon's cheese. In the end, its limited size[#lavader] may prove problematic.\n\nnote#unused An unreferenced note.\n\nnote#lavader^ "Proof of the small moon hypothesis":http://antwrp.gsfc.nasa.gov/apod/ap080801.html. Copyright(c) Laurent Laveder\n\nnote#aardman^ "Proof of a cheese moon":http://www.imdb.com/title/tt0104361\n\nnote#apollo13^ After all, things do go "wrong":http://en.wikipedia.org/wiki/Apollo_13#The_oxygen_tank_incident.\n\nnotelist{padding:1em; margin:1em; border-bottom:1px solid gray}:α!+"""
     html = textile.textile(test)
@@ -156,12 +168,14 @@ def test_endnotes_malformed():
     result_re = re.compile(result_pattern, re.U)
     assert result_re.search(html) is not None
 
+
 def test_endnotes_undefined_note():
     test = """Scientists say the moon is slowly shrinking[#my_first_label].\n\nnotelist!."""
     html = textile.textile(test)
     result_pattern = r"""\t<p>Scientists say the moon is slowly shrinking<sup><a href="#note([a-f0-9]{32})-2"><span id="noteref\1-1">1</span></a></sup>.</p>\n\n\t<ol>\n\t\t<li> Undefined Note \[#my_first_label\].<li>\n\t</ol>$"""
     result_re = re.compile(result_pattern)
     assert result_re.search(html) is not None
+
 
 def test_encode_url():
     # I tried adding these as doctests, but the unicode tests weren't
@@ -198,20 +212,24 @@ def test_encode_url():
     eurl = t.encode_url(url)
     assert eurl == result
 
+
 def test_footnote_crosslink():
     html = textile.textile('''See[2] for details, and later, reference it again[2].\n\nfn2^(footy#otherid)[en]. Here are the details.''')
     searchstring = r'\t<p>See<sup class="footnote" id="fnrev([a-f0-9]{32})-1"><a href="#fn\1-1">2</a></sup> for details, and later, reference it again<sup class="footnote"><a href="#fn\1-1">2</a></sup>.</p>\n\n\t<p class="footy" id="otherid" lang="en"><sup id="fn\1-1"><a href="#fnrev\1-1">2</a></sup> Here are the details.</p>$'
     assert re.compile(searchstring).search(html) is not None
+
 
 def test_footnote_without_reflink():
     html = textile.textile('''See[3!] for details.\n\nfn3. Here are the details.''')
     searchstring = r'^\t<p>See<sup class="footnote" id="fnrev([a-f0-9]{32})-1">3</sup> for details.</p>\n\n\t<p class="footnote" id="fn\1-1"><sup>3</sup> Here are the details.</p>$'
     assert re.compile(searchstring).search(html) is not None
 
+
 def testSquareBrackets():
     html = textile.textile("""1[^st^], 2[^nd^], 3[^rd^]. 2 log[~n~]\n\nA close[!http://textpattern.com/favicon.ico!]image.\nA tight["text":http://textpattern.com/]link.\nA ["footnoted link":http://textpattern.com/][182].""")
     searchstring = r'^\t<p>1<sup>st</sup>, 2<sup>nd</sup>, 3<sup>rd</sup>. 2 log<sub>n</sub></p>\n\n\t<p>A close<img alt="" src="http://textpattern.com/favicon.ico" />image.<br />\nA tight<a href="http://textpattern.com/">text</a>link.<br />\nA <a href="http://textpattern.com/">footnoted link</a><sup class="footnote" id="fnrev([a-f0-9]{32})-1"><a href="#fn\1-1">182</a></sup>.</p>'
     assert re.compile(searchstring).search(html) is not None
+
 
 def test_html5():
     """docstring for testHTML5"""
@@ -220,6 +238,7 @@ def test_html5():
     result = '\t<p>We use <abbr title="Cascading Style Sheets"><span class="caps">CSS</span></abbr>.</p>'
     expect = textile.textile(test, html_type="html5")
     assert result == expect
+
 
 def test_relURL():
     t = textile.Textile()
