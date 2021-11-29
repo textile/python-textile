@@ -10,6 +10,7 @@ def get_version():
         return variables.get('VERSION')
     raise RuntimeError('No version info found.')
 
+
 setup(
     name='textile',
     version=get_version(),
@@ -38,7 +39,7 @@ setup(
     install_requires=[
         'html5lib>=1.0.1',
         'regex>1.0; implementation_name != "pypy"',
-        ],
+    ],
     extras_require={
         'develop': ['pytest', 'pytest-cov'],
         'imagesize': ['Pillow>=3.0.0'],
