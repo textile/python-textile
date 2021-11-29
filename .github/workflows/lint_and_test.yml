@@ -9,7 +9,7 @@ jobs:
     strategy:
       matrix:
         python-version: [3.5, 3.6, 3.7, 3.8, 3.9]
-        image-size: ['true', 'false']
+        image_size: ['true', 'false']
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python ${{ matrix.python-version }}
@@ -20,12 +20,10 @@ jobs:
       - name: Python flake8 Lint
         uses: py-actions/flake8@v1.2.0
       - name: Install dependencies
-        env:
-          IMAGESIZE: ${{ matrix.image-size }}
         run: |
           imagesize=''
           pip install -U pytest pytest-cov coverage codecov
-          if [[ $IMAGESIZE == true ]] ; then imagesize='[imagesize]' ; fi
+          if [[ $INPUT_IMAGE_SIZE == true ]] ; then imagesize='[imagesize]' ; fi
           pip install -e ".${imagesize}"
       - name: run tests
         run: |
