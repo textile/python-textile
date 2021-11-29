@@ -3,10 +3,9 @@ from __future__ import unicode_literals
 
 from xml.etree import ElementTree
 
-from textile.regex_strings import (
-    align_re_s, cls_re_s, regex_snippets, table_span_re_s,
-    valign_re_s, pnct_re_s)
-from textile.utils import generate_tag, parse_attributes, pba
+from textile.regex_strings import (align_re_s, cls_re_s, regex_snippets,
+                                   table_span_re_s, valign_re_s, pnct_re_s)
+from textile.utils import generate_tag, parse_attributes
 
 try:
     import regex as re
@@ -75,8 +74,9 @@ class Table(object):
 
             # search the row for a table group - thead, tfoot, or tbody
             grpmatchpattern = (r"(:?^\|(?P<part>{v})(?P<rgrpatts>{s}{a}{c})"
-                    r"\.\s*$\n)?^(?P<row>.*)").format(**{'v': valign_re_s, 's':
-                        table_span_re_s, 'a': align_re_s, 'c': cls_re_s})
+                               r"\.\s*$\n)?^(?P<row>.*)").format(
+                                   **{'v': valign_re_s, 's': table_span_re_s,
+                                      'a': align_re_s, 'c': cls_re_s})
             grpmatch_re = re.compile(grpmatchpattern, re.S | re.M)
             grpmatch = grpmatch_re.match(row.lstrip())
 
@@ -106,8 +106,9 @@ class Table(object):
                     ctag = 'th'
 
                 cmtch = re.search(r'^(?P<catts>_?{0}{1}{2}\. )'
-                        '(?P<cell>.*)'.format(table_span_re_s, align_re_s,
-                            cls_re_s), cell, flags=re.S)
+                                  '(?P<cell>.*)'.format(
+                                      table_span_re_s, align_re_s, cls_re_s),
+                                  cell, flags=re.S)
                 if cmtch:
                     catts = cmtch.group('catts')
                     cell_atts = parse_attributes(catts, 'td', restricted=self.textile.restricted)
@@ -117,7 +118,7 @@ class Table(object):
 
                 if not self.textile.lite:
                     a_pattern = r'(?P<space>{0}*)(?P<cell>.*)'.format(
-                            regex_snippets['space'])
+                        regex_snippets['space'])
                     a = re.search(a_pattern, cell, flags=re.S)
                     cell = self.textile.redcloth_list(a.group('cell'))
                     cell = self.textile.textileLists(cell)
