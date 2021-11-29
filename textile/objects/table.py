@@ -140,8 +140,8 @@ class Table(object):
         if rgrp:
             groups.append('\n\t{0}'.format(rgrp.process()))
 
-        content = '{0}{1}{2}{3}\n\t'.format(self.caption, self.colgroup,
-                ''.join(groups), ''.join(self.content))
+        content = '{0}{1}{2}{3}\n\t'.format(
+            self.caption, self.colgroup, ''.join(groups), ''.join(self.content))
         tbl = generate_tag('table', content, self.attributes)
         return '\t{0}\n\n'.format(tbl)
 
