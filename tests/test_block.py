@@ -69,6 +69,7 @@ def test_blockcode_comment():
     result = t.parse(input)
     assert result == expect
 
+
 def test_extended_pre_block_with_many_newlines():
     """Extra newlines in an extended pre block should not get cut down to only
     two."""
