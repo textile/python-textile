@@ -1,5 +1,6 @@
 from textile import Textile
 
+
 def test_glyphs():
     t = Textile()
 

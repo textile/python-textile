@@ -4,8 +4,8 @@ from __future__ import unicode_literals
 from xml.etree import ElementTree
 
 from textile.regex_strings import (align_re_s, cls_re_s, regex_snippets,
-        table_span_re_s, valign_re_s)
-from textile.utils import encode_html, generate_tag, parse_attributes
+                                   table_span_re_s, valign_re_s)
+from textile.utils import generate_tag, parse_attributes
 
 try:
     import regex as re
@@ -27,7 +27,7 @@ class Table(object):
     def process(self):
         rgrp = None
         groups = []
-        if self.input[-1] == '|': # pragma: no branch
+        if self.input[-1] == '|':  # pragma: no branch
             self.input = '{0}\n'.format(self.input)
         split = self.input.split('|\n')
         for i, row in enumerate([x for x in split if x]):
@@ -66,8 +66,9 @@ class Table(object):
 
             # search the row for a table group - thead, tfoot, or tbody
             grpmatchpattern = (r"(:?^\|(?P<part>{v})(?P<rgrpatts>{s}{a}{c})"
-                    r"\.\s*$\n)?^(?P<row>.*)").format(**{'v': valign_re_s, 's':
-                        table_span_re_s, 'a': align_re_s, 'c': cls_re_s})
+                               r"\.\s*$\n)?^(?P<row>.*)").format(
+                                   **{'v': valign_re_s, 's': table_span_re_s,
+                                      'a': align_re_s, 'c': cls_re_s})
             grpmatch_re = re.compile(grpmatchpattern, re.S | re.M)
             grpmatch = grpmatch_re.match(row.lstrip())
 
@@ -97,8 +98,9 @@ class Table(object):
                     ctag = 'th'
 
                 cmtch = re.search(r'^(?P<catts>_?{0}{1}{2}\. )'
-                        '(?P<cell>.*)'.format(table_span_re_s, align_re_s,
-                            cls_re_s), cell, flags=re.S)
+                                  '(?P<cell>.*)'.format(
+                                      table_span_re_s, align_re_s, cls_re_s),
+                                  cell, flags=re.S)
                 if cmtch:
                     catts = cmtch.group('catts')
                     cell_atts = parse_attributes(catts, 'td', restricted=self.textile.restricted)
@@ -108,7 +110,7 @@ class Table(object):
 
                 if not self.textile.lite:
                     a_pattern = r'(?P<space>{0}*)(?P<cell>.*)'.format(
-                            regex_snippets['space'])
+                        regex_snippets['space'])
                     a = re.search(a_pattern, cell, flags=re.S)
                     cell = self.textile.redcloth_list(a.group('cell'))
                     cell = self.textile.textileLists(cell)
@@ -131,8 +133,8 @@ class Table(object):
         if rgrp:
             groups.append('\n\t{0}'.format(rgrp.process()))
 
-        content = '{0}{1}{2}{3}\n\t'.format(self.caption, self.colgroup,
-                ''.join(groups), ''.join(self.content))
+        content = '{0}{1}{2}{3}\n\t'.format(
+            self.caption, self.colgroup, ''.join(groups), ''.join(self.content))
         tbl = generate_tag('table', content, self.attributes)
         return '\t{0}\n\n'.format(tbl)
 
@@ -161,7 +163,6 @@ class Colgroup(object):
         colgroup = ElementTree.Element('colgroup', attrib=group_atts)
         colgroup.text = '\n\t'
         if self.cols is not None:
-            has_newline = "\n" in self.cols
             match_cols = self.cols.replace('.', '').split('|')
             # colgroup is the first item in match_cols, the remaining items are
             # cols.
