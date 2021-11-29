@@ -309,11 +309,13 @@ html_known_values = (
     ('Hello ["(Mum) & dad"]', '\t<p>Hello [&#8220;(Mum) &amp; dad&#8221;]</p>'),
 )
 
+
 @pytest.mark.parametrize("input, expected_output", xhtml_known_values)
 def test_KnownValuesXHTML(input, expected_output):
     # XHTML
     output = textile.textile(input, html_type='xhtml')
     assert output == expected_output
+
 
 @pytest.mark.parametrize("input, expected_output", html_known_values)
 def test_KnownValuesHTML(input, expected_output):
