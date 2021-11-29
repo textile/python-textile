@@ -1,5 +1,6 @@
 from textile import Textile
 
+
 def test_getRefs():
     t = Textile()
     result = t.getRefs("some text [Google]http://www.google.com")
