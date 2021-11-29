@@ -1,5 +1,6 @@
 from textile import Textile
 
+
 def test_image():
     t = Textile()
     result = t.image('!/imgs/myphoto.jpg!:http://jsamsa.com')
@@ -17,5 +18,5 @@ def test_image():
     t = Textile(rel='nofollow')
     result = t.image('!/imgs/myphoto.jpg!:http://jsamsa.com')
     expect = ('<a href="{0}1:url" rel="nofollow"><img alt="" src="{0}2:url" '
-            '/></a>'.format(t.uid))
+              '/></a>'.format(t.uid))
     assert result == expect
