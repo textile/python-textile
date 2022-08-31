@@ -254,6 +254,14 @@ xhtml_known_values = (
 
 # A few extra cases for HTML4
 html_known_values = (
+    ("pre.. The beginning\n\nbc.. This code\n\nis the last\n\nblock in the document\n",
+     "<pre>The beginning</pre>\n\n<pre><code>This code\n\nis the last\n\nblock in the document</code></pre>"),
+    ("bc.. This code\n\nis not\n\nsurrounded by anything\n",
+     "<pre><code>This code\n\nis not\n\nsurrounded by anything</code></pre>"),
+    ("bc.. Paragraph 1\n\nParagraph 2\n\nParagraph 3\n\np.. post-code paragraph",
+     "<pre><code>Paragraph 1\n\nParagraph 2\n\nParagraph 3</code></pre>\n\n<p>post-code paragraph</p>"),
+    ("bc.. Paragraph 1\n\nParagraph 2\n\nParagraph 3\n\npre.. post-code non-p block",
+     "<pre><code>Paragraph 1\n\nParagraph 2\n\nParagraph 3</code></pre>\n\n<pre>post-code non-p block</pre>"),
     ('I spoke.\nAnd none replied.', '\t<p>I spoke.<br />\nAnd none replied.</p>'),
     ('I __know__.\nI **really** __know__.', '\t<p>I <i>know</i>.<br />\nI <b>really</b> <i>know</i>.</p>'),
     ("I'm %{color:red}unaware%\nof most soft drinks.", '\t<p>I&#8217;m <span style="color:red;">unaware</span><br />\nof most soft drinks.</p>'),

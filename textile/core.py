@@ -559,11 +559,10 @@ class Textile(object):
         # at this point, we've gone through all the lines. if there's still an
         # extension in effect, we close it here
         if ext and out and not block.tag == 'p':
-            block.content = out.pop()
-            block.process()
-            final = generate_tag(block.outer_tag, block.content,
-                                 block.outer_atts)
-            out.append(final)
+            content = out.pop()
+            content = generate_tag(block.inner_tag, content, block.inner_atts)
+            content = generate_tag(block.outer_tag, content, block.outer_atts)
+            out.append(content)
         return ''.join(out)
 
     def footnoteRef(self, text):
