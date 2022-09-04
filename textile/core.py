@@ -35,6 +35,122 @@ except ImportError:
     import re
 
 
+def make_glyph_replacers(html_type, uid, glyph_defs, is_initial):
+    """
+    Generates a list of "replacers" (each is a pair consiting of
+    a regular expression and a replacing pattern) that,
+    when applied sequentially, replace some characters of the original
+    text with their HTML codes to produce valid HTML.
+    """
+    cur = (
+        r'(?:[{0}]{1}*)?'.format(regex_snippets['cur'], regex_snippets['space'])
+        if regex_snippets['cur']
+        else r'')
+    pre_result = [
+        # apostrophe's
+        (re.compile(
+            (r"(^|{0}|\))'({0})" if not is_initial
+             else r"({0}|\))'({0})")
+            .format(regex_snippets['wrd']),
+            flags=re.U),
+         r'\1{apostrophe}\2'),
+        # back in '88
+        (re.compile(
+            r"({0})'(\d+{1}?)\b(?![.]?[{1}]*?')".format(
+                regex_snippets['space'], regex_snippets['wrd']),
+            flags=re.U),
+         r'\1{apostrophe}\2'),
+        # single opening following an open bracket.
+        (re.compile(r"([([{])'(?=\S)", flags=re.U),
+         r'\1{quote_single_open}'),
+        # single closing
+        (re.compile(
+            (r"(^|\S)'(?={0}|{1}|<|$)".format(
+                regex_snippets['space'], pnct_re_s)
+             if not is_initial
+             else r"(\S)'(?={0}|{1}|$)".format(
+                regex_snippets['space'], pnct_re_s)),
+            flags=re.U),
+         r'\1{quote_single_close}'),
+        # single opening
+        (re.compile(r"'", re.U), r'{quote_single_open}'),
+        # double opening following an open bracket. Allows things like
+        # Hello ["(Mum) & dad"]
+        (re.compile(r'([([{])"(?=\S)', flags=re.U),
+         r'\1{quote_double_open}'),
+        # double closing
+        (re.compile(
+            (r'(^|\S)"(?={0}|{1}|<|$)'.format(
+                regex_snippets['space'], pnct_re_s)
+             if not is_initial
+             else r'(\S)"(?={0}|{1}|<|$)'.format(
+                regex_snippets['space'], pnct_re_s)),
+            flags=re.U),
+         r'\1{quote_double_close}'),
+        # double opening
+        (re.compile(r'"'), r'{quote_double_open}'),
+        # ellipsis
+        (re.compile(r'([^.]?)\.{3}'), r'\1{ellipsis}'),
+        # ampersand
+        (re.compile(r'(\s?)&(\s)', re.U), r'\1{ampersand}\2'),
+        # em dash
+        (re.compile(r'(\s?)--(\s?)'), r'\1{emdash}\2'),
+        # en dash
+        (re.compile(r' - '), r' {endash} '),
+        # dimension sign
+        (re.compile(
+            r'([0-9]+[\])]?[\'"]? ?)[x]( ?[\[(]?)'
+            r'(?=[+-]?{0}[0-9]*\.?[0-9]+)'.format(cur),
+            flags=re.I | re.U),
+         r'\1{dimension}\2'),
+        # trademark
+        (re.compile(
+            r'(\b ?|{0}|^)[([]TM[])]'.format(regex_snippets['space']),
+            flags=re.I | re.U),
+         r'\1{trademark}'),
+        # registered
+        (re.compile(
+            r'(\b ?|{0}|^)[([]R[])]'.format(regex_snippets['space']),
+            flags=re.I | re.U),
+            r'\1{registered}'),
+        # copyright
+        (re.compile(
+            r'(\b ?|{0}|^)[([]C[])]'.format(regex_snippets['space']),
+            flags=re.I | re.U),
+         r'\1{copyright}'),
+        # 1/2
+        (re.compile(r'[([]1\/2[])]'), r'{half}'),
+        # 1/4
+        (re.compile(r'[([]1\/4[])]'), r'{quarter}'),
+        # 3/4
+        (re.compile(r'[([]3\/4[])]'), r'{threequarters}'),
+        # degrees
+        (re.compile(r'[([]o[])]'), r'{degrees}'),
+        # plus/minus
+        (re.compile(r'[([]\+\/-[])]'), r'{plusminus}'),
+        # 3+ uppercase acronym
+        (re.compile(
+            r'\b([{0}][{1}]{{2,}})\b(?:[(]([^)]*)[)])'
+            .format(regex_snippets['abr'], regex_snippets['acr']),
+            flags=re.U),
+         (r'<abbr title="\2">\1</abbr>' if html_type == 'html5'
+          else r'<acronym title="\2">\1</acronym>')),
+        # 3+ uppercase
+        (re.compile(
+            r'({space}|^|[>(;-])([{abr}]{{3,}})([{nab}]*)'
+            '(?={space}|{pnct}|<|$)(?=[^">]*?(<|$))'
+            .format(space=regex_snippets['space'],
+                    abr=regex_snippets['abr'],
+                    nab=regex_snippets['nab'],
+                    pnct=pnct_re_s),
+            re.U),
+         r'\1<span class="caps">{0}:glyph:\2</span>\3'.format(uid)),
+    ]
+    return [(regex_obj, replacement.format(**glyph_defs))
+            for (regex_obj, replacement) in pre_result]
+
+
+
 class Textile(object):
     restricted_url_schemes = ('http', 'https', 'ftp', 'mailto')
     unrestricted_url_schemes = restricted_url_schemes + ('file', 'tel',
@@ -98,114 +214,12 @@ class Textile(object):
             cur = r'(?:[{0}]{1}*)?'.format(regex_snippets['cur'],
                     regex_snippets['space'])
 
-        # We'll be searching for characters that need to be HTML-encoded to
-        # produce properly valid html.  These are the defaults that work in
-        # most cases.  Below, we'll copy this and modify the necessary pieces
-        # to make it work for characters at the beginning of the string.
-        self.glyph_search = [
-            # apostrophe's
-            re.compile(r"(^|{0}|\))'({0})".format(regex_snippets['wrd']),
-                flags=re.U),
-            # back in '88
-            re.compile(r"({0})'(\d+{1}?)\b(?![.]?[{1}]*?')".format(
-                regex_snippets['space'], regex_snippets['wrd']),
-                flags=re.U),
-            # single opening following an open bracket.
-            re.compile(r"([([{])'(?=\S)", flags=re.U),
-            # single closing
-            re.compile(r"(^|\S)'(?={0}|{1}|<|$)".format(
-                regex_snippets['space'], pnct_re_s), flags=re.U),
-            # single opening
-            re.compile(r"'", re.U),
-            # double opening following an open bracket. Allows things like
-            # Hello ["(Mum) & dad"]
-            re.compile(r'([([{])"(?=\S)', flags=re.U),
-            # double closing
-            re.compile(r'(^|\S)"(?={0}|{1}|<|$)'.format(
-                regex_snippets['space'], pnct_re_s), re.U),
-            # double opening
-            re.compile(r'"'),
-            # ellipsis
-            re.compile(r'([^.]?)\.{3}'),
-            # ampersand
-            re.compile(r'(\s?)&(\s)', re.U),
-            # em dash
-            re.compile(r'(\s?)--(\s?)'),
-            # en dash
-            re.compile(r' - '),
-            # dimension sign
-            re.compile(r'([0-9]+[\])]?[\'"]? ?)[x]( ?[\[(]?)'
-                r'(?=[+-]?{0}[0-9]*\.?[0-9]+)'.format(cur), flags=re.I | re.U),
-            # trademark
-            re.compile(r'(\b ?|{0}|^)[([]TM[])]'.format(regex_snippets['space']
-                ), flags=re.I | re.U),
-            # registered
-            re.compile(r'(\b ?|{0}|^)[([]R[])]'.format(regex_snippets['space']
-                ), flags=re.I | re.U),
-            # copyright
-            re.compile(r'(\b ?|{0}|^)[([]C[])]'.format(regex_snippets['space']
-                ), flags=re.I | re.U),
-            # 1/2
-            re.compile(r'[([]1\/2[])]'),
-            # 1/4
-            re.compile(r'[([]1\/4[])]'),
-            # 3/4
-            re.compile(r'[([]3\/4[])]'),
-            # degrees
-            re.compile(r'[([]o[])]'),
-            # plus/minus
-            re.compile(r'[([]\+\/-[])]'),
-            # 3+ uppercase acronym
-            re.compile(r'\b([{0}][{1}]{{2,}})\b(?:[(]([^)]*)[)])'.format(
-                regex_snippets['abr'], regex_snippets['acr']), flags=re.U),
-            # 3+ uppercase
-            re.compile(r'({space}|^|[>(;-])([{abr}]{{3,}})([{nab}]*)'
-                '(?={space}|{pnct}|<|$)(?=[^">]*?(<|$))'.format(**{ 'space':
-                    regex_snippets['space'], 'abr': regex_snippets['abr'],
-                    'nab': regex_snippets['nab'], 'pnct': pnct_re_s}), re.U),
-        ]
-        # These are the changes that need to be made for characters that occur
-        # at the beginning of the string.
-        self.glyph_search_initial = list(self.glyph_search)
-        # apostrophe's
-        self.glyph_search_initial[0] = re.compile(r"({0}|\))'({0})".format(
-            regex_snippets['wrd']), flags=re.U)
-        # single closing
-        self.glyph_search_initial[3] = re.compile(r"(\S)'(?={0}|{1}|$)".format(
-                regex_snippets['space'], pnct_re_s), re.U)
-        # double closing
-        self.glyph_search_initial[6] = re.compile(r'(\S)"(?={0}|{1}|<|$)'.format(
-                regex_snippets['space'], pnct_re_s), re.U)
-
-        self.glyph_replace = [x.format(**self.glyph_definitions) for x in (
-            r'\1{apostrophe}\2',                  # apostrophe's
-            r'\1{apostrophe}\2',                  # back in '88
-            r'\1{quote_single_open}',             # single opening after bracket
-            r'\1{quote_single_close}',            # single closing
-            r'{quote_single_open}',               # single opening
-            r'\1{quote_double_open}',             # double opening after bracket
-            r'\1{quote_double_close}',            # double closing
-            r'{quote_double_open}',               # double opening
-            r'\1{ellipsis}',                      # ellipsis
-            r'\1{ampersand}\2',                   # ampersand
-            r'\1{emdash}\2',                      # em dash
-            r' {endash} ',                        # en dash
-            r'\1{dimension}\2',                   # dimension sign
-            r'\1{trademark}',                     # trademark
-            r'\1{registered}',                    # registered
-            r'\1{copyright}',                     # copyright
-            r'{half}',                            # 1/2
-            r'{quarter}',                         # 1/4
-            r'{threequarters}',                   # 3/4
-            r'{degrees}',                         # degrees
-            r'{plusminus}',                       # plus/minus
-            r'<acronym title="\2">\1</acronym>',  # 3+ uppercase acronym
-            r'\1<span class="caps">{0}:glyph:\2'  # 3+ uppercase
-              r'</span>\3'.format(self.uid),
-        )]
-
-        if self.html_type == 'html5':
-            self.glyph_replace[21] = r'<abbr title="\2">\1</abbr>'
+        self.glyph_replacers = make_glyph_replacers(
+            html_type, self.uid, self.glyph_definitions, is_initial=False)
+        # Replacements that need to be made at the beginning
+        # of the string
+        self.initial_glyph_replacers = make_glyph_replacers(
+            html_type, self.uid, self.glyph_definitions, is_initial=True)
 
         if self.restricted is True:
             self.url_schemes = self.restricted_url_schemes
@@ -601,21 +615,22 @@ class Textile(object):
         single quote.  If it's the first character of one of those splits, it's
         an apostrophe or closed single quote, but the regex will bear that out.
         A similar situation occurs for double quotes as well.
-        So, for the first pass, we use the glyph_search_initial set of
-        regexes.  For all remaining passes, we use glyph_search
+        So, for the first pass, we use a set of regexes from
+        the initial_glyph_replacers. For all remaining passes,
+        we use glyph_replacers
         """
         text = text.rstrip('\n')
         result = []
-        searchlist = self.glyph_search_initial
+        replacers = self.initial_glyph_replacers
         # split the text by any angle-bracketed tags
         for i, line in enumerate(re.compile(r'(<[\w\/!?].*?>)', re.U).split(
             text)):
             if not i % 2:
-                for s, r in zip(searchlist, self.glyph_replace):
+                for s, r in replacers:
                     line = s.sub(r, line)
             result.append(line)
             if i == 0:
-                searchlist = self.glyph_search
+                replacers = self.glyph_replacers
         return ''.join(result)
 
     def getRefs(self, text):
