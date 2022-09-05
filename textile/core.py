@@ -47,6 +47,12 @@ def make_glyph_replacers(html_type, uid, glyph_defs, is_initial):
         if regex_snippets['cur']
         else r'')
     pre_result = [
+        # dimension sign (before apostrophes/quotes are replaced)
+        (re.compile(
+            r'([0-9]+[\])]?[\'"]? ?)[x]( ?[\[(]?)'
+            r'(?=[+-]?{0}[0-9]*\.?[0-9]+)'.format(cur),
+            flags=re.I | re.U),
+         r'\1{dimension}\2'),
         # apostrophe's
         (re.compile(
             (r"(^|{0}|\))'({0})" if not is_initial
@@ -97,12 +103,6 @@ def make_glyph_replacers(html_type, uid, glyph_defs, is_initial):
         (re.compile(r'(\s?)--(\s?)'), r'\1{emdash}\2'),
         # en dash
         (re.compile(r' - '), r' {endash} '),
-        # dimension sign
-        (re.compile(
-            r'([0-9]+[\])]?[\'"]? ?)[x]( ?[\[(]?)'
-            r'(?=[+-]?{0}[0-9]*\.?[0-9]+)'.format(cur),
-            flags=re.I | re.U),
-         r'\1{dimension}\2'),
         # trademark
         (re.compile(
             r'(\b ?|{0}|^)[([]TM[])]'.format(regex_snippets['space']),

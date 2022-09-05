@@ -26,7 +26,10 @@ except ImportError:
         'abr': r'{0}'.format(upper_re_s),
         'nab': r'a-z',
         'wrd': r'\w',
-        'cur': r'',
+        # All codepoints identified as currency symbols
+        # by the [mrab-regex library](https://pypi.org/project/regex/)
+        # and the UNICODE standard.
+        'cur': r'$¢-¥֏؋৲৳৻૱௹฿៛\u20a0-\u20cf\ua838﷼﹩＄￠￡￥￦',
         'digit': r'\d',
         'space': r'(?:\s|\v)',
         'char': r'\S',
