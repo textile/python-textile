@@ -1304,8 +1304,9 @@ class Textile(object):
                     o.append(li)
             self.notelist_cache[index] = "\n".join(o)
             result = self.notelist_cache[index]
-        list_atts = pba(att, restricted=self.restricted)
-        result = '<ol{0}>\n{1}\n\t</ol>'.format(list_atts, result)
+        if result:
+            list_atts = pba(att, restricted=self.restricted)
+            result = '<ol{0}>\n{1}\n\t</ol>'.format(list_atts, result)
         return result
 
     def makeBackrefLink(self, info, g_links, i):

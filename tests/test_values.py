@@ -399,6 +399,8 @@ html_known_values = (
          '\t<p>What is .2&#8221;&#215; .5&#8221;?</p>\n\n'
          '\t<p>1 &#215; $10.00 &#215; -£ 1.23 &#215; ¥20,000 &#215; -¤120.00 &#215; ฿1,000,000 &#215; -€110,00</p>')
     ),
+    # Empty note lists
+    ('There should be nothing below.\n\nnotelist.', '\t<p>There should be nothing below.</p>\n\n\t'),
 )
 
 @pytest.mark.parametrize("input, expected_output", xhtml_known_values)
