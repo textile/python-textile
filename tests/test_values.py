@@ -14,7 +14,7 @@ xhtml_known_values = (
 
     ('I spoke.\nAnd none replied.', '\t<p>I spoke.<br />\nAnd none replied.</p>'),
 
-    ('"Observe!"', '\t<p>&#8220;Observe!&#8221; </p>'),
+    ('"Observe!"', '\t<p>&#8220;Observe!&#8221;</p>'),
 
     ('Observe -- very nice!', '\t<p>Observe &#8212; very nice!</p>'),
 
@@ -201,13 +201,13 @@ xhtml_known_values = (
      """\t<p style="text-align:center;"><strong><em>The</em></strong> <em><strong>Prisoner</strong></em></p>"""),
 
     ("""p=. "An emphasised _word._" & "*A spanned phrase.*" """,
-     """\t<p style="text-align:center;">&#8220;An emphasised <em>word.</em>&#8221; &amp; &#8220;<strong>A spanned phrase.</strong>&#8221; </p>"""),
+     """\t<p style="text-align:center;">&#8220;An emphasised <em>word.</em>&#8221; &amp; &#8220;<strong>A spanned phrase.</strong>&#8221;</p>"""),
 
     ("""p=. "*Here*'s a word!" """,
-     """\t<p style="text-align:center;">&#8220;<strong>Here</strong>&#8217;s a word!&#8221; </p>"""),
+     """\t<p style="text-align:center;">&#8220;<strong>Here</strong>&#8217;s a word!&#8221;</p>"""),
 
     ("""p=. "Please visit our "Textile Test Page":http://textile.sitemonks.com" """,
-     """\t<p style="text-align:center;">&#8220;Please visit our <a href="http://textile.sitemonks.com">Textile Test Page</a>&#8221; </p>"""),
+     """\t<p style="text-align:center;">&#8220;Please visit our <a href="http://textile.sitemonks.com">Textile Test Page</a>&#8221;</p>"""),
     ("""| Foreign EXPÓŅÉNTIAL |""",
      """\t<table>\n\t\t<tr>\n\t\t\t<td> Foreign <span class="caps">EXPÓŅÉNTIAL</span> </td>\n\t\t</tr>\n\t</table>"""),
     ("""Piękne ŹDŹBŁO""",

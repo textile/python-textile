@@ -99,7 +99,6 @@ def normalize_newlines(string):
     out = string.strip()
     out = re.sub(r'\r\n?', '\n', out)
     out = re.compile(r'^[ \t]*\n', flags=re.M).sub('\n', out)
-    out = re.sub(r'"$', '" ', out)
     return out
 
 def parse_attributes(block_attributes, element=None, include_id=True, restricted=False):

@@ -26,11 +26,11 @@ def test_Footnote():
 
 def test_issue_35():
     result = textile.textile('"z"')
-    expect = '\t<p>&#8220;z&#8221; </p>'
+    expect = '\t<p>&#8220;z&#8221;</p>'
     assert result == expect
 
     result = textile.textile('" z"')
-    expect = '\t<p>&#8220; z&#8221; </p>'
+    expect = '\t<p>&#8220; z&#8221;</p>'
     assert result == expect
 
 def test_restricted():
