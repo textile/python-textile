@@ -401,6 +401,25 @@ html_known_values = (
     ),
     # Empty note lists
     ('There should be nothing below.\n\nnotelist.', '\t<p>There should be nothing below.</p>\n\n\t'),
+    #  Empty things
+    (('\'\'\n\n""\n\n%%\n\n^^\n\n&&\n\n**\n\n__\n\n--\n\n++\n\n~~\n\n{}\n\n'
+      '[]\n\n()\n\n<>\n\n\\\\\n\n//\n\n??\n\n==\n\n@@\n\n##\n\n$$\n\n!!\n\n'
+      '::\n\n;;\n\n..\n\n,,\n\n||\n\n` `\n\n\' \'\n\n" "\n\n% %\n\n^ ^\n\n'
+      '& &\n\n* *\n\n_ _\n\n- -\n\n+ +\n\n~ ~\n\n{ }\n\n[ ]\n\n( )\n\n< >\n\n'
+      '\\ \\\n\n/ /\n\n? ?\n\n= =\n\n@ @\n\n# #\n\n$ $\n\n! !\n\n: :\n\n; ;\n\n'
+      '. .\n\n, ,'),
+     ("\t<p>&#8216;&#8217;</p>\n\n\t<p>&#8220;&#8221;</p>\n\n\t<p>%%</p>\n\n\t<p>^^</p>\n\n\t"
+      "<p>&amp;&amp;</p>\n\n\t<p>**</p>\n\n\t<p>__</p>\n\n\t<p>&#8212;</p>\n\n\t<p>++</p>\n\n\t"
+      "<p>~~</p>\n\n\t<p>{}</p>\n\n\t<p>[]</p>\n\n\t<p>()</p>\n\n\t<p>&lt;&gt;</p>\n\n\t<p>\\\\</p>\n\n\t"
+      "<p>//</p>\n\n\t<p>??</p>\n\n\t<p>==</p>\n\n\t<p><code></code></p>\n\n\t<p>##</p>\n\n\t<p>$$</p>\n\n\t"
+      "<p>!!</p>\n\n\t<p>::</p>\n\n\t<p>;;</p>\n\n\t<p>..</p>\n\n\t<p>,,</p>\n\n\t"
+      "<table>\n\t\t<tr>\n\t\t\t<td></td>\n\t\t</tr>\n\t</table>\n\n\t<p>` `</p>\n\n\t<p>&#8216; &#8216;</p>\n\n\t"
+      "<p>&#8220; &#8220;</p>\n\n\t<p>% %</p>\n\n\t<p>^ ^</p>\n\n\t<p>&amp; &amp;</p>\n\n\t"
+      "<ul>\n\t\t<li>*</li>\n\t</ul>\n\n\t<p>_ _</p>\n\n\t<p>- -</p>\n\n\t<p>+ +</p>\n\n\t<p>~ ~</p>\n\n\t"
+      "<p>{ }</p>\n\n\t<p>[ ]</p>\n\n\t<p>( )</p>\n\n\t<p>&lt; &gt;</p>\n\n\t<p>\\ \\</p>\n\n\t"
+      "<p>/ /</p>\n\n\t<p>? ?</p>\n\n\t<p>= =</p>\n\n\t<p><code> </code></p>\n\n\t<ol>\n\t\t<li>#</li>\n\t</ol>\n\n\t"
+      "<p>$ $</p>\n\n\t<p>! !</p>\n\n\t<dl>\n\t\t<dd>:</dd>\n\t</dl>\n\n\t<dl>\n\t\t<dt>;</dt>\n\t</dl>\n\n\t"
+      "<p>. .</p>\n\n\t<p>, ,</p>"))
 )
 
 @pytest.mark.parametrize("input, expected_output", xhtml_known_values)

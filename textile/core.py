@@ -97,8 +97,6 @@ def make_glyph_replacers(html_type, uid, glyph_defs, is_initial):
         (re.compile(r'"'), r'{quote_double_open}'),
         # ellipsis
         (re.compile(r'([^.]?)\.{3}'), r'\1{ellipsis}'),
-        # ampersand
-        (re.compile(r'(\s?)&(\s)', re.U), r'\1{ampersand}\2'),
         # em dash
         (re.compile(r'(\s?)--(\s?)'), r'\1{emdash}\2'),
         # en dash
@@ -622,10 +620,20 @@ class Textile(object):
         text = text.rstrip('\n')
         result = []
         replacers = self.initial_glyph_replacers
+        standalone_amp_re = re.compile(r'&(?!#?[a-z0-9]+;)', flags=re.I)
+        html_amp_symbol = self.glyph_definitions['ampersand']
         # split the text by any angle-bracketed tags
         for i, line in enumerate(re.compile(r'(<[\w\/!?].*?>)', re.U).split(
             text)):
             if not i % 2:
+                if not self.restricted:
+                    # Raw < > & chars have already been encoded
+                    # when in restricted mode
+                    line = (
+                        standalone_amp_re
+                        .sub(html_amp_symbol, line)
+                        .replace('<', '&lt;')
+                        .replace('>', '&gt;'))
                 for s, r in replacers:
                     line = s.sub(r, line)
             result.append(line)
