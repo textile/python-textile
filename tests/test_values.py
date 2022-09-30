@@ -425,6 +425,9 @@ html_known_values = (
     (('An ordinary block.\n\n'
       '<!-- A comment block -->\n'),
      '\t<p>An ordinary block.</p>\n\n<!-- A comment block -->'),
+    # Headers must be "breakable", just like paragraphs.
+    ('h1. Two line with *strong*\nheading\n',
+     '\t<h1>Two line with <strong>strong</strong><br />\nheading</h1>'),
 )
 
 @pytest.mark.parametrize("input, expected_output", xhtml_known_values)

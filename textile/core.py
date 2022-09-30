@@ -419,8 +419,9 @@ class Textile(object):
                           re.S).sub(self.doBr, input)
 
     def doPBr(self, in_):
-        return re.compile(r'<(p)([^>]*?)>(.*)(</\1>)', re.S).sub(self.doBr,
-                                                                 in_)
+        return (re
+                .compile(r'<(p|h[1-6])([^>]*?)>(.*)(</\1>)', re.S)
+                .sub(self.doBr, in_))
 
     def doBr(self, match):
         content = re.sub(r'(.+)(?:(?<!<br>)|(?<!<br />))\n(?![#*;:\s|])',
