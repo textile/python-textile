@@ -14,6 +14,18 @@ from xml.etree import ElementTree
 
 from textile.regex_strings import valign_re_s, halign_re_s
 
+# Regular expressions for stripping chunks of HTML,
+# leaving only content not wrapped in a tag or a comment
+RAW_TEXT_REVEALERS = (
+    # The php version has orders the below list of tags differently.  The
+    # important thing to note here is that the pre must occur before the p or
+    # else the regex module doesn't properly match pre-s. It only matches the
+    # p in pre.
+    re.compile(r'<(pre|p|blockquote|div|form|table|ul|ol|dl|h[1-6])[^>]*?>.*</\1>',
+                   re.S),
+    re.compile(r'<(hr|br)[^>]*?/>'),
+    re.compile(r'<!--.*?-->'),
+)
 
 def decode_high(text):
     """Decode encoded HTML entities."""
@@ -66,14 +78,10 @@ def generate_tag(tag, content, attributes=None):
 
 def has_raw_text(text):
     """checks whether the text has text not already enclosed by a block tag"""
-    # The php version has orders the below list of tags differently.  The
-    # important thing to note here is that the pre must occur before the p or
-    # else the regex module doesn't properly match pre-s. It only matches the
-    # p in pre.
-    r = re.compile(r'<(pre|p|blockquote|div|form|table|ul|ol|dl|h[1-6])[^>]*?>.*</\1>',
-                   re.S).sub('', text.strip()).strip()
-    r = re.compile(r'<(hr|br)[^>]*?/>').sub('', r)
-    return '' != r
+    r = text.strip()
+    for pattern in RAW_TEXT_REVEALERS:
+        r = pattern.sub('', r).strip()
+    return r != ''
 
 def is_rel_url(url):
     """Identify relative urls."""

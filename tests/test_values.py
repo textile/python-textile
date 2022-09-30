@@ -219,7 +219,7 @@ xhtml_known_values = (
      '\t<p style="font-size:0.8em;"><strong>TxStyle</strong> is a documentation project of Textile 2.4 for <a href="http://texpattern.com">Textpattern <span class="caps">CMS</span></a>.</p>'),
     (""""Übermensch":http://de.wikipedia.org/wiki/Übermensch""", """\t<p><a href="http://de.wikipedia.org/wiki/%C3%9Cbermensch">Übermensch</a></p>"""),
     ("""Here is some text with a <!-- Commented out[1] --> block.\n\n<!-- Here is a single <span>line</span> comment block -->\n\n<!-- Here is a whole\nmultiline\n<span>HTML</span>\nComment\n-->\n\nbc. <!-- Here is a comment block in a code block. -->""",
-     """\t<p>Here is some text with a <!-- Commented out[1] --> block.</p>\n\n\t<p><!-- Here is a single <span>line</span> comment block --></p>\n\n\t<p><!-- Here is a whole\nmultiline\n<span>HTML</span>\nComment\n--></p>\n\n<pre><code>&lt;!-- Here is a comment block in a code block. --&gt;</code></pre>"""),
+     """\t<p>Here is some text with a <!-- Commented out[1] --> block.</p>\n\n<!-- Here is a single <span>line</span> comment block -->\n\n<!-- Here is a whole\nmultiline\n<span>HTML</span>\nComment\n-->\n\n<pre><code>&lt;!-- Here is a comment block in a code block. --&gt;</code></pre>"""),
     (""""Textile(c)" is a registered(r) 'trademark' of Textpattern(tm) -- or TXP(That's textpattern!) -- at least it was - back in '88 when 2x4 was (+/-)5(o)C ... QED!\n\np{font-size: 200%;}. 2(1/4) 3(1/2) 4(3/4)""",
      """\t<p>&#8220;Textile&#169;&#8221; is a registered&#174; &#8216;trademark&#8217; of Textpattern&#8482; &#8212; or <acronym title="That&#8217;s textpattern!"><span class="caps">TXP</span></acronym> &#8212; at least it was &#8211; back in &#8217;88 when 2&#215;4 was &#177;5&#176;C &#8230; <span class="caps">QED</span>!</p>\n\n\t<p style="font-size: 200%;">2&#188; 3&#189; 4&#190;</p>"""),
     ("""|=. Testing colgroup and col syntax\n|:\\5. 80\n|a|b|c|d|e|\n\n|=. Testing colgroup and col syntax|\n|:\\5. 80|\n|a|b|c|d|e|""", """\t<table>\n\t<caption>Testing colgroup and col syntax</caption>\n\t<colgroup span="5" width="80">\n\t</colgroup>\n\t\t<tr>\n\t\t\t<td>a</td>\n\t\t\t<td>b</td>\n\t\t\t<td>c</td>\n\t\t\t<td>d</td>\n\t\t\t<td>e</td>\n\t\t</tr>\n\t</table>\n\n\t<table>\n\t<caption>Testing colgroup and col syntax</caption>\n\t<colgroup span="5" width="80">\n\t</colgroup>\n\t\t<tr>\n\t\t\t<td>a</td>\n\t\t\t<td>b</td>\n\t\t\t<td>c</td>\n\t\t\t<td>d</td>\n\t\t\t<td>e</td>\n\t\t</tr>\n\t</table>"""),
@@ -419,7 +419,12 @@ html_known_values = (
       "<p>{ }</p>\n\n\t<p>[ ]</p>\n\n\t<p>( )</p>\n\n\t<p>&lt; &gt;</p>\n\n\t<p>\\ \\</p>\n\n\t"
       "<p>/ /</p>\n\n\t<p>? ?</p>\n\n\t<p>= =</p>\n\n\t<p><code> </code></p>\n\n\t<ol>\n\t\t<li>#</li>\n\t</ol>\n\n\t"
       "<p>$ $</p>\n\n\t<p>! !</p>\n\n\t<dl>\n\t\t<dd>:</dd>\n\t</dl>\n\n\t<dl>\n\t\t<dt>;</dt>\n\t</dl>\n\n\t"
-      "<p>. .</p>\n\n\t<p>, ,</p>"))
+      "<p>. .</p>\n\n\t<p>, ,</p>")),
+    # A lone standing comment must be preserved as is:
+    # withouth wrapping it into a paragraph
+    (('An ordinary block.\n\n'
+      '<!-- A comment block -->\n'),
+     '\t<p>An ordinary block.</p>\n\n<!-- A comment block -->'),
 )
 
 @pytest.mark.parametrize("input, expected_output", xhtml_known_values)
