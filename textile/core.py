@@ -621,7 +621,9 @@ class Textile(object):
         text = text.rstrip('\n')
         result = []
         replacers = self.initial_glyph_replacers
-        standalone_amp_re = re.compile(r'&(?!#?[a-z0-9]+;)', flags=re.I)
+        standalone_amp_re = re.compile(
+            r"&(?!#[0-9]+;|#x[a-f0-9]+;|[a-z][a-z0-9]*;)",
+            flags=re.I)
         html_amp_symbol = self.glyph_definitions['ampersand']
         # split the text by any angle-bracketed tags
         for i, line in enumerate(re.compile(r'(<[\w\/!?].*?>)', re.U).split(
