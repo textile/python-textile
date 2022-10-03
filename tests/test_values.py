@@ -435,6 +435,33 @@ html_known_values = (
      ("\t<p>&#8220;<span lang=\"en\">test</span>&#8221;</p>\n\n"
       "\t<p>&#x201c;<span lang=\"en\">test</span>&#x201d;</p>\n\n"
       "\t<p>&nbsp;<span lang=\"en\">test</span>&nbsp;</p>")),
+    # Nested and mixed multi-level ordered and unordered lists
+    (("* bullet\n"
+      "*# number\n"
+      "*# number\n"
+      "*#* bullet\n"
+      "*# number\n"
+      "*# number with\n"
+      "a break\n"
+      "* bullet\n"
+      "** okay"),
+     ("\t<ul>\n"
+      "\t\t<li>bullet\n"
+      "\t\t<ol>\n"
+      "\t\t\t<li>number</li>\n"
+      "\t\t\t<li>number\n"
+      "\t\t\t<ul>\n"
+      "\t\t\t\t<li>bullet</li>\n"
+      "\t\t\t</ul></li>\n"
+      "\t\t\t<li>number</li>\n"
+      "\t\t\t<li>number with<br />\n"
+      "a break</li>\n"
+      "\t\t</ol></li>\n"
+      "\t\t<li>bullet\n"
+      "\t\t<ul>\n"
+      "\t\t\t<li>okay</li>\n"
+      "\t\t</ul></li>\n"
+      "\t\t</ul>"))
 )
 
 @pytest.mark.parametrize("input, expected_output", xhtml_known_values)

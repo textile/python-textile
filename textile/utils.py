@@ -96,9 +96,9 @@ def is_valid_url(url):
 
 def list_type(list_string):
     listtypes = {
-        list_string.startswith('*'): 'u',
-        list_string.startswith('#'): 'o',
-        (not list_string.startswith('*') and not list_string.startswith('#')):
+        list_string.endswith('*'): 'u',
+        list_string.endswith('#'): 'o',
+        (not list_string.endswith('*') and not list_string.endswith('#')):
         'd'
     }
     return listtypes.get(True, False)
