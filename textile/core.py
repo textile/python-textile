@@ -424,8 +424,12 @@ class Textile(object):
                 .sub(self.doBr, in_))
 
     def doBr(self, match):
-        content = re.sub(r'(.+)(?:(?<!<br>)|(?<!<br />))\n(?![#*;:\s|])',
-                         r'\1<br />', match.group(3))
+        content = (
+            re.compile(
+                r'(.+)(?!(?<=</dd>|</dt>|</li>|<br/>)'
+                r'|(?<=<br>)|(?<=<br />))\n(?![#*;:\s|])',
+                re.I)
+            .sub(r'\1<br />', match.group(3)))
         return '<{0}{1}>{2}{3}'.format(match.group(1), match.group(2), content,
                 match.group(4))
 

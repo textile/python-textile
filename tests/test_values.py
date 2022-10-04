@@ -236,7 +236,7 @@ xhtml_known_values = (
     ("""# one\n##3 one.three\n## one.four\n## one.five\n# two\n\ntest\n\n#_(continuation#section2).\n# three\n# four\n##_ four.six\n## four.seven\n# five\n\ntest\n\n#21 twenty-one\n# twenty-two""",
      """\t<ol>\n\t\t<li>one\n\t\t<ol start="3">\n\t\t\t<li>one.three</li>\n\t\t\t<li>one.four</li>\n\t\t\t<li>one.five</li>\n\t\t</ol></li>\n\t\t<li>two</li>\n\t</ol>\n\n\t<p>test</p>\n\n\t<ol class="continuation" id="section2" start="3">\n\t\t<li>three</li>\n\t\t<li>four\n\t\t<ol start="6">\n\t\t\t<li>four.six</li>\n\t\t\t<li>four.seven</li>\n\t\t</ol></li>\n\t\t<li>five</li>\n\t</ol>\n\n\t<p>test</p>\n\n\t<ol start="21">\n\t\t<li>twenty-one</li>\n\t\t<li>twenty-two</li>\n\t</ol>"""),
     ("""|* Foo[^2^]\n* _bar_\n* ~baz~ |\n|#4 *Four*\n# __Five__ |\n|-(hot) coffee := Hot and black\n-(hot#tea) tea := Also hot, but a little less black\n-(cold) milk :=\nNourishing beverage for baby cows.\nCold drink that goes great with cookies. =:\n|""",
-     """\t<table>\n\t\t<tr>\n\t\t\t<td>\t<ul>\n\t\t<li>Foo<sup>2</sup></li>\n\t\t<li><em>bar</em></li>\n\t\t<li><sub>baz</sub></li>\n\t</ul></td>\n\t\t</tr>\n\t\t<tr>\n\t\t\t<td>\t<ol start="4">\n\t\t<li><strong>Four</strong></li>\n\t\t<li><i>Five</i></li>\n\t</ol></td>\n\t\t</tr>\n\t\t<tr>\n\t\t\t<td><dl>\n\t<dt class="hot">coffee</dt>\n\t<dd>Hot and black</dd>\n\t<dt class="hot" id="tea">tea</dt>\n\t<dd>Also hot, but a little less black</dd>\n\t<dt class="cold">milk</dt>\n\t<dd><p>Nourishing beverage for baby cows.<br />\nCold drink that goes great with cookies.</p></dd><br />\n</dl></td>\n\t\t</tr>\n\t</table>"""),
+     """\t<table>\n\t\t<tr>\n\t\t\t<td>\t<ul>\n\t\t<li>Foo<sup>2</sup></li>\n\t\t<li><em>bar</em></li>\n\t\t<li><sub>baz</sub></li>\n\t</ul></td>\n\t\t</tr>\n\t\t<tr>\n\t\t\t<td>\t<ol start="4">\n\t\t<li><strong>Four</strong></li>\n\t\t<li><i>Five</i></li>\n\t</ol></td>\n\t\t</tr>\n\t\t<tr>\n\t\t\t<td><dl>\n\t<dt class="hot">coffee</dt>\n\t<dd>Hot and black</dd>\n\t<dt class="hot" id="tea">tea</dt>\n\t<dd>Also hot, but a little less black</dd>\n\t<dt class="cold">milk</dt>\n\t<dd><p>Nourishing beverage for baby cows.<br />\nCold drink that goes great with cookies.</p></dd>\n</dl></td>\n\t\t</tr>\n\t</table>"""),
     ("""h4. A more complicated table\n\ntable(tableclass#tableid){color:blue}.\n|_. table |_. more |_. badass |\n|\\3. Horizontal span of 3|\n(firstrow). |first|HAL(open the pod bay doors)|1|\n|some|{color:green}. styled|content|\n|/2. spans 2 rows|this is|quite a|\n| deep test | don't you think?|\n(lastrow). |fifth|I'm a lumberjack|5|\n|sixth| _*bold italics*_ |6|""",
      """\t<h4>A more complicated table</h4>\n\n\t<table class="tableclass" id="tableid" style="color:blue;">\n\t\t<tr>\n\t\t\t<th>table </th>\n\t\t\t<th>more </th>\n\t\t\t<th>badass </th>\n\t\t</tr>\n\t\t<tr>\n\t\t\t<td colspan="3">Horizontal span of 3</td>\n\t\t</tr>\n\t\t<tr class="firstrow">\n\t\t\t<td>first</td>\n\t\t\t<td><acronym title="open the pod bay doors"><span class="caps">HAL</span></acronym></td>\n\t\t\t<td>1</td>\n\t\t</tr>\n\t\t<tr>\n\t\t\t<td>some</td>\n\t\t\t<td style="color:green;">styled</td>\n\t\t\t<td>content</td>\n\t\t</tr>\n\t\t<tr>\n\t\t\t<td rowspan="2">spans 2 rows</td>\n\t\t\t<td>this is</td>\n\t\t\t<td>quite a</td>\n\t\t</tr>\n\t\t<tr>\n\t\t\t<td> deep test </td>\n\t\t\t<td> don&#8217;t you think?</td>\n\t\t</tr>\n\t\t<tr class="lastrow">\n\t\t\t<td>fifth</td>\n\t\t\t<td>I&#8217;m a lumberjack</td>\n\t\t\t<td>5</td>\n\t\t</tr>\n\t\t<tr>\n\t\t\t<td>sixth</td>\n\t\t\t<td> <em><strong>bold italics</strong></em> </td>\n\t\t\t<td>6</td>\n\t\t</tr>\n\t</table>"""),
     ("""| *strong* |\n\n| _em_ |\n\n| Inter-word -dashes- | ZIP-codes are 5- or 9-digit codes |""",
@@ -461,7 +461,18 @@ html_known_values = (
       "\t\t<ul>\n"
       "\t\t\t<li>okay</li>\n"
       "\t\t</ul></li>\n"
-      "\t\t</ul>"))
+      "\t\t</ul>")),
+    # Checks proper insertion of <br /> within table cells
+    (("|-(cold) milk :=\n"
+      "Nourishing beverage for baby cows. =:\n"
+      "|"),
+     ("\t<table>\n"
+      "\t\t<tr>\n"
+      "\t\t\t<td><dl>\n"
+      "\t<dt class=\"cold\">milk</dt>\n"
+      "\t<dd><p>Nourishing beverage for baby cows.</p></dd>\n"
+      "</dl></td>\n"
+      "\t\t</tr>\n\t</table>")),
 )
 
 @pytest.mark.parametrize("input, expected_output", xhtml_known_values)
