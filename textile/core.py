@@ -535,7 +535,7 @@ class Textile(object):
                                 block.outer_atts)
                         line = "\t{0}".format(line)
                 else:
-                    if block.tag == 'pre' or block.inner_tag == 'code':
+                    if block.tag in ('pre', 'notextile') or block.inner_tag == 'code':
                         line = self.shelve(encode_html(line, quotes=True))
                     else:
                         line = self.graf(line)

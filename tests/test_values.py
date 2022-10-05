@@ -473,6 +473,8 @@ html_known_values = (
       "\t<dd><p>Nourishing beverage for baby cows.</p></dd>\n"
       "</dl></td>\n"
       "\t\t</tr>\n\t</table>")),
+    # Long non-textile blocks
+    ("notextile.. *a very*\n\n*long*\n\n*block*\n", "*a very*\n\n*long*\n\n*block*")
 )
 
 @pytest.mark.parametrize("input, expected_output", xhtml_known_values)
