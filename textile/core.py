@@ -35,7 +35,7 @@ except ImportError:
     import re
 
 
-def make_glyph_replacers(html_type, uid, glyph_defs, is_initial):
+def make_glyph_replacers(html_type, uid, glyph_defs):
     """
     Generates a list of "replacers" (each is a pair consiting of
     a regular expression and a replacing pattern) that,
@@ -55,8 +55,7 @@ def make_glyph_replacers(html_type, uid, glyph_defs, is_initial):
          r'\1{dimension}\2'),
         # apostrophe's
         (re.compile(
-            (r"(^|{0}|\))'({0})" if not is_initial
-             else r"({0}|\))'({0})")
+            r"({0}|\))'({0})"
             .format(regex_snippets['wrd']),
             flags=re.U),
          r'\1{apostrophe}\2'),
@@ -71,11 +70,7 @@ def make_glyph_replacers(html_type, uid, glyph_defs, is_initial):
          r'\1{quote_single_open}'),
         # single closing
         (re.compile(
-            (r"(^|\S)'(?={0}|{1}|<|$)".format(
-                regex_snippets['space'], pnct_re_s)
-             if not is_initial
-             else r"(\S)'(?={0}|{1}|$)".format(
-                regex_snippets['space'], pnct_re_s)),
+            r"(\S)'(?={0}|{1}|<|$)".format(regex_snippets['space'], pnct_re_s),
             flags=re.U),
          r'\1{quote_single_close}'),
         # single opening
@@ -86,11 +81,7 @@ def make_glyph_replacers(html_type, uid, glyph_defs, is_initial):
          r'\1{quote_double_open}'),
         # double closing
         (re.compile(
-            (r'(^|\S)"(?={0}|{1}|<|$)'.format(
-                regex_snippets['space'], pnct_re_s)
-             if not is_initial
-             else r'(\S)"(?={0}|{1}|<|$)'.format(
-                regex_snippets['space'], pnct_re_s)),
+            r'(\S)"(?={0}|{1}|<|$)'.format(regex_snippets['space'], pnct_re_s),
             flags=re.U),
          r'\1{quote_double_close}'),
         # double opening
@@ -184,6 +175,10 @@ class Textile(object):
         'plusminus':          '&#177;',
     }
 
+    spanWrappers = (
+        ('[', ']'),
+    )
+
     def __init__(self, restricted=False, lite=False, noimage=False,
             get_sizes=False, html_type='xhtml', rel='', block_tags=True):
         """Textile properties that are common to regular textile and
@@ -213,11 +208,7 @@ class Textile(object):
                     regex_snippets['space'])
 
         self.glyph_replacers = make_glyph_replacers(
-            html_type, self.uid, self.glyph_definitions, is_initial=False)
-        # Replacements that need to be made at the beginning
-        # of the string
-        self.initial_glyph_replacers = make_glyph_replacers(
-            html_type, self.uid, self.glyph_definitions, is_initial=True)
+            html_type, self.uid, self.glyph_definitions)
 
         if self.restricted is True:
             self.url_schemes = self.restricted_url_schemes
@@ -279,6 +270,7 @@ class Textile(object):
         if sanitize:
             text = sanitizer.sanitize(text)
 
+        text = self.retrieveTags(text)
         text = self.retrieveURLs(text)
 
         # if the text contains a break tag (<br> or <br />) not followed by
@@ -624,15 +616,14 @@ class Textile(object):
         """
         text = text.rstrip('\n')
         result = []
-        replacers = self.initial_glyph_replacers
         standalone_amp_re = re.compile(
             r"&(?!#[0-9]+;|#x[a-f0-9]+;|[a-z][a-z0-9]*;)",
             flags=re.I)
         html_amp_symbol = self.glyph_definitions['ampersand']
         # split the text by any angle-bracketed tags
-        for i, line in enumerate(re.compile(r'(<[\w\/!?].*?>)', re.U).split(
-            text)):
-            if not i % 2:
+        lines = re.compile(r'(<[\w/!?].*?>)', re.U | re.S).split(text)
+        for i, line in enumerate(lines):
+            if i % 2 == 0:
                 if not self.restricted:
                     # Raw < > & chars have already been encoded
                     # when in restricted mode
@@ -641,11 +632,9 @@ class Textile(object):
                         .sub(html_amp_symbol, line)
                         .replace('<', '&lt;')
                         .replace('>', '&gt;'))
-                for s, r in replacers:
+                for s, r in self.glyph_replacers:
                     line = s.sub(r, line)
             result.append(line)
-            if i == 0:
-                replacers = self.glyph_replacers
         return ''.join(result)
 
     def getRefs(self, text):
@@ -1074,8 +1063,16 @@ class Textile(object):
         self.span_depth = self.span_depth - 1
         return text
 
+    def getSpecialOptions(self, pre, tail):
+        for before, after in self.spanWrappers:
+            if pre == before and tail == after:
+                pre = tail = ''
+                break
+        return (pre, tail)
+
     def fSpan(self, match):
         pre, tag, atts, cite, content, end, tail = match.groups()
+        pre, tail = self.getSpecialOptions(pre, tail)
 
         qtags = {
             '*':  'strong',
@@ -1096,11 +1093,32 @@ class Textile(object):
             atts = '{0} cite="{1}"'.format(atts, cite.rstrip())
 
         content = self.span(content)
+        opentag = '<{0}{1}>'.format(tag, atts)
+        closetag = '</{0}>'.format(tag)
+        tags = self.storeTags(opentag, closetag)
+        return pre + tags['open'] + content + end + tags['close'] + tail
 
-        out = "<{0}{1}>{2}{3}</{4}>".format(tag, atts, content, end, tag)
-        if pre and not tail or tail and not pre:
-            out = '{0}{1}{2}'.format(pre, out, tail)
-        return out
+    def storeTags(self, opentag, closetag=''):
+        tags = {}
+        self.refIndex += 1
+        self.refCache[self.refIndex] = opentag
+        tags['open'] = self.uid + str(self.refIndex) + ':ospan ';
+
+        self.refIndex += 1
+        self.refCache[self.refIndex] = closetag
+        tags['close'] = ' ' + self.uid + str(self.refIndex) + ':cspan';
+        return tags
+
+    def retrieveTags(self, text):
+        text = (re.compile('{0}(?P<token>[0-9]+):ospan '.format(self.uid), re.U)
+                .sub(self.fRetrieveTags, text))
+        text = (re.compile(' {0}(?P<token>[0-9]+):cspan'.format(self.uid), re.U)
+                .sub(self.fRetrieveTags, text))
+        return text
+
+    def fRetrieveTags(self, match):
+        return self.refCache[int(match.group('token'))]
+
 
     def image(self, text):
         pattern = re.compile(r"""
@@ -1166,6 +1184,7 @@ class Textile(object):
     def fCode(self, match):
         before, text, after = match.groups()
         after = after or ''
+        before, after = self.getSpecialOptions(before, after)
         # text needs to be escaped
         text = encode_html(text, quotes=False)
         return ''.join([before, self.shelve('<code>{0}</code>'.format(text)), after])
@@ -1174,6 +1193,7 @@ class Textile(object):
         before, text, after = match.groups()
         if after is None:
             after = ''
+        before, after = self.getSpecialOptions(before, after)
         # text needs to be escaped
         text = encode_html(text)
         return ''.join([before, '<pre>', self.shelve(text), '</pre>', after])
@@ -1192,6 +1212,7 @@ class Textile(object):
         before, notextile, after = match.groups()
         if after is None: # pragma: no branch
             after = ''
+        before, after = self.getSpecialOptions(before, after)
         return ''.join([before, self.shelve(notextile), after])
 
     def getHTMLComments(self, text):

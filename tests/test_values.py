@@ -474,7 +474,10 @@ html_known_values = (
       "</dl></td>\n"
       "\t\t</tr>\n\t</table>")),
     # Long non-textile blocks
-    ("notextile.. *a very*\n\n*long*\n\n*block*\n", "*a very*\n\n*long*\n\n*block*")
+    ("notextile.. *a very*\n\n*long*\n\n*block*\n", "*a very*\n\n*long*\n\n*block*"),
+    # Correct use of &lsquo; and &rsquo;
+    ("Here is a %(example)'spanned'% word.",
+     '\t<p>Here is a <span class="example">&#8216;spanned&#8217;</span> word.</p>'),
 )
 
 @pytest.mark.parametrize("input, expected_output", xhtml_known_values)
