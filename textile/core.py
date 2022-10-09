@@ -1246,7 +1246,7 @@ class Textile(object):
         text = re.split(r'\n(?=[-])', match.group(), flags=re.M)
         for line in text:
             # parse the attributes and content
-            m = re.match(r'^[-]+({0})[ .](.*)$'.format(cls_re_s), line,
+            m = re.match(r'^[-]+({0})\.? (.*)$'.format(cls_re_s), line,
                     flags=re.M | re.S)
             if not m:
                 continue
@@ -1257,9 +1257,15 @@ class Textile(object):
             atts = pba(atts, restricted=self.restricted)
 
             # split the content into the term and definition
-            xm = re.match(r'^(.*?)[\s]*:=(.*?)[\s]*(=:|:=)?[\s]*$', content,
-                          re.S)
-            term, definition, ending = xm.groups()
+            xm = re.match(
+                r'^(.*?){0}*:=(.*?){0}*(=:|:=)?{0}*$'
+                .format(regex_snippets['space']),
+                content,
+                re.S)
+            if xm:
+                term, definition, _ = xm.groups()
+            else:
+                term, definition = content, ''
             # cleanup
             term = term.strip()
             definition = definition.strip(' ')
@@ -1272,16 +1278,23 @@ class Textile(object):
                     dltag = "<dl>"
                 out.append(dltag)
 
-            if definition != '' and term != '':
-                if definition.startswith('\n'):
-                    definition = '<p>{0}</p>'.format(definition.lstrip())
-                definition = definition.replace('\n', '<br />').strip()
+            if term != '':
+                is_newline_started_def = definition.startswith('\n')
+                definition = (
+                    definition
+                    .strip()
+                    .replace('\n', '<br />'))
+
+                if is_newline_started_def:
+                    definition = '<p>{0}</p>'.format(definition)
+                term = term.replace('\n', '<br />')
 
                 term = self.graf(term)
                 definition = self.graf(definition)
 
-                out.extend(['\t<dt{0}>{1}</dt>'.format(atts, term),
-                    '\t<dd>{0}</dd>'.format(definition)])
+                out.append('\t<dt{0}>{1}</dt>'.format(atts, term))
+                if definition:
+                    out.append('\t<dd>{0}</dd>'.format(definition))
 
         out.append('</dl>')
         out = '\n'.join(out)
