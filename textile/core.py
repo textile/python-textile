@@ -139,6 +139,13 @@ def make_glyph_replacers(html_type, uid, glyph_defs):
             for (regex_obj, replacement) in pre_result]
 
 
+def human_readable_url(url):
+    if "://" in url:
+        url = url.split("://")[1]
+    elif ":" in url:
+        url = url.split(":")[1]
+    return url
+
 
 class Textile(object):
     restricted_url_schemes = ('http', 'https', 'ftp', 'mailto')
@@ -957,11 +964,14 @@ class Textile(object):
             return in_.replace('{0}linkStartMarker:'.format(self.uid), '')
 
         if text == '$':
-            text = url
-            if "://" in text:
-                text = text.split("://")[1]
-            elif ":" in text:
-                text = text.split(":")[1]
+            if valid_scheme:
+                text = human_readable_url(url)
+            else:
+                ref_url = self.urlrefs.get(url)
+                if ref_url is not None:
+                    text = human_readable_url(ref_url)
+                else:
+                    text = url
 
         text = text.strip()
         title = encode_html(title)

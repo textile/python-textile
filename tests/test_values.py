@@ -478,6 +478,11 @@ html_known_values = (
     # Correct use of &lsquo; and &rsquo;
     ("Here is a %(example)'spanned'% word.",
      '\t<p>Here is a <span class="example">&#8216;spanned&#8217;</span> word.</p>'),
+    # Using $-links with link aliases
+    ("\"$\":test\n[test]https://textpattern.com/start\n",
+     "\t<p><a href=\"https://textpattern.com/start\">textpattern.com/start</a></p>"),
+    ('Please check on "$":test for any updates.\n[test]https://de.wikipedia.org/wiki/Übermensch',
+     '\t<p>Please check on <a href="https://de.wikipedia.org/wiki/Übermensch">de.wikipedia.org/wiki/Übermensch</a> for any updates.</p>'),
 )
 
 @pytest.mark.parametrize("input, expected_output", xhtml_known_values)
