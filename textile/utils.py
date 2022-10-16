@@ -153,8 +153,27 @@ def parse_attributes(block_attributes, element=None, include_id=True, restricted
 
     m = re.search(r'\(([^()]+)\)', matched, re.U)
     if m:
-        aclass = m.group(1)
         matched = matched.replace(m.group(0), '')
+        # Only allow a restricted subset of the CSS standard characters for classes/ids.
+        # No encoding markers allowed.
+        id_class_match = re.compile(r"^([-a-zA-Z 0-9_\/\[\]\.\:\#]+)$", re.U).match(m.group(1))
+        if id_class_match:
+            class_regex = re.compile(r"^([-a-zA-Z 0-9_\.\/\[\]]*)$")
+            id_class = id_class_match.group(1)
+            # If a textile class block attribute was found with a '#' in it
+            # split it into the css class and css id...
+            hashpos = id_class.find('#')
+            if hashpos >= 0:
+                id_match = re.match(r"^#([-a-zA-Z0-9_\.\:]*)$", id_class[hashpos:])
+                if id_match:
+                    block_id = id_match.group(1)
+
+                cls_match = class_regex.match(id_class[:hashpos])
+            else:
+                cls_match = class_regex.match(id_class)
+
+            if cls_match:
+                aclass = cls_match.group(1)
 
     m = re.search(r'([(]+)', matched)
     if m:
@@ -169,11 +188,6 @@ def parse_attributes(block_attributes, element=None, include_id=True, restricted
     m = re.search(r'({0})'.format(halign_re_s), matched)
     if m:
         style.append("text-align:{0}".format(hAlign[m.group(1)]))
-
-    m = re.search(r'^(.*)#(.*)$', aclass)
-    if m:
-        block_id = m.group(2)
-        aclass = m.group(1)
 
     if element == 'col':
         pattern = r'(?:\\(\d+)\.?)?\s*(\d+)?'

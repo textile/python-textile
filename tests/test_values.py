@@ -486,6 +486,9 @@ html_known_values = (
     # Make sure smileys don't get recognised as a definition list.
     (":(\n\n:)\n\n:( \n:( \n:( \n:) \n\nPinocchio!\n:^)\n\nBaboon!\n:=)\n\nWink!\n;)\n\n:[ \n:]\n\n;(\nsomething\ndark side\n:) \n\n;(c)[de] Item",
      '\t<p>:(</p>\n\n\t<p>:)</p>\n\n\t<p>:( <br />\n:( <br />\n:( <br />\n:) </p>\n\n\t<p>Pinocchio!<br />\n:^)</p>\n\n\t<p>Baboon!<br />\n:=)</p>\n\n\t<p>Wink!<br />\n;)</p>\n\n\t<p>:[ <br />\n:]</p>\n\n\t<p>;(<br />\nsomething<br />\ndark side<br />\n:) </p>\n\n\t<dl class="c" lang="de">\n\t\t<dt>Item</dt>\n\t</dl>'),
+    # Checking proper parsing of classes and IDs
+    ("_(class1 class2#id1)text1_ -(foobarbaz#boom bang)text2-\n",
+     '\t<p><em class="class1 class2" id="id1">text1</em> <del class="foobarbaz">text2</del></p>'),
 )
 
 @pytest.mark.parametrize("input, expected_output", xhtml_known_values)
