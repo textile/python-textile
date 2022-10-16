@@ -483,6 +483,9 @@ html_known_values = (
      "\t<p><a href=\"https://textpattern.com/start\">textpattern.com/start</a></p>"),
     ('Please check on "$":test for any updates.\n[test]https://de.wikipedia.org/wiki/Übermensch',
      '\t<p>Please check on <a href="https://de.wikipedia.org/wiki/Übermensch">de.wikipedia.org/wiki/Übermensch</a> for any updates.</p>'),
+    # Make sure smileys don't get recognised as a definition list.
+    (":(\n\n:)\n\n:( \n:( \n:( \n:) \n\nPinocchio!\n:^)\n\nBaboon!\n:=)\n\nWink!\n;)\n\n:[ \n:]\n\n;(\nsomething\ndark side\n:) \n\n;(c)[de] Item",
+     '\t<p>:(</p>\n\n\t<p>:)</p>\n\n\t<p>:( <br />\n:( <br />\n:( <br />\n:) </p>\n\n\t<p>Pinocchio!<br />\n:^)</p>\n\n\t<p>Baboon!<br />\n:=)</p>\n\n\t<p>Wink!<br />\n;)</p>\n\n\t<p>:[ <br />\n:]</p>\n\n\t<p>;(<br />\nsomething<br />\ndark side<br />\n:) </p>\n\n\t<dl class="c" lang="de">\n\t\t<dt>Item</dt>\n\t</dl>'),
 )
 
 @pytest.mark.parametrize("input, expected_output", xhtml_known_values)

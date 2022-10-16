@@ -420,7 +420,16 @@ class Textile(object):
     def doPBr(self, in_):
         return (re
                 .compile(r'<(p|h[1-6])([^>]*?)>(.*)(</\1>)', re.S)
-                .sub(self.doBr, in_))
+                .sub(self.fPBr, in_))
+
+    def fPBr(self, m):
+        content = m.group(3)
+        content = (
+            re.compile(r"<br[ ]*/?>{0}*\n(?![{0}|])".format(regex_snippets['space']),
+                       re.I)
+            .sub("\n", content))
+        content = re.compile(r"\n(?![\s|])").sub('<br />',content)
+        return '<{0}{1}>{2}{3}'.format(m.group(1), m.group(2), content, m.group(4))
 
     def doBr(self, match):
         content = (
