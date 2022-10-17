@@ -489,6 +489,17 @@ html_known_values = (
     # Checking proper parsing of classes and IDs
     ("_(class1 class2#id1)text1_ -(foobarbaz#boom bang)text2-\n",
      '\t<p><em class="class1 class2" id="id1">text1</em> <del class="foobarbaz">text2</del></p>'),
+    # Tables with nested textile elements
+    ("|!http://tester.local/logo.png!| !http://tester.local/logo.png! |",
+     '\t<table>\n\t\t<tr>\n\t\t\t<td><img alt="" src="http://tester.local/logo.png" /></td>\n\t\t\t<td> <img alt="" src="http://tester.local/logo.png" /> </td>\n\t\t</tr>\n\t</table>'),
+    # Tables with colgroups
+    (("|=. Testing colgroup and col syntax | \n"
+      "|:\\5. 80 |\x20\n"
+      "|a|b|c|d|e|\x20\n"),
+     ('\t<table>\n\t<caption>Testing colgroup and col syntax</caption>\n'
+      '\t<colgroup span="5" width="80">\n\t</colgroup>\n'
+      '\t\t<tr>\n\t\t\t<td>a</td>\n\t\t\t<td>b</td>\n\t\t\t<td>c</td>\n\t\t\t<td>d</td>\n\t\t\t<td>e</td>\n\t\t</tr>\n'
+      '\t</table>')),
 )
 
 @pytest.mark.parametrize("input, expected_output", xhtml_known_values)

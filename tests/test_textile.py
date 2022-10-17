@@ -72,7 +72,7 @@ table{border:1px solid black}.
     expect = '''\
 \t<table>
 \t<caption>Your caption goes here</caption>
-\t
+
 \t<tfoot>
 \t\t<tr>
 \t\t\t<td>A footer </td>

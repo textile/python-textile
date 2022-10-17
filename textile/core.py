@@ -290,10 +290,13 @@ class Textile(object):
 
     def table(self, text):
         text = "{0}\n\n".format(text)
-        pattern = re.compile(r'^(?:table(?P<tatts>_?{s}{a}{c})\.'
-                r'(?P<summary>.*?)\n)?^(?P<rows>{a}{c}\.? ?\|.*\|)'
-                r'[\s]*\n\n'.format(**{'s': table_span_re_s, 'a': align_re_s,
-                    'c': cls_re_s}), flags=re.S | re.M | re.U)
+        pattern = re.compile(
+            (r'^(?:table(?P<tatts>_?{s}{a}{c})\.'
+             r'(?P<summary>.*?)\n)?^(?P<rows>{a}{c}\.? ?\|.*\|)'
+             r'{sp}*\n\n')
+            .format(**{'s': table_span_re_s, 'a': align_re_s,
+                       'c': cls_re_s, 'sp': regex_snippets['space']}),
+            flags=re.S | re.M | re.U)
         match = pattern.search(text)
         if match:
             table = Table(self, **match.groupdict())
@@ -1141,17 +1144,17 @@ class Textile(object):
 
     def image(self, text):
         pattern = re.compile(r"""
-            (?:[\[{{])?         # pre
-            \!                  # opening !
-            (\<|\=|\>)?         # optional alignment atts
-            ({0})               # optional style,class atts
-            (?:\.\s)?           # optional dot-space
-            ([^\s(!]+)          # presume this is the src
-            \s?                 # optional space
-            (?:\(([^\)]+)\))?   # optional title
-            \!                  # closing
-            (?::(\S+))?         # optional href
-            (?:[\]}}]|(?=\s|$)) # lookahead: space or end of string
+            (?:[\[{{])?                # pre
+            \!                         # opening !
+            (\<|\=|\>)?                # optional alignment atts
+            ({0})                      # optional style,class atts
+            (?:\.\s)?                  # optional dot-space
+            ([^\s(!]+)                 # presume this is the src
+            \s?                        # optional space
+            (?:\(([^\)]+)\))?          # optional title
+            \!                         # closing
+            (?::(\S+)(?<![\]).,]))?    # optional href sans final punct
+            (?:[\]}}]|(?=[.,\s)|]|$))  # lookahead: space or end of string
         """.format(cls_re_s), re.U | re.X)
         return pattern.sub(self.fImage, text)
 

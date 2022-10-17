@@ -5,7 +5,7 @@ from xml.etree import ElementTree
 
 from textile.regex_strings import (align_re_s, cls_re_s, regex_snippets,
         table_span_re_s, valign_re_s)
-from textile.utils import encode_html, generate_tag, parse_attributes
+from textile.utils import encode_html, generate_tag, parse_attributes, pba
 
 try:
     import regex as re
@@ -14,6 +14,16 @@ except ImportError:
 
 
 class Table(object):
+    caption_re = re.compile(
+        (r'^\|\=(?P<capts>{s}{a}{c})\. '
+         r'(?P<cap>[^\n]*)(?P<row>.*)'
+         .format(**{'s': table_span_re_s, 'a': align_re_s, 'c': cls_re_s})),
+        re.S)
+    colgroup_re = re.compile(
+        r'^\|:(?P<cols>{s}{a}{c}\. .*)'
+        .format(**{'s': table_span_re_s, 'a': align_re_s, 'c': cls_re_s}),
+        re.M)
+
     def __init__(self, textile, tatts, rows, summary):
         self.textile = textile
         self.attributes = parse_attributes(tatts, 'table', restricted=self.textile.restricted)
@@ -27,41 +37,37 @@ class Table(object):
     def process(self):
         rgrp = None
         groups = []
-        if self.input[-1] == '|': # pragma: no branch
-            self.input = '{0}\n'.format(self.input)
-        split = self.input.split('|\n')
+        split = (
+            re.compile(r'\|{0}*?$'.format(regex_snippets['space']), re.M)
+            .split(self.input))
         for i, row in enumerate([x for x in split if x]):
             row = row.lstrip()
 
             # Caption -- only occurs on row 1, otherwise treat '|=. foo |...'
             # as a normal center-aligned cell.
-            if i == 0 and row[:2] == '|=':
-                captionpattern = (r"^\|\=(?P<capts>{s}{a}{c})\. "
-                                  r"(?P<cap>[^\n]*)(?P<row>.*)".format(**{
-                                      's': table_span_re_s, 'a': align_re_s,
-                                      'c': cls_re_s}))
-                caption_re = re.compile(captionpattern, re.S)
-                cmtch = caption_re.match(row)
-                if cmtch:
-                    caption = Caption(restricted=self.textile.restricted, **cmtch.groupdict())
-                    self.caption = '\n{0}'.format(caption.caption)
-                    row = cmtch.group('row').lstrip()
-                    if row == '':
-                        continue
+            cmtch = self.caption_re.match(row)
+            if i == 0 and cmtch:
+                caption = Caption(restricted=self.textile.restricted, **cmtch.groupdict())
+                self.caption = '\n{0}'.format(caption.caption)
+                row = cmtch.group('row').lstrip()
+                if row == '':
+                    continue
 
             # Colgroup -- A colgroup row will not necessarily end with a |.
             # Hence it may include the next row of actual table data.
-            if row[:2] == '|:':
-                if '\n' in row:
-                    colgroup_data, row = row[2:].split('\n')
+
+            gmtch = self.colgroup_re.match(row)
+            if gmtch:
+                cols = gmtch.group(1).replace('.', "")
+                for idx, col in enumerate(cols.split("|")):
+                    gatts = pba(col.strip(), 'col', restricted=self.textile.restricted)
+                    self.colgroup += '\t<col{0}\n'.format(
+                        ('group' + gatts + '>') if idx == 0 else (gatts + ' />'))
+                self.colgroup += '\t</colgroup>'
+                nl_index = row.find('\n')
+                if nl_index >= 0:
+                    row = row[nl_index:].lstrip()
                 else:
-                    colgroup_data, row = row[2:], ''
-                colgroup_atts, cols = colgroup_data, None
-                if '|' in colgroup_data:
-                    colgroup_atts, cols = colgroup_data.split('|', 1)
-                colgrp = Colgroup(cols, colgroup_atts, restricted=self.textile.restricted)
-                self.colgroup = colgrp.process()
-                if row == '':
                     continue
 
             # search the row for a table group - thead, tfoot, or tbody
@@ -143,38 +149,8 @@ class Caption(object):
         self.caption = self.process(cap)
 
     def process(self, cap):
-        tag = generate_tag('caption', cap, self.attributes)
-        return '\t{0}\n\t'.format(tag)
-
-
-class Colgroup(object):
-    def __init__(self, cols, atts, restricted):
-        self.row = ''
-        self.attributes = atts
-        self.cols = cols
-        self.restricted = restricted
-
-    def process(self):
-        enc = 'unicode'
-
-        group_atts = parse_attributes(self.attributes, 'col', restricted=self.restricted)
-        colgroup = ElementTree.Element('colgroup', attrib=group_atts)
-        colgroup.text = '\n\t'
-        if self.cols is not None:
-            has_newline = "\n" in self.cols
-            match_cols = self.cols.replace('.', '').split('|')
-            # colgroup is the first item in match_cols, the remaining items are
-            # cols.
-            for idx, col in enumerate(match_cols):
-                col_atts = parse_attributes(col.strip(), 'col', restricted=self.restricted)
-                ElementTree.SubElement(colgroup, 'col', col_atts)
-        colgrp = ElementTree.tostring(colgroup, encoding=enc)
-        # cleanup the extra xml declaration if it exists, (python versions
-        # differ) and then format the resulting string accordingly: newline and
-        # tab between cols and a newline at the end
-        xml_declaration = "<?xml version='1.0' encoding='UTF-8'?>\n"
-        colgrp = colgrp.replace(xml_declaration, '')
-        return colgrp.replace('><', '>\n\t<')
+        tag = generate_tag('caption', cap.strip(), self.attributes)
+        return '\t{0}\n'.format(tag)
 
 
 class Row(object):
