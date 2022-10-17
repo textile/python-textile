@@ -1364,7 +1364,7 @@ class Textile(object):
                                 '</span>{3}</li>').format(atts, links, infoid,
                                         content)
                     else:
-                        li = ('\t\t<li{0}>{1} Undefined Note [#{2}].<li>'
+                        li = ('\t\t<li{0}>{1} Undefined Note [#{2}].</li>'
                                 ).format(atts, links, info['seq'])
                     o.append(li)
             if '+' == extras and self.unreferencedNotes:
