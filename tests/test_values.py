@@ -500,6 +500,10 @@ html_known_values = (
       '\t<colgroup span="5" width="80">\n\t</colgroup>\n'
       '\t\t<tr>\n\t\t\t<td>a</td>\n\t\t\t<td>b</td>\n\t\t\t<td>c</td>\n\t\t\t<td>d</td>\n\t\t\t<td>e</td>\n\t\t</tr>\n'
       '\t</table>')),
+    # Table column with an emphasis should not be confused with a heading
+    ('|_touch_ this!| _touch_ this! |',
+     '\t<table>\n\t\t<tr>\n\t\t\t<td><em>touch</em> this!</td>\n\t\t\t<td> <em>touch</em> this! </td>\n\t\t</tr>\n\t</table>'),
+
 )
 
 @pytest.mark.parametrize("input, expected_output", xhtml_known_values)

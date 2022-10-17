@@ -3,8 +3,9 @@ from __future__ import unicode_literals
 
 from xml.etree import ElementTree
 
-from textile.regex_strings import (align_re_s, cls_re_s, regex_snippets,
-        table_span_re_s, valign_re_s)
+from textile.regex_strings import (
+    align_re_s, cls_re_s, regex_snippets, table_span_re_s,
+    valign_re_s, pnct_re_s)
 from textile.utils import encode_html, generate_tag, parse_attributes, pba
 
 try:
@@ -23,6 +24,8 @@ class Table(object):
         r'^\|:(?P<cols>{s}{a}{c}\. .*)'
         .format(**{'s': table_span_re_s, 'a': align_re_s, 'c': cls_re_s}),
         re.M)
+    heading_re = re.compile(
+        r'^_(?={0}|{1})'.format(regex_snippets['space'], pnct_re_s))
 
     def __init__(self, textile, tatts, rows, summary):
         self.textile = textile
@@ -99,7 +102,7 @@ class Table(object):
             r = Row(row_atts, row)
             for cellctr, cell in enumerate(row.split('|')[1:]):
                 ctag = 'td'
-                if cell.startswith('_'):
+                if self.heading_re.match(cell):
                     ctag = 'th'
 
                 cmtch = re.search(r'^(?P<catts>_?{0}{1}{2}\. )'
