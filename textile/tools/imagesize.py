@@ -1,3 +1,5 @@
+from urllib.request import urlopen
+
 def getimagesize(url):
     """
     Attempts to determine an image's width and height, and returns a tuple,
@@ -10,8 +12,6 @@ def getimagesize(url):
         from PIL import ImageFile
     except ImportError:
         return ''
-
-    from urllib.request import urlopen
 
     try:
         p = ImageFile.Parser()
