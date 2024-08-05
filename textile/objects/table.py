@@ -75,8 +75,9 @@ class Table(object):
 
             # search the row for a table group - thead, tfoot, or tbody
             grpmatchpattern = (r"(:?^\|(?P<part>{v})(?P<rgrpatts>{s}{a}{c})"
-                    r"\.\s*$\n)?^(?P<row>.*)").format(**{'v': valign_re_s, 's':
-                        table_span_re_s, 'a': align_re_s, 'c': cls_re_s})
+                               r"\.\s*$\n)?^(?P<row>.*)").format(
+                                   **{'v': valign_re_s, 's': table_span_re_s,
+                                      'a': align_re_s, 'c': cls_re_s})
             grpmatch_re = re.compile(grpmatchpattern, re.S | re.M)
             grpmatch = grpmatch_re.match(row.lstrip())
 
@@ -106,8 +107,9 @@ class Table(object):
                     ctag = 'th'
 
                 cmtch = re.search(r'^(?P<catts>_?{0}{1}{2}\. )'
-                        '(?P<cell>.*)'.format(table_span_re_s, align_re_s,
-                            cls_re_s), cell, flags=re.S)
+                                  '(?P<cell>.*)'.format(
+                                      table_span_re_s, align_re_s, cls_re_s),
+                                  cell, flags=re.S)
                 if cmtch:
                     catts = cmtch.group('catts')
                     cell_atts = parse_attributes(catts, 'td', restricted=self.textile.restricted)
@@ -117,7 +119,7 @@ class Table(object):
 
                 if not self.textile.lite:
                     a_pattern = r'(?P<space>{0}*)(?P<cell>.*)'.format(
-                            regex_snippets['space'])
+                        regex_snippets['space'])
                     a = re.search(a_pattern, cell, flags=re.S)
                     cell = self.textile.redcloth_list(a.group('cell'))
                     cell = self.textile.textileLists(cell)
@@ -140,8 +142,8 @@ class Table(object):
         if rgrp:
             groups.append('\n\t{0}'.format(rgrp.process()))
 
-        content = '{0}{1}{2}{3}\n\t'.format(self.caption, self.colgroup,
-                ''.join(groups), ''.join(self.content))
+        content = '{0}{1}{2}{3}\n\t'.format(
+            self.caption, self.colgroup, ''.join(groups), ''.join(self.content))
         tbl = generate_tag('table', content, self.attributes)
         return '\t{0}\n\n'.format(tbl)
 
@@ -154,6 +156,35 @@ class Caption(object):
     def process(self, cap):
         tag = generate_tag('caption', cap.strip(), self.attributes)
         return '\t{0}\n'.format(tag)
+
+
+class Colgroup(object):
+    def __init__(self, cols, atts, restricted):
+        self.row = ''
+        self.attributes = atts
+        self.cols = cols
+        self.restricted = restricted
+
+    def process(self):
+        enc = 'unicode'
+
+        group_atts = parse_attributes(self.attributes, 'col', restricted=self.restricted)
+        colgroup = ElementTree.Element('colgroup', attrib=group_atts)
+        colgroup.text = '\n\t'
+        if self.cols is not None:
+            match_cols = self.cols.replace('.', '').split('|')
+            # colgroup is the first item in match_cols, the remaining items are
+            # cols.
+            for idx, col in enumerate(match_cols):
+                col_atts = parse_attributes(col.strip(), 'col', restricted=self.restricted)
+                ElementTree.SubElement(colgroup, 'col', col_atts)
+        colgrp = ElementTree.tostring(colgroup, encoding=enc)
+        # cleanup the extra xml declaration if it exists, (python versions
+        # differ) and then format the resulting string accordingly: newline and
+        # tab between cols and a newline at the end
+        xml_declaration = "<?xml version='1.0' encoding='UTF-8'?>\n"
+        colgrp = colgrp.replace(xml_declaration, '')
+        return colgrp.replace('><', '>\n\t<')
 
 
 class Row(object):

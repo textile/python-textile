@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from textile import Textile
-import re
+
 
 def test_urls():
     t = Textile()
@@ -54,11 +54,13 @@ def test_urls():
     expect = '\t<p>A link that <a href="/test/">contains a\nnewline</a> raises an exception.</p>'
     assert result == expect
 
+
 def test_rel_attribute():
     t = Textile(rel='nofollow')
     result = t.parse('"$":http://domain.tld')
     expect = '\t<p><a href="http://domain.tld" rel="nofollow">domain.tld</a></p>'
     assert result == expect
+
 
 def test_quotes_in_link_text():
     """quotes in link text are tricky."""

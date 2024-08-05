@@ -1,4 +1,4 @@
-!https://travis-ci.org/textile/python-textile.svg!:https://travis-ci.org/textile/python-textile !https://codecov.io/github/textile/python-textile/coverage.svg!:https://codecov.io/github/textile/python-textile !https://img.shields.io/pypi/pyversions/textile! !https://img.shields.io/pypi/wheel/textile!
+!https://github.com/textile/python-textile/actions/workflows/lint_and_test.yml/badge.svg(python-textile)!:https://github.com/textile/python-textile/actions/workflows/lint_and_test.yml !https://codecov.io/github/textile/python-textile/coverage.svg!:https://codecov.io/github/textile/python-textile !https://img.shields.io/pypi/pyversions/textile! !https://img.shields.io/pypi/wheel/textile!
 
 h1. python-textile
 

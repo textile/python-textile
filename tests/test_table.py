@@ -1,5 +1,6 @@
 from textile import Textile
 
+
 def test_table():
     t = Textile()
     result = t.table('(rowclass). |one|two|three|\n|a|b|c|')

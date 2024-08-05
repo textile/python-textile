@@ -35,7 +35,7 @@ xhtml_known_values = (
     ('h3. Header 3', '\t<h3>Header 3</h3>'),
 
     ('An old text\n\nbq. A block quotation.\n\nAny old text''',
-    '\t<p>An old text</p>\n\n\t<blockquote>\n\t\t<p>A block quotation.</p>\n\t</blockquote>\n\n\t<p>Any old text</p>'),
+     '\t<p>An old text</p>\n\n\t<blockquote>\n\t\t<p>A block quotation.</p>\n\t</blockquote>\n\n\t<p>Any old text</p>'),
 
     ('I _believe_ every word.', '\t<p>I <em>believe</em> every word.</p>'),
 
@@ -70,8 +70,8 @@ xhtml_known_values = (
     ('p[fr]. rouge', '\t<p lang="fr">rouge</p>'),
 
     ('I seriously *{color:red}blushed*\nwhen I _(big)sprouted_ that\ncorn stalk from my\n%[es]cabeza%.',
-    '\t<p>I seriously <strong style="color:red;">blushed</strong><br />\nwhen I <em class="big">sprouted</em>'
-    ' that<br />\ncorn stalk from my<br />\n<span lang="es">cabeza</span>.</p>'),
+     '\t<p>I seriously <strong style="color:red;">blushed</strong><br />\nwhen I <em class="big">sprouted</em>'
+     ' that<br />\ncorn stalk from my<br />\n<span lang="es">cabeza</span>.</p>'),
 
     ('p<. align left', '\t<p style="text-align:left;">align left</p>'),
 
@@ -226,7 +226,7 @@ xhtml_known_values = (
     ("""table(#dvds){border-collapse:collapse}. Great films on DVD employing Textile summary, caption, thead, tfoot, two tbody elements and colgroups\n|={font-size:140%;margin-bottom:15px}. DVDs with two Textiled tbody elements\n|:\\3. 100 |{background:#ddd}|250||50|300|\n|^(header).\n|_. Title |_. Starring |_. Director |_. Writer |_. Notes |\n|~(footer).\n|\\5=. This is the tfoot, centred |\n|-(toplist){background:#c5f7f6}.\n| _The Usual Suspects_ | Benicio Del Toro, Gabriel Byrne, Stephen Baldwin, Kevin Spacey | Bryan Singer | Chris McQaurrie | One of the finest films ever made |\n| _Se7en_ | Morgan Freeman, Brad Pitt, Kevin Spacey | David Fincher | Andrew Kevin Walker | Great psychological thriller |\n| _Primer_ | David Sullivan, Shane Carruth | Shane Carruth | Shane Carruth | Amazing insight into trust and human psychology <br />rather than science fiction. Terrific! |\n| _District 9_ | Sharlto Copley, Jason Cope | Neill Blomkamp | Neill Blomkamp, Terri Tatchell | Social commentary layered on thick,\nbut boy is it done well |\n|-(medlist){background:#e7e895;}.\n| _Arlington Road_ | Tim Robbins, Jeff Bridges | Mark Pellington | Ehren Kruger | Awesome study in neighbourly relations |\n| _Phone Booth_ | Colin Farrell, Kiefer Sutherland, Forest Whitaker | Joel Schumacher | Larry Cohen | Edge-of-the-seat stuff in this\nshort but brilliantly executed thriller |""",
      """\t<table id="dvds" style="border-collapse:collapse;" summary="Great films on DVD employing Textile summary, caption, thead, tfoot, two tbody elements and colgroups">\n\t<caption style="font-size:140%; margin-bottom:15px;"><span class="caps">DVD</span>s with two Textiled tbody elements</caption>\n\t<colgroup span="3" width="100">\n\t<col style="background:#ddd;" />\n\t<col width="250" />\n\t<col />\n\t<col width="50" />\n\t<col width="300" />\n\t</colgroup>\n\t<thead class="header">\n\t\t<tr>\n\t\t\t<th>Title </th>\n\t\t\t<th>Starring </th>\n\t\t\t<th>Director </th>\n\t\t\t<th>Writer </th>\n\t\t\t<th>Notes </th>\n\t\t</tr>\n\t</thead>\n\t<tfoot class="footer">\n\t\t<tr>\n\t\t\t<td colspan="5" style="text-align:center;">This is the tfoot, centred </td>\n\t\t</tr>\n\t</tfoot>\n\t<tbody class="toplist" style="background:#c5f7f6;">\n\t\t<tr>\n\t\t\t<td> <em>The Usual Suspects</em> </td>\n\t\t\t<td> Benicio Del Toro, Gabriel Byrne, Stephen Baldwin, Kevin Spacey </td>\n\t\t\t<td> Bryan Singer </td>\n\t\t\t<td> Chris McQaurrie </td>\n\t\t\t<td> One of the finest films ever made </td>\n\t\t</tr>\n\t\t<tr>\n\t\t\t<td> <em>Se7en</em> </td>\n\t\t\t<td> Morgan Freeman, Brad Pitt, Kevin Spacey </td>\n\t\t\t<td> David Fincher </td>\n\t\t\t<td> Andrew Kevin Walker </td>\n\t\t\t<td> Great psychological thriller </td>\n\t\t</tr>\n\t\t<tr>\n\t\t\t<td> <em>Primer</em> </td>\n\t\t\t<td> David Sullivan, Shane Carruth </td>\n\t\t\t<td> Shane Carruth </td>\n\t\t\t<td> Shane Carruth </td>\n\t\t\t<td> Amazing insight into trust and human psychology <br />\nrather than science fiction. Terrific! </td>\n\t\t</tr>\n\t\t<tr>\n\t\t\t<td> <em>District 9</em> </td>\n\t\t\t<td> Sharlto Copley, Jason Cope </td>\n\t\t\t<td> Neill Blomkamp </td>\n\t\t\t<td> Neill Blomkamp, Terri Tatchell </td>\n\t\t\t<td> Social commentary layered on thick,<br />\nbut boy is it done well </td>\n\t\t</tr>\n\t</tbody>\n\t<tbody class="medlist" style="background:#e7e895;">\n\t\t<tr>\n\t\t\t<td> <em>Arlington Road</em> </td>\n\t\t\t<td> Tim Robbins, Jeff Bridges </td>\n\t\t\t<td> Mark Pellington </td>\n\t\t\t<td> Ehren Kruger </td>\n\t\t\t<td> Awesome study in neighbourly relations </td>\n\t\t</tr>\n\t\t<tr>\n\t\t\t<td> <em>Phone Booth</em> </td>\n\t\t\t<td> Colin Farrell, Kiefer Sutherland, Forest Whitaker </td>\n\t\t\t<td> Joel Schumacher </td>\n\t\t\t<td> Larry Cohen </td>\n\t\t\t<td> Edge-of-the-seat stuff in this<br />\nshort but brilliantly executed thriller </td>\n\t\t</tr>\n\t</tbody>\n\t</table>"""),
     ("""-(hot) *coffee* := Hot _and_ black\n-(hot#tea) tea := Also hot, but a little less black\n-(cold) milk := Nourishing beverage for baby cows.\nCold drink that goes great with cookies. =:\n\n-(hot) coffee := Hot and black\n-(hot#tea) tea := Also hot, but a little less black\n-(cold) milk :=\nNourishing beverage for baby cows.\nCold drink that goes great with cookies. =:""",
-    """<dl>\n\t<dt class="hot"><strong>coffee</strong></dt>\n\t<dd>Hot <em>and</em> black</dd>\n\t<dt class="hot" id="tea">tea</dt>\n\t<dd>Also hot, but a little less black</dd>\n\t<dt class="cold">milk</dt>\n\t<dd>Nourishing beverage for baby cows.<br />\nCold drink that goes great with cookies.</dd>\n</dl>\n\n<dl>\n\t<dt class="hot">coffee</dt>\n\t<dd>Hot and black</dd>\n\t<dt class="hot" id="tea">tea</dt>\n\t<dd>Also hot, but a little less black</dd>\n\t<dt class="cold">milk</dt>\n\t<dd><p>Nourishing beverage for baby cows.<br />\nCold drink that goes great with cookies.</p></dd>\n</dl>"""),
+     """<dl>\n\t<dt class="hot"><strong>coffee</strong></dt>\n\t<dd>Hot <em>and</em> black</dd>\n\t<dt class="hot" id="tea">tea</dt>\n\t<dd>Also hot, but a little less black</dd>\n\t<dt class="cold">milk</dt>\n\t<dd>Nourishing beverage for baby cows.<br />\nCold drink that goes great with cookies.</dd>\n</dl>\n\n<dl>\n\t<dt class="hot">coffee</dt>\n\t<dd>Hot and black</dd>\n\t<dt class="hot" id="tea">tea</dt>\n\t<dd>Also hot, but a little less black</dd>\n\t<dt class="cold">milk</dt>\n\t<dd><p>Nourishing beverage for baby cows.<br />\nCold drink that goes great with cookies.</p></dd>\n</dl>"""),
     (""";(class#id) Term 1\n: Def 1\n: Def 2\n: Def 3""",
      """\t<dl class="class" id="id">\n\t\t<dt>Term 1</dt>\n\t\t<dd>Def 1</dd>\n\t\t<dd>Def 2</dd>\n\t\t<dd>Def 3</dd>\n\t</dl>"""),
     ("""*Here is a comment*\n\nHere is *(class)a comment*\n\n*(class)Here is a class* that is a little extended and is\n*followed* by a strong word!\n\nbc. ; Content-type: text/javascript\n; Cache-Control: no-store, no-cache, must-revalidate, pre-check=0, post-check=0, max-age=0\n; Expires: Sat, 24 Jul 2003 05:00:00 GMT\n; Last-Modified: Wed, 1 Jan 2025 05:00:00 GMT\n; Pragma: no-cache\n\n*123 test*\n\n*test 123*\n\n**123 test**\n\n**test 123**""",
@@ -266,8 +266,8 @@ html_known_values = (
     ('I __know__.\nI **really** __know__.', '\t<p>I <i>know</i>.<br />\nI <b>really</b> <i>know</i>.</p>'),
     ("I'm %{color:red}unaware%\nof most soft drinks.", '\t<p>I&#8217;m <span style="color:red;">unaware</span><br />\nof most soft drinks.</p>'),
     ('I seriously *{color:red}blushed*\nwhen I _(big)sprouted_ that\ncorn stalk from my\n%[es]cabeza%.',
-    '\t<p>I seriously <strong style="color:red;">blushed</strong><br />\nwhen I <em class="big">sprouted</em>'
-    ' that<br />\ncorn stalk from my<br />\n<span lang="es">cabeza</span>.</p>'),
+     '\t<p>I seriously <strong style="color:red;">blushed</strong><br />\nwhen I <em class="big">sprouted</em>'
+     ' that<br />\ncorn stalk from my<br />\n<span lang="es">cabeza</span>.</p>'),
     ('<pre>\n<code>\na.gsub!( /</, "" )\n</code>\n</pre>',
      '<pre>\n<code>\na.gsub!( /&lt;/, "" )\n</code>\n</pre>'),
     ('<div style="float:right;">\n\nh3. Sidebar\n\n"Hobix":http://hobix.com/\n"Ruby":http://ruby-lang.org/\n\n</div>\n\n'
@@ -506,11 +506,13 @@ html_known_values = (
 
 )
 
+
 @pytest.mark.parametrize("input, expected_output", xhtml_known_values)
 def test_KnownValuesXHTML(input, expected_output):
     # XHTML
     output = textile.textile(input, html_type='xhtml')
     assert output == expected_output
+
 
 @pytest.mark.parametrize("input, expected_output", html_known_values)
 def test_KnownValuesHTML(input, expected_output):
