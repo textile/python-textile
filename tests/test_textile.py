@@ -26,11 +26,11 @@ def test_Footnote():
 
 def test_issue_35():
     result = textile.textile('"z"')
-    expect = '\t<p>&#8220;z&#8221; </p>'
+    expect = '\t<p>&#8220;z&#8221;</p>'
     assert result == expect
 
     result = textile.textile('" z"')
-    expect = '\t<p>&#8220; z&#8221; </p>'
+    expect = '\t<p>&#8220; z&#8221;</p>'
     assert result == expect
 
 def test_restricted():
@@ -72,7 +72,7 @@ table{border:1px solid black}.
     expect = '''\
 \t<table>
 \t<caption>Your caption goes here</caption>
-\t
+
 \t<tfoot>
 \t\t<tr>
 \t\t\t<td>A footer </td>
@@ -159,7 +159,7 @@ def test_endnotes_malformed():
 def test_endnotes_undefined_note():
     test = """Scientists say the moon is slowly shrinking[#my_first_label].\n\nnotelist!."""
     html = textile.textile(test)
-    result_pattern = r"""\t<p>Scientists say the moon is slowly shrinking<sup><a href="#note([a-f0-9]{32})-2"><span id="noteref\1-1">1</span></a></sup>.</p>\n\n\t<ol>\n\t\t<li> Undefined Note \[#my_first_label\].<li>\n\t</ol>$"""
+    result_pattern = r"""\t<p>Scientists say the moon is slowly shrinking<sup><a href="#note([a-f0-9]{32})-2"><span id="noteref\1-1">1</span></a></sup>.</p>\n\n\t<ol>\n\t\t<li> Undefined Note \[#my_first_label\].</li>\n\t</ol>$"""
     result_re = re.compile(result_pattern)
     assert result_re.search(html) is not None
 

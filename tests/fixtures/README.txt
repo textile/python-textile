@@ -60,4 +60,4 @@
 
 When textile is not installed locally:</code></pre>
 
-<pre>PYTHONPATH=. pytest</pre>
+<pre><code>PYTHONPATH=. pytest</code></pre>

@@ -14,6 +14,18 @@ from xml.etree import ElementTree
 
 from textile.regex_strings import valign_re_s, halign_re_s
 
+# Regular expressions for stripping chunks of HTML,
+# leaving only content not wrapped in a tag or a comment
+RAW_TEXT_REVEALERS = (
+    # The php version has orders the below list of tags differently.  The
+    # important thing to note here is that the pre must occur before the p or
+    # else the regex module doesn't properly match pre-s. It only matches the
+    # p in pre.
+    re.compile(r'<(pre|p|blockquote|div|form|table|ul|ol|dl|h[1-6])[^>]*?>.*</\1>',
+                   re.S),
+    re.compile(r'<(hr|br)[^>]*?/>'),
+    re.compile(r'<!--.*?-->'),
+)
 
 def decode_high(text):
     """Decode encoded HTML entities."""
@@ -66,14 +78,10 @@ def generate_tag(tag, content, attributes=None):
 
 def has_raw_text(text):
     """checks whether the text has text not already enclosed by a block tag"""
-    # The php version has orders the below list of tags differently.  The
-    # important thing to note here is that the pre must occur before the p or
-    # else the regex module doesn't properly match pre-s. It only matches the
-    # p in pre.
-    r = re.compile(r'<(pre|p|blockquote|div|form|table|ul|ol|dl|h[1-6])[^>]*?>.*</\1>',
-                   re.S).sub('', text.strip()).strip()
-    r = re.compile(r'<(hr|br)[^>]*?/>').sub('', r)
-    return '' != r
+    r = text.strip()
+    for pattern in RAW_TEXT_REVEALERS:
+        r = pattern.sub('', r).strip()
+    return r != ''
 
 def is_rel_url(url):
     """Identify relative urls."""
@@ -88,18 +96,17 @@ def is_valid_url(url):
 
 def list_type(list_string):
     listtypes = {
-        list_string.startswith('*'): 'u',
-        list_string.startswith('#'): 'o',
-        (not list_string.startswith('*') and not list_string.startswith('#')):
+        list_string.endswith('*'): 'u',
+        list_string.endswith('#'): 'o',
+        (not list_string.endswith('*') and not list_string.endswith('#')):
         'd'
     }
     return listtypes.get(True, False)
 
 def normalize_newlines(string):
-    out = string.strip()
-    out = re.sub(r'\r\n?', '\n', out)
+    out = re.sub(r'\r\n?', '\n', string)
     out = re.compile(r'^[ \t]*\n', flags=re.M).sub('\n', out)
-    out = re.sub(r'"$', '" ', out)
+    out = out.strip('\n')
     return out
 
 def parse_attributes(block_attributes, element=None, include_id=True, restricted=False):
@@ -146,8 +153,27 @@ def parse_attributes(block_attributes, element=None, include_id=True, restricted
 
     m = re.search(r'\(([^()]+)\)', matched, re.U)
     if m:
-        aclass = m.group(1)
         matched = matched.replace(m.group(0), '')
+        # Only allow a restricted subset of the CSS standard characters for classes/ids.
+        # No encoding markers allowed.
+        id_class_match = re.compile(r"^([-a-zA-Z 0-9_\/\[\]\.\:\#]+)$", re.U).match(m.group(1))
+        if id_class_match:
+            class_regex = re.compile(r"^([-a-zA-Z 0-9_\.\/\[\]]*)$")
+            id_class = id_class_match.group(1)
+            # If a textile class block attribute was found with a '#' in it
+            # split it into the css class and css id...
+            hashpos = id_class.find('#')
+            if hashpos >= 0:
+                id_match = re.match(r"^#([-a-zA-Z0-9_\.\:]*)$", id_class[hashpos:])
+                if id_match:
+                    block_id = id_match.group(1)
+
+                cls_match = class_regex.match(id_class[:hashpos])
+            else:
+                cls_match = class_regex.match(id_class)
+
+            if cls_match:
+                aclass = cls_match.group(1)
 
     m = re.search(r'([(]+)', matched)
     if m:
@@ -162,11 +188,6 @@ def parse_attributes(block_attributes, element=None, include_id=True, restricted
     m = re.search(r'({0})'.format(halign_re_s), matched)
     if m:
         style.append("text-align:{0}".format(hAlign[m.group(1)]))
-
-    m = re.search(r'^(.*)#(.*)$', aclass)
-    if m:
-        block_id = m.group(2)
-        aclass = m.group(1)
 
     if element == 'col':
         pattern = r'(?:\\(\d+)\.?)?\s*(\d+)?'
