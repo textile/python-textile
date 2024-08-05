@@ -1,5 +1,6 @@
 from urllib.request import urlopen
 
+
 def getimagesize(url):
     """
     Attempts to determine an image's width and height, and returns a tuple,
