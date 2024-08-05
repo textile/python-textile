@@ -209,10 +209,6 @@ class Textile(object):
         self.refIndex = 0
         self.block_tags = block_tags
 
-        if regex_snippets['cur']:  # pragma: no branch
-            cur = r'(?:[{0}]{1}*)?'.format(regex_snippets['cur'],
-                                           regex_snippets['space'])
-
         self.glyph_replacers = make_glyph_replacers(
             html_type, self.uid, self.glyph_definitions)
 
