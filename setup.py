@@ -1,5 +1,5 @@
-from setuptools import setup, find_packages
 import os
+from setuptools import setup, find_packages
 
 
 def get_version():
@@ -48,5 +48,5 @@ setup(
     tests_require=['pytest', 'pytest-cov'],
     include_package_data=True,
     zip_safe=False,
-    python_requires='>=3.5',
+    python_requires='>=3.8',
 )
