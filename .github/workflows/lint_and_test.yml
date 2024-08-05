@@ -24,6 +24,8 @@ jobs:
           pip install -U pytest pytest-cov coverage codecov
           if [[ $INPUT_IMAGE_SIZE == true ]] ; then imagesize='[imagesize]' ; fi
           pip install -e ".${imagesize}"
+          echo "INPUT_IMAGE_SIZE: ${INPUT_IMAGE_SIZE}"
+          echo "imagesize: ${imagesize}"
       - name: run tests
         run: |
           pytest
