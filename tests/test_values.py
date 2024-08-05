@@ -430,8 +430,8 @@ html_known_values = (
      '\t<h1>Two line with <strong>strong</strong><br />\nheading</h1>'),
     # Non-standalone ampersands should not be escaped
     (("&#8220;<span lang=\"en\">test</span>&#8221;\n\n"
-     "&#x201c;<span lang=\"en\">test</span>&#x201d;\n\n"
-     "&nbsp;<span lang=\"en\">test</span>&nbsp;\n"),
+      "&#x201c;<span lang=\"en\">test</span>&#x201d;\n\n"
+      "&nbsp;<span lang=\"en\">test</span>&nbsp;\n"),
      ("\t<p>&#8220;<span lang=\"en\">test</span>&#8221;</p>\n\n"
       "\t<p>&#x201c;<span lang=\"en\">test</span>&#x201d;</p>\n\n"
       "\t<p>&nbsp;<span lang=\"en\">test</span>&nbsp;</p>")),
