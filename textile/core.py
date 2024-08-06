@@ -209,11 +209,6 @@ class Textile(object):
         self.refIndex = 0
         self.block_tags = block_tags
 
-        cur = r''
-        if regex_snippets['cur']:  # pragma: no branch
-            cur = r'(?:[{0}]{1}*)?'.format(regex_snippets['cur'],
-                                           regex_snippets['space'])
-
         self.glyph_replacers = make_glyph_replacers(
             html_type, self.uid, self.glyph_definitions)
 
@@ -424,7 +419,7 @@ class Textile(object):
             re.compile(r"<br[ ]*/?>{0}*\n(?![{0}|])".format(regex_snippets['space']),
                        re.I)
             .sub("\n", content))
-        content = re.compile(r"\n(?![\s|])").sub('<br />',content)
+        content = re.compile(r"\n(?![\s|])").sub('<br />', content)
         return '<{0}{1}>{2}{3}'.format(m.group(1), m.group(2), content, m.group(4))
 
     def doBr(self, match):
@@ -1122,11 +1117,11 @@ class Textile(object):
         tags = {}
         self.refIndex += 1
         self.refCache[self.refIndex] = opentag
-        tags['open'] = self.uid + str(self.refIndex) + ':ospan ';
+        tags['open'] = self.uid + str(self.refIndex) + ':ospan '
 
         self.refIndex += 1
         self.refCache[self.refIndex] = closetag
-        tags['close'] = ' ' + self.uid + str(self.refIndex) + ':cspan';
+        tags['close'] = ' ' + self.uid + str(self.refIndex) + ':cspan'
         return tags
 
     def retrieveTags(self, text):
@@ -1138,7 +1133,6 @@ class Textile(object):
 
     def fRetrieveTags(self, match):
         return self.refCache[int(match.group('token'))]
-
 
     def image(self, text):
         pattern = re.compile(r"""
@@ -1363,7 +1357,7 @@ class Textile(object):
                                                         content)
                     else:
                         li = ('\t\t<li{0}>{1} Undefined Note [#{2}].</li>'
-                                ).format(atts, links, info['seq'])
+                              ).format(atts, links, info['seq'])
                     o.append(li)
             if '+' == extras and self.unreferencedNotes:
                 for seq, info in self.unreferencedNotes.items():

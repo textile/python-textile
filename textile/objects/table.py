@@ -5,7 +5,7 @@ from xml.etree import ElementTree
 
 from textile.regex_strings import (align_re_s, cls_re_s, regex_snippets,
                                    table_span_re_s, valign_re_s, pnct_re_s)
-from textile.utils import generate_tag, parse_attributes
+from textile.utils import generate_tag, parse_attributes, pba
 
 try:
     import regex as re

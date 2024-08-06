@@ -22,10 +22,11 @@ RAW_TEXT_REVEALERS = (
     # else the regex module doesn't properly match pre-s. It only matches the
     # p in pre.
     re.compile(r'<(pre|p|blockquote|div|form|table|ul|ol|dl|h[1-6])[^>]*?>.*</\1>',
-                   re.S),
+               re.S),
     re.compile(r'<(hr|br)[^>]*?/>'),
     re.compile(r'<!--.*?-->'),
 )
+
 
 def decode_high(text):
     """Decode encoded HTML entities."""
@@ -86,7 +87,6 @@ def has_raw_text(text):
     for pattern in RAW_TEXT_REVEALERS:
         r = pattern.sub('', r).strip()
     return r != ''
-
 
 
 def is_rel_url(url):
