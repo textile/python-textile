@@ -181,7 +181,7 @@ class Colgroup(object):
         # tab between cols and a newline at the end
         xml_declaration = "<?xml version='1.0' encoding='UTF-8'?>\n"
         colgrp = colgrp.replace(xml_declaration, '')
-        return f'\t{colgrp.replace('><', '>\n\t<')}'
+        return f"\t{colgrp.replace('><', '>\n\t<')}"
 
 
 class Row(object):
