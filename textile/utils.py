@@ -88,6 +88,7 @@ def has_raw_text(text):
     return r != ''
 
 
+
 def is_rel_url(url):
     """Identify relative urls."""
     (scheme, netloc) = urlparse(url)[0:2]
