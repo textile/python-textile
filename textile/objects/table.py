@@ -57,19 +57,17 @@ class Table(object):
 
             # Colgroup -- A colgroup row will not necessarily end with a |.
             # Hence it may include the next row of actual table data.
-
-            gmtch = self.colgroup_re.match(row)
-            if gmtch:
-                cols = gmtch.group(1).replace('.', "")
-                for idx, col in enumerate(cols.split("|")):
-                    gatts = pba(col.strip(), 'col', restricted=self.textile.restricted)
-                    self.colgroup += '\t<col{0}\n'.format(
-                        ('group' + gatts + '>') if idx == 0 else (gatts + ' />'))
-                self.colgroup += '\t</colgroup>'
-                nl_index = row.find('\n')
-                if nl_index >= 0:
-                    row = row[nl_index:].lstrip()
+            if row[:2] == '|:':
+                if '\n' in row:
+                    colgroup_data, row = row[2:].split('\n')
                 else:
+                    colgroup_data, row = row[2:], ''
+                colgroup_atts, cols = colgroup_data, None
+                if '|' in colgroup_data:
+                    colgroup_atts, cols = colgroup_data.split('|', 1)
+                colgrp = Colgroup(cols, colgroup_atts, restricted=self.textile.restricted)
+                self.colgroup = colgrp.process()
+                if row == '':
                     continue
 
             # search the row for a table group - thead, tfoot, or tbody
