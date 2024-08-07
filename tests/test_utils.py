@@ -32,3 +32,7 @@ def test_generate_tag():
     expect = '<a href="http://de.wikipedia.org/wiki/%C3%C9bermensch">Übermensch</a>'
     result = utils.generate_tag('a', text, attributes)
     assert result == expect
+
+
+def test_human_readable_url_edge_case():
+    assert utils.human_readable_url('tel:1-800-555-1212') == '1-800-555-1212'
