@@ -1276,10 +1276,7 @@ class Textile(object):
                 .format(regex_snippets['space']),
                 content,
                 re.S)
-            if xm:
-                term, definition, _ = xm.groups()
-            else:
-                term, definition = content, ''
+            term, definition, _ = xm.groups()
             # cleanup
             term = term.strip()
             definition = definition.strip(' ')
