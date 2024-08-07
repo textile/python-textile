@@ -35,4 +35,5 @@ def test_generate_tag():
 
 
 def test_human_readable_url_edge_case():
+    assert utils.human_readable_url('google.com') == 'google.com'
     assert utils.human_readable_url('tel:1-800-555-1212') == '1-800-555-1212'
