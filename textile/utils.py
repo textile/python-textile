@@ -89,6 +89,14 @@ def has_raw_text(text):
     return r != ''
 
 
+def human_readable_url(url):
+    if "://" in url:
+        url = url.split("://")[1]
+    elif ":" in url:
+        url = url.split(":")[1]
+    return url
+
+
 def is_rel_url(url):
     """Identify relative urls."""
     (scheme, netloc) = urlparse(url)[0:2]
