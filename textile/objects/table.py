@@ -152,7 +152,7 @@ class Caption(object):
 
     def process(self, cap):
         tag = generate_tag('caption', cap.strip(), self.attributes)
-        return '\t{0}\n'.format(tag)
+        return '\t{0}'.format(tag)
 
 
 class Colgroup(object):
@@ -182,7 +182,7 @@ class Colgroup(object):
         xml_declaration = "<?xml version='1.0' encoding='UTF-8'?>\n"
         colgrp = colgrp.replace(xml_declaration, '')
         colgrp = colgrp.replace('><', '>\n\t<')
-        return f"\t{colgrp}"
+        return f"\n\t{colgrp}"
 
 
 class Row(object):
