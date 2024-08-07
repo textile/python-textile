@@ -1,3 +1,4 @@
+from typing import OrderedDict
 from textile.utils import parse_attributes
 
 
@@ -13,3 +14,11 @@ def test_parse_attributes():
     assert parse_attributes('<') == {'style': 'text-align:left;'}
     assert parse_attributes('(c#i)') == {'class': 'c', 'id': 'i'}
     assert parse_attributes('\\2 100', element='col') == {'span': '2', 'width': '100'}
+
+
+def test_parse_attributes_edge_cases():
+    result = parse_attributes('(:c#i)')
+    expect = OrderedDict({'id': 'i'})
+    assert result == expect
+
+    assert parse_attributes('(<)') == OrderedDict()
