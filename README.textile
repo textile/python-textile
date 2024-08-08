@@ -2,7 +2,7 @@
 
 h1. python-textile
 
-python-textile is a Python port of "Textile":http://txstyle.org/, Dean Allen's humane web text generator.
+python-textile is a Python port of "Textile":https://textile-lang.com/, Dean Allen's humane web text generator.
 
 h2. Installation
 

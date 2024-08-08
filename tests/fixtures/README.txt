@@ -2,7 +2,7 @@
 
 	<h1>python-textile</h1>
 
-	<p>python-textile is a Python port of <a href="http://txstyle.org/">Textile</a>, Dean Allen&#8217;s humane web text generator.</p>
+	<p>python-textile is a Python port of <a href="https://textile-lang.com/">Textile</a>, Dean Allen&#8217;s humane web text generator.</p>
 
 	<h2>Installation</h2>
 
