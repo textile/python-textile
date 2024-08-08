@@ -47,7 +47,7 @@
 	<h3>Notes:</h3>
 
 	<ul>
-		<li>Active development supports Python 3.5 or later.</li>
+		<li>Active development supports Python 3.8 or later.</li>
 	</ul>
 
 	<h3>Running Tests</h3>
