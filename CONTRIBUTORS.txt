@@ -8,3 +8,5 @@ Jason Samsa
 Kurt Raschke
 Dave Brondsema
 Dmitry Shachnev
+Kirill Mavreshko
+Brad Schoening
