@@ -36,6 +36,11 @@ keywords = ['textile', 'text', 'html', 'markup']
 develop = ['pytest', 'pytest-cov']
 imagesize = ['Pillow>=3.0.0',]
 
+[project.urls]
+Homepage = "https://github.com/textile/python-textile"
+Repository = "https://github.com/textile/python-textile.git"
+Issues = "https://github.com/textile/python-textile/issues"
+
 [python.scripts]
 pytextile = "textile.__main__:main"
 
