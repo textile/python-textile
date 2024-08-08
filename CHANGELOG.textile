@@ -1,5 +1,12 @@
 h1. Textile Changelog
 
+h2. Version 4.0.3
+* Update supported Python versions to 3.8 - 3.12 ("#83":https://github.com/textile/python-textile/issues/83)
+* Bugfixes:
+**  Wrong HTML output when "bc.." is the very last in the document ("#81":https://github.com/textile/python-textile/issues/81)
+* Other:
+** Use github actions instead of travis for automated testing
+
 h2. Version 4.0.2
 * Bugfixes:
 ** Support non-http schemas in url refs ("#75":https://github.com/textile/python-textile/pull/75)
