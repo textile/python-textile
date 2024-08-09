@@ -1,5 +1,6 @@
 from textile.utils import generate_tag
 
+
 class List(object):
     def __init__(self, listtype, attributes={}, indent_level=0):
         super(List, self).__init__()

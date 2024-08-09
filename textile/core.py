@@ -293,16 +293,16 @@ class Textile(object):
     def fTextileList(self, match):
         text = re.split(r'\n(?=[*#;:]+\s)', match.group(), flags=re.M)
         pt = ''
-        result = []
+        # result = []
         ls = OrderedDict()
         for i, line in enumerate(text):
-            try:
-                nextline = text[i + 1]
-            except IndexError:
-                nextline = ''
+            # try:
+            #     nextline = text[i + 1]
+            # except IndexError:
+            #     nextline = ''
 
             m = re.search(r"^(?P<tl>[#*;:]+)(?P<st>_|\d+)?(?P<atts>{0})[ .]?"
-                    "(?P<content>.*)?$".format(cls_re_s), line, re.S)
+                          "(?P<content>.*)?$".format(cls_re_s), line, re.S)
             tl, start, atts, content = m.groups()
             attributes = parse_attributes(atts)
             content = content.strip()
@@ -373,7 +373,7 @@ class Textile(object):
                     _list.add_item(litem, content)
                 elif showitem:
                     # itemtag = ("\n{0}\t<{1}>{2}".format(tabs, litem, content) if
-                               # showitem else '')
+                    #            showitem else '')
                     _sublist = List('{0}l'.format(ltype), attributes)
                     # line = "<{0}l{1}{2}>{3}".format(ltype, atts, start, itemtag)
                     _sublist.add_item(litem, content, attributes)
@@ -381,7 +381,7 @@ class Textile(object):
                     # line = _sublist.process()
             else:
                 # line = ("\t<{0}{1}>{2}".format(litem, atts, content) if
-                        # showitem else '')
+                #         showitem else '')
                 _list.add_item(litem, content, attributes)
             # line = '{0}{1}'.format(tabs, line)
 
@@ -404,8 +404,8 @@ class Textile(object):
             # This else exists in the original php version.  I'm not sure how
             # to come up with a case where the line would not match.  I think
             # it may have been necessary due to the way php returns matches.
-            #else:
-                #line = "{0}\n".format(line)
+            # else:
+            #     line = "{0}\n".format(line)
             # result.append(line)
         return self.doTagBr(litem, _list.process())
 
