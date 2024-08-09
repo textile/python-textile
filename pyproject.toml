@@ -26,7 +26,7 @@ classifiers = [
 ]
 dynamic = ["version",]
 dependencies = [
-    'html5lib>=1.0.1',
+    'nh3',
     'regex>1.0; implementation_name != "pypy"',
 ]
 requires-python = '>=3.8'
