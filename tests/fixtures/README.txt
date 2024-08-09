@@ -10,7 +10,7 @@
 
 	<p>Dependencies:
 	<ul>
-		<li><a href="https://pypi.org/project/html5lib/">html5lib</a></li>
+		<li><a href="https://pypi.org/project/nh3/">nh3</a></li>
 		<li><a href="https://pypi.org/project/regex/">regex</a> (The regex package causes problems with PyPy, and is not installed as a dependency in such environments. If you are upgrading a textile install on PyPy which had regex previously included, you may need to uninstall it.)</li>
 	</ul></p>
 

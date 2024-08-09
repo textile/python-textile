@@ -9,7 +9,7 @@ h2. Installation
 @pip install textile@
 
 Dependencies:
-* "html5lib":https://pypi.org/project/html5lib/
+* "nh3":https://pypi.org/project/nh3/
 * "regex":https://pypi.org/project/regex/ (The regex package causes problems with PyPy, and is not installed as a dependency in such environments. If you are upgrading a textile install on PyPy which had regex previously included, you may need to uninstall it.)
 
 Optional dependencies include:
