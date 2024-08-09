@@ -242,7 +242,7 @@ class Textile(object):
             else:
                 self.blocktag_allowlist = set(['bq', 'p', 'br', 'bc', 'notextile',
                                                'pre', 'h[1-6]',
-                                               f'fn{regex_snippets['digit']}+', '###'])
+                                               f"fn{regex_snippets['digit']}+", '###'])
                 text = self.block(text)
                 text = self.placeNoteLists(text)
         else:
