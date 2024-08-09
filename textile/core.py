@@ -360,8 +360,10 @@ class Textile(object):
             if ';' in pt and ':' in tl:
                 ls[tl] = 2
 
-            # atts = pba(atts) tabs = '\t' * len(tl) If start is still None,
-            # set it to '', else leave the value that we've already formatted.
+            # atts = pba(atts)
+            # tabs = '\t' * len(tl)
+            # If start is still None, set it to '', else leave the value
+            # that we've already formatted.
             start = start or ''
             # if this item tag isn't in the list, create a new list and
             # item, else just create the item
