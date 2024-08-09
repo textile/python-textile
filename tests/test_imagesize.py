@@ -3,7 +3,7 @@ import textile
 
 def test_imagesize():
     imgurl = 'http://www.google.com/intl/en_ALL/images/srpr/logo1w.png'
-    result = textile.tools.imagesize.getimagesize(imgurl)
+    result = textile.utils.getimagesize(imgurl)
     try:
         import PIL  # noqa: F401
 

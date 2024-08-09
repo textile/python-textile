@@ -1,4 +1,4 @@
-from textile.tools.imagesize import getimagesize
+from textile.utils import getimagesize
 import pytest
 
 PIL = pytest.importorskip('PIL')

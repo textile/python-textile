@@ -20,13 +20,12 @@ from urllib.parse import urlparse, urlsplit, urlunsplit, quote, unquote
 from collections import OrderedDict
 from nh3 import clean
 
-from textile.tools import imagesize
 from textile.regex_strings import (align_re_s, cls_re_s, pnct_re_s,
                                    regex_snippets, syms_re_s, table_span_re_s)
 from textile.utils import (decode_high, encode_high, encode_html, generate_tag,
-                           has_raw_text, human_readable_url, is_rel_url,
-                           is_valid_url, list_type, normalize_newlines,
-                           parse_attributes, pba)
+                           getimagesize, has_raw_text, human_readable_url,
+                           is_rel_url, is_valid_url, list_type,
+                           normalize_newlines, parse_attributes, pba)
 from textile.objects import Block, Table
 
 try:
@@ -1152,7 +1151,7 @@ class Textile(object):
             title = ''
 
         if not is_rel_url(url) and self.get_sizes:
-            size = imagesize.getimagesize(url)
+            size = getimagesize(url)
 
         if href:
             href = self.shelveURL(href)

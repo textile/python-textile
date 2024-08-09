@@ -79,6 +79,35 @@ def generate_tag(tag, content, attributes=None):
     return element_text
 
 
+def getimagesize(url):
+    """
+    Attempts to determine an image's width and height, and returns a tuple,
+    (width, height), in pixels or an empty string in case of failure.
+    Requires that PIL is installed.
+
+    """
+
+    try:
+        from PIL import ImageFile
+    except ImportError:
+        return ''
+
+    from urllib.request import urlopen
+
+    try:
+        p = ImageFile.Parser()
+        f = urlopen(url)
+        while True:
+            s = f.read(1024)
+            if not s:
+                break
+            p.feed(s)
+            if p.image:
+                return p.image.size
+    except (IOError, ValueError):
+        return ''
+
+
 def has_raw_text(text):
     """checks whether the text has text not already enclosed by a block tag"""
     r = text.strip()

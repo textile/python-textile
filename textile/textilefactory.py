@@ -20,10 +20,7 @@ class TextileFactory(object):
             self.method_parms['rel'] = 'nofollow'
 
         if noimage is None:
-            if restricted:
-                noimage = True
-            else:
-                noimage = False
+            noimage = bool(restricted)
 
         self.class_parms['noimage'] = noimage
         self.method_parms['sanitize'] = sanitize
