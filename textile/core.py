@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
 __copyright__ = """
 Copyright (c) 2009, Jason Samsa, http://jsamsa.com/
 Copyright (c) 2010, Kurt Raschke <kurt@kurtraschke.com>

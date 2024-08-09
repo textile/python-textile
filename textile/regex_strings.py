@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
 try:
     # Use regex module for matching uppercase characters if installed,
     # otherwise fall back to finding all the uppercase chars in a loop.

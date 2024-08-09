@@ -1,5 +1,3 @@
-from __future__ import unicode_literals
-
 try:
     import regex as re
 except ImportError:

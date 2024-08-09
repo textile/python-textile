@@ -1,5 +1,3 @@
-from __future__ import unicode_literals
-
 import textile
 from textile.objects import Block
 
