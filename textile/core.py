@@ -20,8 +20,9 @@ Additions and fixes Copyright (c) 2006 Alex Shiels http://thresholdstate.com/
 import uuid
 from urllib.parse import urlparse, urlsplit, urlunsplit, quote, unquote
 from collections import OrderedDict
+from nh3 import clean
 
-from textile.tools import sanitizer, imagesize
+from textile.tools import imagesize
 from textile.regex_strings import (align_re_s, cls_re_s, pnct_re_s,
                                    regex_snippets, syms_re_s, table_span_re_s)
 from textile.utils import (decode_high, encode_high, encode_html, generate_tag,
@@ -236,12 +237,12 @@ class Textile(object):
 
         if self.block_tags:
             if self.lite:
-                self.blocktag_whitelist = ['bq', 'p']
+                self.blocktag_allowlist = set(['bq', 'p', 'br'])
                 text = self.block(text)
             else:
-                self.blocktag_whitelist = ['bq', 'p', 'bc', 'notextile',
-                                           'pre', 'h[1-6]', 'fn{0}+'.format(
-                                               regex_snippets['digit']), '###']
+                self.blocktag_allowlist = set(['bq', 'p', 'br', 'bc', 'notextile',
+                                               'pre', 'h[1-6]',
+                                               f"fn{regex_snippets['digit']}+", '###'])
                 text = self.block(text)
                 text = self.placeNoteLists(text)
         else:
@@ -263,7 +264,7 @@ class Textile(object):
         text = text.replace('{0}:glyph:'.format(self.uid), '')
 
         if sanitize:
-            text = sanitizer.sanitize(text)
+            text = clean(text, tags=self.blocktag_allowlist)
 
         text = self.retrieveTags(text)
         text = self.retrieveURLs(text)

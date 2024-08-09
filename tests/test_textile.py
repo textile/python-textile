@@ -117,7 +117,7 @@ def test_sanitize():
     assert result == expect
 
     test = """<p style="width: expression(alert('evil'));">a paragraph of evil text</p>"""
-    result = '<p style="">a paragraph of evil text</p>'
+    result = '<p>a paragraph of evil text</p>'
     expect = textile.Textile().parse(test, sanitize=True)
     assert result == expect
 
