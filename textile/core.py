@@ -149,8 +149,6 @@ class Textile(object):
 
     note_index = 1
 
-    doctype_whitelist = ['xhtml', 'html5']
-
     glyph_definitions = {
         'quote_single_open':  '&#8216;',  # noqa: E241
         'quote_single_close': '&#8217;',  # noqa: E241
