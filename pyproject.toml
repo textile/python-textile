@@ -41,7 +41,7 @@ Homepage = "https://github.com/textile/python-textile"
 Repository = "https://github.com/textile/python-textile.git"
 Issues = "https://github.com/textile/python-textile/issues"
 
-[python.scripts]
+[project.scripts]
 pytextile = "textile.__main__:main"
 
 [tool.setuptools.dynamic]
