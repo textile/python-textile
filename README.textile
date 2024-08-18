@@ -50,8 +50,8 @@ To run the test suite, use pytest. `pytest-cov` is required as well.
 
 When textile is installed locally:
 
-bc.. pytest
+bc. pytest
 
 When textile is not installed locally:
 
-bc.. PYTHONPATH=. pytest
+bc. PYTHONPATH=. pytest

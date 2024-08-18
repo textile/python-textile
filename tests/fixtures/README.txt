@@ -56,8 +56,8 @@
 
 	<p>When textile is installed locally:</p>
 
-<pre><code>pytest
+<pre><code>pytest</code></pre>
 
-When textile is not installed locally:</code></pre>
+	<p>When textile is not installed locally:</p>
 
 <pre><code>PYTHONPATH=. pytest</code></pre>
