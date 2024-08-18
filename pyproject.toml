@@ -31,6 +31,7 @@ dependencies = [
 ]
 requires-python = '>=3.8'
 keywords = ['textile', 'text', 'html markup']
+readme = {file = 'tests/fixtures/README.txt', content-type = 'text/plain'}
 
 [project.optional-dependencies]
 develop = ['pytest', 'pytest-cov']
