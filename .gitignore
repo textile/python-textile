@@ -21,3 +21,4 @@ develop-eggs
 .DS_Store
 *.swp
 .tox
+README.md
