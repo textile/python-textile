@@ -31,7 +31,10 @@ dependencies = [
 ]
 requires-python = '>=3.8'
 keywords = ['textile', 'text', 'html markup']
-readme = {file = 'tests/fixtures/README.txt', content-type = 'text/plain'}
+# use pandoc to generate a markdown version of the README before uploading:
+#   pandoc README.textile -o README.md
+# this kinda hurts to have to do this.
+readme = {file = 'README.md', content-type = 'text/markdown'}
 
 [project.optional-dependencies]
 develop = ['pytest', 'pytest-cov']
