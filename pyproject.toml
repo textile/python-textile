@@ -31,10 +31,10 @@ dependencies = [
 ]
 requires-python = '>=3.8'
 keywords = ['textile', 'text', 'html markup']
-# use pandoc to generate a markdown version of the README before uploading:
-#   pandoc README.textile -o README.md
-# this kinda hurts to have to do this.
-readme = {file = 'README.md', content-type = 'text/markdown'}
+# Use the following command to generate a README.txt which is compatible with
+# pypi's readme rendering:
+#   pytextile README.textile | sed -e 's/^\t//' > README.txt
+readme = {file = 'README.txt', content-type = 'text/markdown'}
 
 [project.optional-dependencies]
 develop = ['pytest', 'pytest-cov']
