@@ -1,6 +1,6 @@
 clean:
-	rm README.txt
-	rm -rf ./dist ./build
+	$(RM) README.txt
+	$(RM) -r ./dist ./build
 
 generate_pypi_README:
 	${VIRTUAL_ENV}/bin/pytextile README.textile | sed -e 's/^\t//' > README.txt
