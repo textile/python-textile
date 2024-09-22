@@ -1,6 +1,7 @@
 from textile import textilefactory
 import pytest
 
+
 def test_TextileFactory():
     f = textilefactory.TextileFactory()
     result = f.process("some text here")

@@ -1,7 +1,8 @@
-from textile.tools.imagesize import getimagesize
+from textile.utils import getimagesize
 import pytest
 
 PIL = pytest.importorskip('PIL')
+
 
 def test_imagesize():
     assert getimagesize("http://www.google.com/intl/en_ALL/images/logo.gif") == (276, 110)

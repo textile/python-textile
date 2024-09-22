@@ -1,8 +1,8 @@
-	<p><a href="https://travis-ci.org/textile/python-textile"><img alt="" src="https://travis-ci.org/textile/python-textile.svg" /></a> <a href="https://codecov.io/github/textile/python-textile"><img alt="" src="https://codecov.io/github/textile/python-textile/coverage.svg" /></a> <img alt="" src="https://img.shields.io/pypi/pyversions/textile" /> <img alt="" src="https://img.shields.io/pypi/wheel/textile" /></p>
+	<p><a href="https://github.com/textile/python-textile/actions/workflows/lint_and_test.yml"><img alt="python-textile" src="https://github.com/textile/python-textile/actions/workflows/lint_and_test.yml/badge.svg" title="python-textile" /></a> <a href="https://codecov.io/github/textile/python-textile"><img alt="" src="https://codecov.io/github/textile/python-textile/coverage.svg" /></a> <img alt="" src="https://img.shields.io/pypi/pyversions/textile" /> <img alt="" src="https://img.shields.io/pypi/wheel/textile" /></p>
 
 	<h1>python-textile</h1>
 
-	<p>python-textile is a Python port of <a href="http://txstyle.org/">Textile</a>, Dean Allen&#8217;s humane web text generator.</p>
+	<p>python-textile is a Python port of <a href="https://textile-lang.com/">Textile</a>, Dean Allen&#8217;s humane web text generator.</p>
 
 	<h2>Installation</h2>
 
@@ -10,7 +10,7 @@
 
 	<p>Dependencies:
 	<ul>
-		<li><a href="https://pypi.org/project/html5lib/">html5lib</a></li>
+		<li><a href="https://pypi.org/project/nh3/">nh3</a></li>
 		<li><a href="https://pypi.org/project/regex/">regex</a> (The regex package causes problems with PyPy, and is not installed as a dependency in such environments. If you are upgrading a textile install on PyPy which had regex previously included, you may need to uninstall it.)</li>
 	</ul></p>
 
@@ -47,7 +47,7 @@
 	<h3>Notes:</h3>
 
 	<ul>
-		<li>Active development supports Python 3.5 or later.</li>
+		<li>Active development supports Python 3.8 or later.</li>
 	</ul>
 
 	<h3>Running Tests</h3>
@@ -56,8 +56,8 @@
 
 	<p>When textile is installed locally:</p>
 
-<pre><code>pytest
+<pre><code>pytest</code></pre>
 
-When textile is not installed locally:</code></pre>
+	<p>When textile is not installed locally:</p>
 
-<pre>PYTHONPATH=. pytest</pre>
+<pre><code>PYTHONPATH=. pytest</code></pre>

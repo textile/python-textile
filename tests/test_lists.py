@@ -1,5 +1,6 @@
 from textile import Textile
 
+
 def test_lists():
     t = Textile()
     result = t.textileLists("* one\n* two\n* three")

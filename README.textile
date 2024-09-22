@@ -1,15 +1,15 @@
-!https://travis-ci.org/textile/python-textile.svg!:https://travis-ci.org/textile/python-textile !https://codecov.io/github/textile/python-textile/coverage.svg!:https://codecov.io/github/textile/python-textile !https://img.shields.io/pypi/pyversions/textile! !https://img.shields.io/pypi/wheel/textile!
+!https://github.com/textile/python-textile/actions/workflows/lint_and_test.yml/badge.svg(python-textile)!:https://github.com/textile/python-textile/actions/workflows/lint_and_test.yml !https://codecov.io/github/textile/python-textile/coverage.svg!:https://codecov.io/github/textile/python-textile !https://img.shields.io/pypi/pyversions/textile! !https://img.shields.io/pypi/wheel/textile!
 
 h1. python-textile
 
-python-textile is a Python port of "Textile":http://txstyle.org/, Dean Allen's humane web text generator.
+python-textile is a Python port of "Textile":https://textile-lang.com/, Dean Allen's humane web text generator.
 
 h2. Installation
 
 @pip install textile@
 
 Dependencies:
-* "html5lib":https://pypi.org/project/html5lib/
+* "nh3":https://pypi.org/project/nh3/
 * "regex":https://pypi.org/project/regex/ (The regex package causes problems with PyPy, and is not installed as a dependency in such environments. If you are upgrading a textile install on PyPy which had regex previously included, you may need to uninstall it.)
 
 Optional dependencies include:
@@ -42,7 +42,7 @@ bc.. import textile
 
 h3. Notes:
 
-* Active development supports Python 3.5 or later.
+* Active development supports Python 3.8 or later.
 
 h3. Running Tests
 
@@ -50,8 +50,8 @@ To run the test suite, use pytest. `pytest-cov` is required as well.
 
 When textile is installed locally:
 
-bc.. pytest
+bc. pytest
 
 When textile is not installed locally:
 
-bc.. PYTHONPATH=. pytest
+bc. PYTHONPATH=. pytest

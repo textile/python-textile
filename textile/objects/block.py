@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
 from collections import OrderedDict
 try:
     import regex as re
@@ -40,7 +38,7 @@ class Block(object):
             [{space}]+                            # whitespace ends def marker
             (?P<content>.*)$                      # content""".format(
                 space=regex_snippets['space'], cls=cls_re_s),
-            flags=re.X | re.U)
+                flags=re.X | re.U)
             notedef = notedef_re.sub(self.textile.fParseNoteDefs, self.content)
 
             # It will be empty if the regex matched and ate it.
@@ -49,13 +47,13 @@ class Block(object):
                 self.eat = True
 
         fns = re.search(r'fn(?P<fnid>{0}+)'.format(regex_snippets['digit']),
-                self.tag, flags=re.U)
+                        self.tag, flags=re.U)
         if fns:
             self.tag = 'p'
             fnid = self.textile.fn.get(fns.group('fnid'), None)
             if fnid is None:
                 fnid = '{0}{1}'.format(self.textile.linkPrefix,
-                        self.textile._increment_link_index())
+                                       self.textile._increment_link_index())
 
             # If there is an author-specified ID goes on the wrapper & the
             # auto-id gets pushed to the <sup>
@@ -71,12 +69,11 @@ class Block(object):
             else:
                 supp_id = parse_attributes('(#fn{0})'.format(fnid), restricted=self.textile.restricted)
 
-
             if '^' not in self.atts:
                 sup = generate_tag('sup', fns.group('fnid'), supp_id)
             else:
                 fnrev = generate_tag('a', fns.group('fnid'), {'href':
-                    '#fnrev{0}'.format(fnid)})
+                                     '#fnrev{0}'.format(fnid)})
                 sup = generate_tag('sup', fnrev, supp_id)
 
             self.content = '{0} {1}'.format(sup, self.content)

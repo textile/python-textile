@@ -1,9 +1,4 @@
-from __future__ import unicode_literals
-
-import sys
-import warnings
-
-from .core import textile, textile_restricted, Textile
+from .core import textile, textile_restricted, Textile  # noqa: F401
 from .version import VERSION
 
 __all__ = ['textile', 'textile_restricted']

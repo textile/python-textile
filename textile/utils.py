@@ -1,5 +1,3 @@
-from __future__ import unicode_literals
-
 try:
     import regex as re
 except ImportError:
@@ -14,15 +12,30 @@ from xml.etree import ElementTree
 
 from textile.regex_strings import valign_re_s, halign_re_s
 
+# Regular expressions for stripping chunks of HTML,
+# leaving only content not wrapped in a tag or a comment
+RAW_TEXT_REVEALERS = (
+    # The php version has orders the below list of tags differently.  The
+    # important thing to note here is that the pre must occur before the p or
+    # else the regex module doesn't properly match pre-s. It only matches the
+    # p in pre.
+    re.compile(r'<(pre|p|blockquote|div|form|table|ul|ol|dl|h[1-6])[^>]*?>.*</\1>',
+               re.S),
+    re.compile(r'<(hr|br)[^>]*?/>'),
+    re.compile(r'<!--.*?-->'),
+)
+
 
 def decode_high(text):
     """Decode encoded HTML entities."""
     text = '&#{0};'.format(text)
     return html.unescape(text)
 
+
 def encode_high(text):
     """Encode the text so that it is an appropriate HTML entity."""
     return ord(text)
+
 
 def encode_html(text, quotes=True):
     """Return text that's safe for an HTML attribute."""
@@ -38,6 +51,7 @@ def encode_html(text, quotes=True):
     for k, v in a:
         text = text.replace(k, v)
     return text
+
 
 def generate_tag(tag, content, attributes=None):
     """Generate a complete html tag using the ElementTree module.  tag and
@@ -59,26 +73,62 @@ def generate_tag(tag, content, attributes=None):
     # non-ascii text being html-entity encoded.  Not bad, but not entirely
     # matching php-textile either.
     element_tag = ElementTree.tostringlist(element, encoding=enc,
-            method='html')
+                                           method='html')
     element_tag.insert(len(element_tag) - 1, content)
     element_text = ''.join(element_tag)
     return element_text
 
+
+def getimagesize(url):
+    """
+    Attempts to determine an image's width and height, and returns a tuple,
+    (width, height), in pixels or an empty string in case of failure.
+    Requires that PIL is installed.
+
+    """
+
+    try:
+        from PIL import ImageFile
+    except ImportError:
+        return ''
+
+    from urllib.request import urlopen
+
+    try:
+        p = ImageFile.Parser()
+        f = urlopen(url)
+        while True:
+            s = f.read(1024)
+            if not s:
+                break
+            p.feed(s)
+            if p.image:
+                return p.image.size
+    except (IOError, ValueError):
+        return ''
+
+
 def has_raw_text(text):
     """checks whether the text has text not already enclosed by a block tag"""
-    # The php version has orders the below list of tags differently.  The
-    # important thing to note here is that the pre must occur before the p or
-    # else the regex module doesn't properly match pre-s. It only matches the
-    # p in pre.
-    r = re.compile(r'<(pre|p|blockquote|div|form|table|ul|ol|dl|h[1-6])[^>]*?>.*</\1>',
-                   re.S).sub('', text.strip()).strip()
-    r = re.compile(r'<(hr|br)[^>]*?/>').sub('', r)
-    return '' != r
+    r = text.strip()
+    for pattern in RAW_TEXT_REVEALERS:
+        r = pattern.sub('', r).strip()
+    return r != ''
+
+
+def human_readable_url(url):
+    if "://" in url:
+        url = url.split("://")[1]
+    elif ":" in url:
+        url = url.split(":")[1]
+    return url
+
 
 def is_rel_url(url):
     """Identify relative urls."""
     (scheme, netloc) = urlparse(url)[0:2]
     return not scheme and not netloc
+
 
 def is_valid_url(url):
     parsed = urlparse(url)
@@ -86,21 +136,23 @@ def is_valid_url(url):
         return True
     return False
 
+
 def list_type(list_string):
     listtypes = {
-        list_string.startswith('*'): 'u',
-        list_string.startswith('#'): 'o',
-        (not list_string.startswith('*') and not list_string.startswith('#')):
+        list_string.endswith('*'): 'u',
+        list_string.endswith('#'): 'o',
+        (not list_string.endswith('*') and not list_string.endswith('#')):
         'd'
     }
     return listtypes.get(True, False)
 
+
 def normalize_newlines(string):
-    out = string.strip()
-    out = re.sub(r'\r\n?', '\n', out)
+    out = re.sub(r'\r\n?', '\n', string)
     out = re.compile(r'^[ \t]*\n', flags=re.M).sub('\n', out)
-    out = re.sub(r'"$', '" ', out)
+    out = out.strip('\n')
     return out
+
 
 def parse_attributes(block_attributes, element=None, include_id=True, restricted=False):
     vAlign = {'^': 'top', '-': 'middle', '~': 'bottom'}
@@ -146,8 +198,27 @@ def parse_attributes(block_attributes, element=None, include_id=True, restricted
 
     m = re.search(r'\(([^()]+)\)', matched, re.U)
     if m:
-        aclass = m.group(1)
         matched = matched.replace(m.group(0), '')
+        # Only allow a restricted subset of the CSS standard characters for classes/ids.
+        # No encoding markers allowed.
+        id_class_match = re.compile(r"^([-a-zA-Z 0-9_\/\[\]\.\:\#]+)$", re.U).match(m.group(1))
+        if id_class_match:
+            class_regex = re.compile(r"^([-a-zA-Z 0-9_\.\/\[\]]*)$")
+            id_class = id_class_match.group(1)
+            # If a textile class block attribute was found with a '#' in it
+            # split it into the css class and css id...
+            hashpos = id_class.find('#')
+            if hashpos >= 0:
+                id_match = re.match(r"^#([-a-zA-Z0-9_\.\:]*)$", id_class[hashpos:])
+                if id_match:
+                    block_id = id_match.group(1)
+
+                cls_match = class_regex.match(id_class[:hashpos])
+            else:
+                cls_match = class_regex.match(id_class)
+
+            if cls_match:
+                aclass = cls_match.group(1)
 
     m = re.search(r'([(]+)', matched)
     if m:
@@ -162,11 +233,6 @@ def parse_attributes(block_attributes, element=None, include_id=True, restricted
     m = re.search(r'({0})'.format(halign_re_s), matched)
     if m:
         style.append("text-align:{0}".format(hAlign[m.group(1)]))
-
-    m = re.search(r'^(.*)#(.*)$', aclass)
-    if m:
-        block_id = m.group(2)
-        aclass = m.group(1)
 
     if element == 'col':
         pattern = r'(?:\\(\d+)\.?)?\s*(\d+)?'
@@ -194,6 +260,7 @@ def parse_attributes(block_attributes, element=None, include_id=True, restricted
     if width:
         result['width'] = width
     return result
+
 
 def pba(block_attributes, element=None, include_id=True, restricted=False):
     """Parse block attributes."""

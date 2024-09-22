@@ -1,0 +1,52 @@
+[build-system]
+requires = ["setuptools", "setuptools-scm", "nh3"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "textile"
+authors = [
+    { name = "Dennis Burke", email = "ikirudennis@gmail.com"}
+]
+description = 'Textile processing for python.'
+classifiers = [
+    'Development Status :: 5 - Production/Stable',
+    'Environment :: Web Environment',
+    'Intended Audience :: Developers',
+    'License :: OSI Approved :: BSD License',
+    'Operating System :: OS Independent',
+    'Programming Language :: Python',
+    'Programming Language :: Python :: 3',
+    'Programming Language :: Python :: 3 :: Only',
+    'Programming Language :: Python :: 3.8',
+    'Programming Language :: Python :: 3.9',
+    'Programming Language :: Python :: 3.10',
+    'Programming Language :: Python :: 3.11',
+    'Programming Language :: Python :: 3.12',
+    'Topic :: Software Development :: Libraries :: Python Modules',
+]
+dynamic = ["version",]
+dependencies = [
+    'nh3',
+    'regex>1.0; implementation_name != "pypy"',
+]
+requires-python = '>=3.8'
+keywords = ['textile', 'text', 'html markup']
+# Use the following command to generate a README.txt which is compatible with
+# pypi's readme rendering:
+#   pytextile README.textile | sed -e 's/^\t//' > README.txt
+readme = {file = 'README.txt', content-type = 'text/markdown'}
+
+[project.optional-dependencies]
+develop = ['pytest', 'pytest-cov']
+imagesize = ['Pillow>=3.0.0',]
+
+[project.urls]
+Homepage = "https://github.com/textile/python-textile"
+Repository = "https://github.com/textile/python-textile.git"
+Issues = "https://github.com/textile/python-textile/issues"
+
+[project.scripts]
+pytextile = "textile.__main__:main"
+
+[tool.setuptools.dynamic]
+version = {attr = "textile.__version__"}
