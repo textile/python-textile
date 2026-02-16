@@ -1,4 +1,9 @@
+
 h1. Textile Changelog
+
+h2. Development
+* Bugfixes:
+**  Allow text blocks with spaces around first and last newlines
 
 h2. Version 4.0.3
 * Update supported Python versions to 3.8 - 3.12 ("#83":https://github.com/textile/python-textile/issues/83)

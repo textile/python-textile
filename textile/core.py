@@ -442,9 +442,9 @@ class Textile(object):
 
         tag = 'p'
         atts = cite = ext = ''
-
         out = []
-
+        block = Block(self, tag, atts, ext, cite, '')  # init block
+        block.eat = False  # don't eat the next line after init block
         for line in text:
             # the line is just whitespace, add it to the output, and move on
             if not line.strip():
