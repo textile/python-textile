@@ -1,4 +1,10 @@
+
 h1. Textile Changelog
+
+h2. Version 4.0.4
+* Update supported python versions to include 3.13, and 3.14. Minimum support for pypy has increased to pypy3.11.
+* Bugfixes:
+**  Allow text blocks with spaces around first and last newlines ("#87":https://github.com/textile/python-textile/pull/87)
 
 h2. Version 4.0.3
 * Update supported Python versions to 3.8 - 3.12 ("#83":https://github.com/textile/python-textile/issues/83)
