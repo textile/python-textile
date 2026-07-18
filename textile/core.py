@@ -888,8 +888,12 @@ class Textile(object):
             urlLeft = ''.join(url_chars)
 
             m = re.search(r'(?P<url_chars>.*)(?P<tag><\/[a-z]+)$', urlLeft)
-            url_chars = m.group('url_chars')
-            pop = '{0}{1}{2}'.format(m.group('tag'), c, pop)
+            if m is None:
+                # Trailing '>' without a closing tag; spit it out like other end chars.
+                pop = '{0}{1}'.format(c, pop)
+            else:
+                url_chars = m.group('url_chars')
+                pop = '{0}{1}{2}'.format(m.group('tag'), c, pop)
             popped = True
             return pop, popped, url_chars, counts, pre
 
