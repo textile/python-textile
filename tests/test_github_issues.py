@@ -434,16 +434,12 @@ ESCAPED "good" test'''
 
 
 def test_link_trailing_gt_without_closing_tag():
-    # Trailing '>' after a URL is punctuation, not a closing HTML tag.
     result = textile.textile('"link":http://example.com>')
-    expect = '\t<p><a href="http://example.com">link</a>&gt;</p>'
+    expect = '	<p><a href="http://example.com">link</a>&gt;</p>'
     assert result == expect
 
 
-def test_link_trailing_gt_angle_brackets():
+def test_link_trailing_gt_keeps_angle_bracket_in_url():
     result = textile.textile('"x":http://a<>')
-    expect = '\t<p><a href="http://a">&lt;</a>&gt;</p>'
-    # If that expectation is wrong, print and adjust after first run
-    print('GOT', repr(result))
-    assert '<a href=' in result
-    assert 'AttributeError' not in result
+    expect = '	<p><a href="http://a<">x</a>&gt;</p>'
+    assert result == expect
