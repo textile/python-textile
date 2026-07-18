@@ -73,12 +73,14 @@ def test_quotes_in_link_text():
 
 def test_link_url_ending_in_angle_bracket():
     """A link whose URL ends in '>' with no closing tag used to raise a raw
-    AttributeError; the '>' should be pushed out of the URL like other
-    trailing punctuation."""
+    AttributeError; the '>' should be dropped completely from the URL and
+    the output to align with reference php-textile."""
     t = Textile()
-    assert t.parse('"a":b>') == '\t<p><a href="b">a</a>&gt;</p>'
+    assert t.parse('"a":b>') == '\t<p><a href="b">a</a></p>'
     assert t.parse('"x":http://x.com/>') == (
-        '\t<p><a href="http://x.com/">x</a>&gt;</p>')
+        '\t<p><a href="http://x.com/">x</a></p>')
     # A genuine trailing closing tag is still absorbed as before.
     assert t.parse('"y":http://x.com/</a') == (
         '\t<p><a href="http://x.com/%3C/a">y</a></p>')
+    assert t.parse('"y":http://x.com/</a>') == (
+        '\t<p><a href="http://x.com/">y</a></a></p>')
