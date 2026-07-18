@@ -888,6 +888,9 @@ class Textile(object):
             urlLeft = ''.join(url_chars)
 
             m = re.search(r'(?P<url_chars>.*)(?P<tag><\/[a-z]+)$', urlLeft)
+            if m is None:
+                popped = True
+                return pop, popped, url_chars, counts, pre
             url_chars = m.group('url_chars')
             pop = '{0}{1}{2}'.format(m.group('tag'), c, pop)
             popped = True
