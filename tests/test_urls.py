@@ -79,3 +79,10 @@ def test_ipv6_literal_link_keeps_single_closing_bracket():
         '\t<p><a href="http://[::1]/">loopback</a></p>')
     assert t.parse('"port":http://[::1]:8080/') == (
         '\t<p><a href="http://[::1]:8080/">port</a></p>')
+
+
+def test_unmatched_bracket_before_query_still_pops():
+    t = Textile()
+    # Master pops trailing after an unmatched ]; IPv6 reattach must not change that.
+    assert t.parse('"t":http://example.com/x]?q=1') == (
+        '\t<p><a href="http://example.com/x">t</a>?q=1</p>')

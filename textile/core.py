@@ -865,8 +865,9 @@ class Textile(object):
             m = re.search(r'(?P<url>^.*\])(?!=)(?P<end>.*?)$', url, flags=re.U)
             url = m.group('url')
             end = m.group('end')
-            # Keep port/path/query/fragment after a bracketed IPv6 (or similar) ].
-            if end.startswith((':', '/', '?', '#')):
+            # Reattach URL continuation only when ] is balanced (IPv6 netloc).
+            if (end.startswith((':', '/', '?', '#'))
+                    and url.count('[') == url.count(']')):
                 url = '{0}{1}'.format(url, end)
                 end = ''
             tight = '{0}{1}'.format(end, tight)
