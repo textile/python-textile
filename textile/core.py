@@ -905,12 +905,8 @@ class Textile(object):
             # If counts['['] is None, count the occurrences of '['
             counts['['] = counts['['] or url.count('[')
 
-            if counts['['] == counts[']']:
-                # Balanced (e.g. IPv6 netloc); char already in url_chars.
-                pass
-            else:
-                # In the case of un-matched closing square brackets we just eat
-                # it
+            if counts['['] != counts[']']:
+                # Unmatched closing bracket: spit it out of the URL.
                 popped = True
                 url_chars.pop()
                 counts[']'] = counts[']'] - 1
