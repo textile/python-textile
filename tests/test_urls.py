@@ -69,3 +69,13 @@ def test_quotes_in_link_text():
     result = t.parse(test)
     expect = '\t<p><a href="url">&#8220;this is a quote in link text&#8221;</a></p>'
     assert result == expect
+
+
+def test_ipv6_literal_link_keeps_single_closing_bracket():
+    import textile
+    out = textile.textile('"host":http://[2001:db8::1]/')
+    assert out == '\t<p><a href="http://[2001:db8::1]/">host</a></p>'
+    out = textile.textile('"loopback":http://[::1]/')
+    assert out == '\t<p><a href="http://[::1]/">loopback</a></p>'
+    out = textile.textile('"port":http://[::1]:8080/')
+    assert out == '\t<p><a href="http://[::1]:8080/">port</a></p>'

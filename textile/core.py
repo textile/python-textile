@@ -864,7 +864,12 @@ class Textile(object):
         if (counts[']']):
             m = re.search(r'(?P<url>^.*\])(?!=)(?P<end>.*?)$', url, flags=re.U)
             url = m.group('url')
-            tight = '{0}{1}'.format(m.group('end'), tight)
+            end = m.group('end')
+            # Keep port/path/query/fragment after a bracketed IPv6 (or similar) ].
+            if end.startswith((':', '/', '?', '#')):
+                url = '{0}{1}'.format(url, end)
+                end = ''
+            tight = '{0}{1}'.format(end, tight)
 
         # Now we have the array of all the multi-byte chars in the url we will
         # parse the  uri backwards and pop off  any chars that don't belong
@@ -901,8 +906,8 @@ class Textile(object):
             counts['['] = counts['['] or url.count('[')
 
             if counts['['] == counts[']']:
-                # It is balanced, so keep it
-                url_chars.append(c)
+                # Balanced (e.g. IPv6 netloc); char already in url_chars.
+                pass
             else:
                 # In the case of un-matched closing square brackets we just eat
                 # it
@@ -1001,13 +1006,25 @@ class Textile(object):
         parsed = urlsplit(url)
 
         if parsed.netloc:
-            # divide the netloc further
-            netloc_pattern = re.compile(r"""
-                (?:(?P<user>[^:@]+)(?::(?P<password>[^:@]+))?@)?
-                (?P<host>[^:]+)
-                (?::(?P<port>[0-9]+))?
-            """, re.X | re.U)
-            netloc_parsed = netloc_pattern.match(parsed.netloc).groupdict()
+            # Bracketed IPv6 netlocs contain colons; keep [addr] intact.
+            ipv6 = re.match(
+                r'^(?P<host>\[[^\]]+\])(?::(?P<port>[0-9]+))?$',
+                parsed.netloc,
+            )
+            if ipv6:
+                netloc_parsed = {
+                    'user': '',
+                    'password': '',
+                    'host': ipv6.group('host'),
+                    'port': ipv6.group('port') or '',
+                }
+            else:
+                netloc_pattern = re.compile(r"""
+                    (?:(?P<user>[^:@]+)(?::(?P<password>[^:@]+))?@)?
+                    (?P<host>[^:]+)
+                    (?::(?P<port>[0-9]+))?
+                """, re.X | re.U)
+                netloc_parsed = netloc_pattern.match(parsed.netloc).groupdict()
         else:
             netloc_parsed = {'user': '', 'password': '', 'host': '', 'port': ''}
 
