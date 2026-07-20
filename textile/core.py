@@ -866,8 +866,7 @@ class Textile(object):
             url = m.group('url')
             end = m.group('end')
             # Reattach URL continuation only when ] is balanced (IPv6 netloc).
-            if (end.startswith((':', '/', '?', '#'))
-                    and url.count('[') == url.count(']')):
+            if end.startswith((':', '/', '?', '#')) and url.count('[') == url.count(']'):
                 url = '{0}{1}'.format(url, end)
                 end = ''
             tight = '{0}{1}'.format(end, tight)
