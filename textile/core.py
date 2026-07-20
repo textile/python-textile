@@ -894,6 +894,9 @@ class Textile(object):
             urlLeft = ''.join(url_chars)
 
             m = re.search(r'(?P<url_chars>.*)(?P<tag><\/[a-z]+)$', urlLeft)
+            if m is None:
+                popped = True
+                return pop, popped, url_chars, counts, pre
             url_chars = m.group('url_chars')
             pop = '{0}{1}{2}'.format(m.group('tag'), c, pop)
             popped = True
@@ -1005,15 +1008,16 @@ class Textile(object):
         if parsed.netloc:
             # Bracketed IPv6 netlocs contain colons; keep [addr] intact.
             ipv6 = re.match(
-                r'^(?P<host>\[[^\]]+\])(?::(?P<port>[0-9]+))?$',
+                r'^(?:(?P<user>[^:@]+)(?::(?P<password>[^:@]+))?@)?(?P<host>\[[^\]]+\])(?::(?P<port>[0-9]+))?$',
                 parsed.netloc,
             )
             if ipv6:
+                m = ipv6.groupdict()
                 netloc_parsed = {
-                    'user': '',
-                    'password': '',
-                    'host': ipv6.group('host'),
-                    'port': ipv6.group('port') or '',
+                    'user': m.get('user') or '',
+                    'password': m.get('password') or '',
+                    'host': m.get('host'),
+                    'port': m.get('port') or '',
                 }
             else:
                 netloc_pattern = re.compile(r"""
