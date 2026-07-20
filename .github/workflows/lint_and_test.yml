@@ -1,7 +1,15 @@
 ---
 name: python-textile
 
-on: [push]
+on:
+  push:
+    branches:
+      - master
+      - develop
+  pull_request:
+    branches:
+      - master
+      - develop
 
 jobs:
   lint_and_test:
