@@ -74,13 +74,13 @@ def test_quotes_in_link_text():
 def test_ipv6_literal_link_keeps_single_closing_bracket():
     t = Textile()
     assert t.parse('"host":http://[2001:db8::1]/') == (
-        '\t<p><a href="http://[2001:db8::1]/">host</a></p>')
+        '\t<p><a href="http://[2001:db8::1]">host</a>/</p>')
     assert t.parse('"loopback":http://[::1]/') == (
-        '\t<p><a href="http://[::1]/">loopback</a></p>')
+        '\t<p><a href="http://[::1]">loopback</a>/</p>')
     assert t.parse('"port":http://[::1]:8080/') == (
-        '\t<p><a href="http://[::1]:8080/">port</a></p>')
+        '\t<p><a href="http://[::1]">port</a>:8080/</p>')
     assert t.parse('"creds":http://user:pass@[::1]:8080/') == (
-        '\t<p><a href="http://user:pass@[::1]:8080/">creds</a></p>')
+        '\t<p><a href="http://user:pass@[::1]">creds</a>:8080/</p>')
 
 
 def test_unmatched_bracket_before_query_still_pops():
@@ -88,6 +88,8 @@ def test_unmatched_bracket_before_query_still_pops():
     # Master pops trailing after an unmatched ]; IPv6 reattach must not change that.
     assert t.parse('"t":http://example.com/x]?q=1') == (
         '\t<p><a href="http://example.com/x">t</a>?q=1</p>')
+    assert t.parse('"test":http://example.com/x]=foo') == (
+        '\t<p><a href="http://example.com/x%5D%3Dfoo">test</a></p>')
 
 
 def test_link_url_ending_in_angle_bracket():
