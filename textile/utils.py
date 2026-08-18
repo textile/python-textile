@@ -267,5 +267,5 @@ def pba(block_attributes, element=None, include_id=True, restricted=False):
     attrs = parse_attributes(block_attributes, element, include_id, restricted)
     if not attrs:
         return ''
-    result = ' '.join(['{0}="{1}"'.format(k, v) for k, v in attrs.items()])
+    result = ' '.join(['{0}="{1}"'.format(k, encode_html(str(v), quotes=True)) for k, v in attrs.items()])
     return ' {0}'.format(result)

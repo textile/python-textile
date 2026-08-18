@@ -1107,7 +1107,7 @@ class Textile(object):
         tag = qtags[tag]
         atts = pba(atts, restricted=self.restricted)
         if cite:
-            atts = '{0} cite="{1}"'.format(atts, cite.rstrip())
+            atts = '{0} cite="{1}"'.format(atts, encode_html(cite.rstrip(), quotes=True))
 
         content = self.span(content)
         opentag = '<{0}{1}>'.format(tag, atts)
@@ -1488,7 +1488,7 @@ class Textile(object):
         if url in self.urlrefs:
             url = self.urlrefs[url]
 
-        return url
+        return encode_html(url, quotes=True)
 
     def _increment_link_index(self):
         """The self.linkIndex property needs to be incremented in various
