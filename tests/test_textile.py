@@ -97,7 +97,7 @@ table{border:1px solid black}.
 
     test = '_[x"onmouseover="alert(document.domain)]hover me_'
     result = textile.textile_restricted(test)
-    expect = '\t<p><em lang="x&quot;onmouseover=&quot;alert(document.domain)">hover me</em></p>'
+    expect = '\t<p><em>hover me</em></p>'
     assert result == expect
 
     test = 'bq.:http://example.com/"onmouseover="alert(document.domain) some quote'

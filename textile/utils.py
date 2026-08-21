@@ -193,7 +193,13 @@ def parse_attributes(block_attributes, element=None, include_id=True, restricted
 
     m = re.search(r'\[([^\]]+)\]', matched, re.U)
     if m:
-        lang = m.group(1)
+        val = m.group(1)
+        if element == 'code':
+            if re.match(r'^[a-zA-Z0-9_-]+$', val):
+                lang = val
+        else:
+            if re.match(r'^[a-zA-Z]{2}(?:[\-_][a-zA-Z]{2})?$', val):
+                lang = val
         matched = matched.replace(m.group(0), '')
 
     m = re.search(r'\(([^()]+)\)', matched, re.U)

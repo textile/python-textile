@@ -35,3 +35,16 @@ def test_generate_tag():
 def test_human_readable_url_edge_case():
     assert utils.human_readable_url('google.com') == 'google.com'
     assert utils.human_readable_url('tel:1-800-555-1212') == '1-800-555-1212'
+
+
+def test_parse_attributes_code():
+    # Test language parsing for code elements
+    assert utils.parse_attributes('[python]', element='code')['lang'] == 'python'
+    assert utils.parse_attributes('[py-3_9]', element='code')['lang'] == 'py-3_9'
+    assert 'lang' not in utils.parse_attributes('[python!]', element='code')
+
+    # Test language parsing for non-code elements
+    assert utils.parse_attributes('[fr]', element='p')['lang'] == 'fr'
+    assert utils.parse_attributes('[en-US]', element='p')['lang'] == 'en-US'
+    assert 'lang' not in utils.parse_attributes('[english]', element='p')
+
