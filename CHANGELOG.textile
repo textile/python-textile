@@ -1,6 +1,10 @@
 
 h1. Textile Changelog
 
+h2. Version 4.0.5
+* Security Fixes:
+** Fix attribute-value breakout XSS vulnerabilities in restricted mode ("GHSA-892m-5p8f-3g3g":https://github.com/textile/python-textile/security/advisories/GHSA-892m-5p8f-3g3g)
+
 h2. Version 4.0.4
 * Update supported python versions to include 3.13, and 3.14. Minimum support for pypy has increased to pypy3.11.
 * Bugfixes:
