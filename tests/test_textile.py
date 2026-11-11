@@ -95,6 +95,21 @@ table{border:1px solid black}.
 
     assert result == expect
 
+    test = '_[x"onmouseover="alert(document.domain)]hover me_'
+    result = textile.textile_restricted(test)
+    expect = '\t<p><em>hover me</em></p>'
+    assert result == expect
+
+    test = 'bq.:http://example.com/"onmouseover="alert(document.domain) some quote'
+    result = textile.textile_restricted(test)
+    expect = '\t<blockquote cite="http://example.com/&quot;onmouseover=&quot;alert(document.domain)">\n\t\t<p>some quote</p>\n\t</blockquote>'
+    assert result == expect
+
+    test = '??:http://example.com/"onmouseover="alert(document.domain) hover me??'
+    result = textile.textile_restricted(test)
+    expect = '\t<p><cite cite="http://example.com/&quot;onmouseover=&quot;alert(document.domain)">hover me</cite></p>'
+    assert result == expect
+
 
 def test_unicode_footnote():
     html = textile.textile('текст[1]')

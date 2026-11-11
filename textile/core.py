@@ -863,8 +863,9 @@ class Textile(object):
         # balance
         if (counts[']']):
             m = re.search(r'(?P<url>^.*\])(?!=)(?P<end>.*?)$', url, flags=re.U)
-            url = m.group('url')
-            tight = '{0}{1}'.format(m.group('end'), tight)
+            if m:
+                url = m.group('url')
+                tight = '{0}{1}'.format(m.group('end'), tight)
 
         # Now we have the array of all the multi-byte chars in the url we will
         # parse the  uri backwards and pop off  any chars that don't belong
@@ -888,6 +889,9 @@ class Textile(object):
             urlLeft = ''.join(url_chars)
 
             m = re.search(r'(?P<url_chars>.*)(?P<tag><\/[a-z]+)$', urlLeft)
+            if m is None:
+                popped = False
+                return pop, popped, url_chars, counts, pre
             url_chars = m.group('url_chars')
             pop = '{0}{1}{2}'.format(m.group('tag'), c, pop)
             popped = True
@@ -900,12 +904,8 @@ class Textile(object):
             # If counts['['] is None, count the occurrences of '['
             counts['['] = counts['['] or url.count('[')
 
-            if counts['['] == counts[']']:
-                # It is balanced, so keep it
-                url_chars.append(c)
-            else:
-                # In the case of un-matched closing square brackets we just eat
-                # it
+            if counts['['] != counts[']']:
+                # Unmatched closing bracket: spit it out of the URL.
                 popped = True
                 url_chars.pop()
                 counts[']'] = counts[']'] - 1
@@ -1001,13 +1001,26 @@ class Textile(object):
         parsed = urlsplit(url)
 
         if parsed.netloc:
-            # divide the netloc further
-            netloc_pattern = re.compile(r"""
-                (?:(?P<user>[^:@]+)(?::(?P<password>[^:@]+))?@)?
-                (?P<host>[^:]+)
-                (?::(?P<port>[0-9]+))?
-            """, re.X | re.U)
-            netloc_parsed = netloc_pattern.match(parsed.netloc).groupdict()
+            # Bracketed IPv6 netlocs contain colons; keep [addr] intact.
+            ipv6 = re.match(
+                r'^(?:(?P<user>[^:@]+)(?::(?P<password>[^:@]+))?@)?(?P<host>\[[^\]]+\])(?::(?P<port>[0-9]+))?$',
+                parsed.netloc,
+            )
+            if ipv6:
+                m = ipv6.groupdict()
+                netloc_parsed = {
+                    'user': m.get('user') or '',
+                    'password': m.get('password') or '',
+                    'host': m.get('host'),
+                    'port': m.get('port') or '',
+                }
+            else:
+                netloc_pattern = re.compile(r"""
+                    (?:(?P<user>[^:@]+)(?::(?P<password>[^:@]+))?@)?
+                    (?P<host>[^:]+)
+                    (?::(?P<port>[0-9]+))?
+                """, re.X | re.U)
+                netloc_parsed = netloc_pattern.match(parsed.netloc).groupdict()
         else:
             netloc_parsed = {'user': '', 'password': '', 'host': '', 'port': ''}
 
@@ -1094,7 +1107,7 @@ class Textile(object):
         tag = qtags[tag]
         atts = pba(atts, restricted=self.restricted)
         if cite:
-            atts = '{0} cite="{1}"'.format(atts, cite.rstrip())
+            atts = '{0} cite="{1}"'.format(atts, encode_html(cite.rstrip(), quotes=True))
 
         content = self.span(content)
         opentag = '<{0}{1}>'.format(tag, atts)
@@ -1475,7 +1488,7 @@ class Textile(object):
         if url in self.urlrefs:
             url = self.urlrefs[url]
 
-        return url
+        return encode_html(url, quotes=True)
 
     def _increment_link_index(self):
         """The self.linkIndex property needs to be incremented in various

@@ -69,3 +69,39 @@ def test_quotes_in_link_text():
     result = t.parse(test)
     expect = '\t<p><a href="url">&#8220;this is a quote in link text&#8221;</a></p>'
     assert result == expect
+
+
+def test_ipv6_literal_link_keeps_single_closing_bracket():
+    t = Textile()
+    assert t.parse('"host":http://[2001:db8::1]/') == (
+        '\t<p><a href="http://[2001:db8::1]">host</a>/</p>')
+    assert t.parse('"loopback":http://[::1]/') == (
+        '\t<p><a href="http://[::1]">loopback</a>/</p>')
+    assert t.parse('"port":http://[::1]:8080/') == (
+        '\t<p><a href="http://[::1]">port</a>:8080/</p>')
+    assert t.parse('"creds":http://user:pass@[::1]:8080/') == (
+        '\t<p><a href="http://user:pass@[::1]">creds</a>:8080/</p>')
+
+
+def test_unmatched_bracket_before_query_still_pops():
+    t = Textile()
+    # Master pops trailing after an unmatched ]; IPv6 reattach must not change that.
+    assert t.parse('"t":http://example.com/x]?q=1') == (
+        '\t<p><a href="http://example.com/x">t</a>?q=1</p>')
+    assert t.parse('"test":http://example.com/x]=foo') == (
+        '\t<p><a href="http://example.com/x%5D%3Dfoo">test</a></p>')
+
+
+def test_link_url_ending_in_angle_bracket():
+    """A link whose URL ends in '>' with no closing tag used to raise a raw
+    AttributeError; the '>' should be dropped completely from the URL and
+    the output to align with reference php-textile."""
+    t = Textile()
+    assert t.parse('"a":b>') == '\t<p><a href="b">a</a></p>'
+    assert t.parse('"x":http://x.com/>') == (
+        '\t<p><a href="http://x.com/">x</a></p>')
+    # A genuine trailing closing tag is still absorbed as before.
+    assert t.parse('"y":http://x.com/</a') == (
+        '\t<p><a href="http://x.com/%3C/a">y</a></p>')
+    assert t.parse('"y":http://x.com/</a>') == (
+        '\t<p><a href="http://x.com/">y</a></a></p>')
