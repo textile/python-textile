@@ -47,4 +47,3 @@ def test_parse_attributes_code():
     assert utils.parse_attributes('[fr]', element='p')['lang'] == 'fr'
     assert utils.parse_attributes('[en-US]', element='p')['lang'] == 'en-US'
     assert 'lang' not in utils.parse_attributes('[english]', element='p')
-
